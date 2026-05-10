@@ -1,0 +1,2621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sadrakshan.AI Investigation Tracker — Khamgaon Division</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c1:#1a2332;--c2:#243447;--c3:#2d4060;
+  --acc:#f0a500;--red:#e85d5d;--grn:#3dc98a;
+  --txt:#e8edf5;--txt2:#8fa3bc;--txt3:#5a7494;
+  --brd:rgba(255,255,255,.07);--brd2:rgba(255,255,255,.12);
+  --hov:rgba(255,255,255,.06);
+}
+body{background:var(--c1);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh}
+.topbar{background:var(--c2);border-bottom:1px solid var(--brd2);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100}
+.topbar-row1{display:flex;align-items:center;justify-content:space-between;height:52px;padding:0 20px}
+.topbar-row2{display:flex;align-items:center;justify-content:flex-end;padding:0 20px 10px;gap:8px;border-top:1px solid var(--brd)}
+.logo-wrap{display:flex;align-items:center;gap:10px}
+.logo-mark{width:30px;height:30px;background:var(--acc);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#1a1a00;flex-shrink:0}
+.logo-text{font-size:14px;font-weight:600;color:var(--txt)}
+.logo-sub{font-size:10px;color:var(--txt2);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.chip{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.chip-live{background:rgba(61,201,138,.12);border:1px solid rgba(61,201,138,.25);color:#3dc98a}
+.chip-err{background:rgba(232,93,93,.12);border:1px solid rgba(232,93,93,.25);color:#e85d5d}
+.chip-load{background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.2);color:var(--acc)}
+.pulse{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pu 1.4s infinite}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+.ref-btn{background:rgba(255,255,255,.06);border:1px solid var(--brd2);color:var(--txt2);padding:4px 11px;border-radius:7px;font-size:11px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px}
+.ref-btn:hover{color:var(--txt);background:var(--hov)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sp{animation:spin .7s linear infinite;display:inline-block}
+.layout{display:flex;min-height:calc(100vh - 52px)}
+.sidebar{width:210px;background:var(--c2);border-right:1px solid var(--brd);padding:12px 0;flex-shrink:0;position:sticky;top:52px;height:calc(100vh - 52px);overflow-y:auto}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--txt3);border-radius:3px}
+.ns{padding:0 10px;margin-bottom:4px}
+.nl{font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;padding:6px 8px 5px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;color:var(--txt2);font-size:12px;transition:.13s;margin-bottom:1px;border:1px solid transparent}
+.ni:hover{background:var(--hov);color:var(--txt)}
+.ni.active{background:rgba(240,165,0,.1);color:var(--acc);border-color:rgba(240,165,0,.18)}
+.ni svg{width:14px;height:14px;flex-shrink:0}
+.sf{padding:10px 12px;border-top:1px solid var(--brd);margin-top:6px}
+.sfl{font-size:10px;color:var(--txt3);margin-bottom:2px}
+.sfv{font-size:11px;color:var(--txt2)}
+.sfb{font-size:14px;font-weight:600;color:var(--acc)}
+.content{flex:1;padding:16px 20px;overflow:auto;min-width:0}
+#fir-search::placeholder{color:#5a7494}
+#fir-search:focus{border-color:rgba(240,165,0,.6)}
+.fir-sug-item{padding:6px 9px;border-radius:5px;font-size:11px;color:#8fa3bc;cursor:pointer;transition:.12s}
+.fir-sug-item:hover{background:rgba(255,255,255,.07);color:#e8edf5}
+.pg-title{font-size:16px;font-weight:600;color:var(--txt);margin-bottom:2px}
+.pg-sub{font-size:11px;color:var(--txt3);margin-bottom:14px}
+.fb{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:10px;color:var(--txt3);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+.fg select{background:var(--c3);border:1px solid var(--brd2);color:var(--txt);font-size:12px;padding:5px 26px 5px 8px;border-radius:7px;cursor:pointer;outline:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5' fill='none'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%238fa3bc' stroke-width='1.4' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;min-width:130px}
+.fg select:focus{border-color:var(--acc)}
+.rb{background:rgba(232,93,93,.1);border:1px solid rgba(232,93,93,.2);color:#e85d5d;padding:5px 11px;border-radius:7px;font-size:11px;cursor:pointer;align-self:flex-end}
+.rb:hover{background:rgba(232,93,93,.18)}
+.kg{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:14px}
+.kc{background:var(--c2);border:1px solid var(--brd);border-radius:10px;padding:12px;position:relative;overflow:hidden}
+.kt{position:absolute;top:0;left:0;right:0;height:2px}
+.kl{font-size:10px;color:var(--txt2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px}
+.kv{font-size:22px;font-weight:700;color:var(--txt);line-height:1}
+.ks{font-size:10px;color:var(--txt3);margin-top:3px}
+.sec{background:var(--c2);border:1px solid var(--brd);border-radius:10px;padding:14px;margin-bottom:12px}
+.st{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:2px}
+.ss{font-size:10px;color:var(--txt3);margin-bottom:10px}
+.tr{display:flex;align-items:center;gap:8px;padding:5px 7px;border-radius:7px;cursor:pointer;transition:.13s;min-width:0}
+.tr:hover{background:var(--hov)}
+.tn{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0}
+.tname{font-size:11px;color:var(--txt2);width:185px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tct{font-size:11px;font-weight:700;width:50px;flex-shrink:0;text-align:right;white-space:nowrap}
+.tbo{flex:1;min-width:50px;background:rgba(255,255,255,.06);border-radius:3px;height:7px;overflow:hidden}
+.tbi{height:100%;border-radius:3px;transition:width .5s}
+.td{font-size:11px;font-weight:700;width:38px;text-align:right;flex-shrink:0}
+.tcp{width:40px;text-align:right;flex-shrink:0}
+.tp{font-size:10px;color:var(--txt3);width:56px;text-align:right;flex-shrink:0}
+.pill{display:inline-flex;align-items:center;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:600}
+.tw{overflow-x:auto}
+.tbl{width:100%;border-collapse:collapse;font-size:11px}
+.tbl th{padding:7px 9px;text-align:left;font-size:10px;font-weight:600;color:var(--txt3);letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid var(--brd);white-space:nowrap}
+.tbl td{padding:7px 9px;border-bottom:1px solid var(--brd);color:var(--txt);vertical-align:middle}
+.tbl tr.cr{cursor:pointer;transition:.12s}
+.tbl tr.cr:hover td{background:var(--hov)}
+.tbl tr:last-child td{border-bottom:none}
+.bw{display:flex;align-items:center;gap:5px}
+.bb{width:50px;background:rgba(255,255,255,.06);border-radius:3px;height:5px;overflow:hidden;flex-shrink:0}
+.bf{height:100%;border-radius:3px}
+.tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:600}
+.dp{background:var(--c1);border:1px solid var(--acc);border-radius:10px;padding:14px;margin-top:10px}
+.dh{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px}
+.dt{font-size:12px;font-weight:600;color:var(--txt)}
+.ds2{font-size:10px;color:var(--txt3);margin-top:2px}
+.cx{background:rgba(255,255,255,.06);border:1px solid var(--brd2);color:var(--txt2);padding:3px 8px;border-radius:5px;font-size:11px;cursor:pointer}
+.cx:hover{color:var(--txt)}
+.hmc{border-radius:3px;cursor:pointer;transition:.14s;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;height:24px;width:28px}
+.hmc:hover{filter:brightness(1.3);transform:scale(1.08)}
+.ls{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4rem;gap:12px}
+.spinner{width:30px;height:30px;border:2px solid rgba(255,255,255,.1);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite}
+.eb{background:rgba(232,93,93,.1);border:1px solid rgba(232,93,93,.25);border-radius:7px;padding:10px 14px;font-size:12px;color:#e85d5d;margin-bottom:10px;line-height:1.6}
+.gb{background:rgba(61,201,138,.08);border:1px solid rgba(61,201,138,.2);border-radius:7px;padding:10px 14px;font-size:12px;color:#3dc98a;margin-bottom:10px;line-height:1.7}
+code{background:rgba(0,0,0,.4);padding:2px 6px;border-radius:4px;font-size:10px;font-family:monospace;word-break:break-all}
+#fir-search::placeholder{color:var(--txt3)}
+#fir-search:focus{border-color:var(--acc)}
+.fir-sug-item{padding:5px 8px;border-radius:5px;font-size:11px;color:var(--txt2);cursor:pointer;transition:.12s}
+.fir-sug-item:hover{background:var(--hov);color:var(--txt)}
+.fir-sug-firno{font-weight:600;color:var(--acc)}
+.fir-sug-ps{font-size:10px;color:var(--txt3)}
+
+/* FIR Timeline */
+.fir-tracker-wrap{background:var(--c1);border:1px solid var(--acc);border-radius:12px;padding:20px;margin-bottom:14px}
+.fir-hdr{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.fir-hdr-left{}
+.fir-title{font-size:18px;font-weight:700;color:var(--acc)}
+.fir-meta{font-size:11px;color:var(--txt2);margin-top:4px;line-height:1.7}
+.fir-meta span{margin-right:12px}
+.fir-stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:20px}
+.fir-stat{background:var(--c2);border:1px solid var(--brd);border-radius:8px;padding:10px 12px}
+.fir-stat-lbl{font-size:10px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.fir-stat-val{font-size:18px;font-weight:700;color:var(--txt)}
+
+/* Progress arc */
+.arc-wrap{display:flex;justify-content:center;margin-bottom:20px}
+
+/* Timeline */
+.timeline-title{font-size:12px;font-weight:600;color:var(--txt);margin-bottom:12px}
+.tl-outer{position:relative;padding-left:28px}
+.tl-line{position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--brd2)}
+.tl-item{position:relative;margin-bottom:10px}
+.tl-dot{position:absolute;left:-24px;top:10px;width:14px;height:14px;border-radius:50%;border:2px solid;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;background:var(--c2);z-index:1}
+.tl-card{border-radius:8px;padding:10px 12px;border:1px solid var(--brd)}
+.tl-card-title{font-size:11px;font-weight:600;margin-bottom:3px}
+.tl-card-meta{font-size:10px;color:var(--txt3);display:flex;gap:10px;flex-wrap:wrap}
+
+/* Pending milestones */
+.milestone-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;margin-top:8px}
+.milestone-card{background:var(--c2);border:1px solid rgba(232,93,93,.25);border-radius:8px;padding:10px}
+.milestone-num{font-size:9px;font-weight:700;color:#e85d5d;margin-bottom:3px}
+.milestone-name{font-size:11px;color:var(--txt);font-weight:500;line-height:1.3}
+.milestone-days{font-size:10px;color:var(--txt3);margin-top:4px}
+
+/* Task edit button + popup */
+.t-edit-btn{display:inline-flex;align-items:center;gap:3px;background:rgba(240,165,0,.15);border:1px solid rgba(240,165,0,.35);color:#f0a500;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;cursor:pointer;transition:.12s;white-space:nowrap;margin-top:4px}
+.t-edit-btn:hover{background:rgba(240,165,0,.3);border-color:#f0a500}
+.t-edit-btn:disabled{opacity:.5;cursor:wait}
+#edit-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:99998;align-items:center;justify-content:center;padding:20px}
+#edit-backdrop.show{display:flex}
+#edit-modal{background:#0f1826;border:1.5px solid #f0a500;border-radius:14px;padding:22px 24px;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+#edit-modal h3{margin:0 0 4px;font-size:15px;color:var(--txt);font-weight:700}
+#edit-modal .em-sub{font-size:11px;color:var(--txt3);margin-bottom:16px}
+#edit-modal .em-current{font-size:11px;color:var(--txt2);margin-bottom:14px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;border-left:3px solid #8fa3bc}
+#edit-modal .em-opts{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+#edit-modal .em-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;border:1.5px solid var(--brd);background:var(--c2);cursor:pointer;transition:.12s;font-size:12px;font-weight:600}
+#edit-modal .em-opt:hover{transform:translateX(3px)}
+#edit-modal .em-opt.pending{color:#e85d5d;border-color:rgba(232,93,93,.3)}
+#edit-modal .em-opt.pending:hover{background:rgba(232,93,93,.12);border-color:#e85d5d}
+#edit-modal .em-opt.completed{color:#3dc98a;border-color:rgba(61,201,138,.3)}
+#edit-modal .em-opt.completed:hover{background:rgba(61,201,138,.12);border-color:#3dc98a}
+#edit-modal .em-opt.nr{color:#8fa3bc;border-color:var(--brd2)}
+#edit-modal .em-opt.nr:hover{background:rgba(143,163,188,.1);border-color:#8fa3bc}
+#edit-modal .em-opt .em-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+#edit-modal .em-date{display:none;margin-top:8px;padding:10px;background:rgba(61,201,138,.08);border:1px dashed rgba(61,201,138,.4);border-radius:6px}
+#edit-modal .em-date.show{display:block}
+#edit-modal .em-date label{display:block;font-size:10px;color:#8fa3bc;font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+#edit-modal .em-date input{width:100%;background:var(--c3);border:1px solid var(--brd2);color:var(--txt);padding:7px 10px;border-radius:5px;font-size:12px;font-family:inherit}
+#edit-modal .em-actions{display:flex;gap:8px;justify-content:flex-end}
+#edit-modal .em-btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid transparent;transition:.12s}
+#edit-modal .em-btn.cancel{background:transparent;color:var(--txt2);border-color:var(--brd2)}
+#edit-modal .em-btn.cancel:hover{color:var(--txt);border-color:var(--txt3)}
+#edit-modal .em-btn.confirm{background:#f0a500;color:#000}
+#edit-modal .em-btn.confirm:hover{background:#ffb920}
+#edit-modal .em-btn:disabled{opacity:.5;cursor:wait}
+#edit-modal .em-err{font-size:11px;color:#e85d5d;margin-top:10px;padding:7px 10px;background:rgba(232,93,93,.1);border:1px solid rgba(232,93,93,.3);border-radius:5px;display:none}
+#edit-modal .em-err.show{display:block}
+
+/* Inline Case Info field edit */
+.ci-field{position:relative}
+.ci-edit-pencil{display:none;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;border-radius:4px;cursor:pointer;font-size:11px;color:#f0a500;background:rgba(240,165,0,.15);border:1px solid rgba(240,165,0,.3);transition:.12s;vertical-align:middle}
+.ci-field:hover .ci-edit-pencil{display:inline-flex}
+.ci-edit-pencil:hover{color:#1a2332;background:#f0a500;border-color:#f0a500}
+.ci-val{display:inline-block;vertical-align:middle}
+.ci-edit-input{background:var(--c3);border:1.5px solid #f0a500;color:var(--txt);font-size:12px;font-weight:600;padding:3px 6px;border-radius:4px;outline:none;width:calc(100% - 14px);font-family:inherit}
+.ci-edit-wrap{display:flex;align-items:center;gap:4px}
+.ci-edit-save,.ci-edit-cancel{font-size:9px;font-weight:700;padding:3px 6px;border-radius:3px;cursor:pointer;border:none}
+.ci-edit-save{background:#f0a500;color:#000}
+.ci-edit-cancel{background:transparent;color:var(--txt3);border:1px solid var(--brd2)}
+.ci-edit-saving{opacity:.55;cursor:wait;pointer-events:none}
+.ci-edit-err{font-size:10px;color:#e85d5d;margin-top:3px}
+
+
+
+/* ── Bulk Add Task to FIRs Modal ── */
+#ba-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:99997;align-items:center;justify-content:center;padding:16px}
+#ba-backdrop.show{display:flex}
+#ba-modal{background:#0f1826;border:1.5px solid #3dc98a;border-radius:14px;padding:22px 24px;max-width:700px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.88);max-height:90vh;display:flex;flex-direction:column;gap:0}
+#ba-modal h3{margin:0 0 2px;font-size:15px;color:var(--txt);font-weight:700}
+#ba-modal .ba-task-lbl{font-size:11px;color:#3dc98a;font-weight:700;margin-bottom:12px}
+.ba-section-lbl{font-size:10px;font-weight:700;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.ba-search-row{display:flex;gap:8px;margin-bottom:10px;align-items:flex-end;flex-wrap:wrap}
+.ba-search-row input,.ba-search-row select{background:var(--c3);border:1px solid var(--brd2);color:var(--txt);font-size:12px;padding:6px 10px;border-radius:7px;outline:none}
+.ba-search-row input:focus,.ba-search-row select:focus{border-color:#3dc98a}
+.ba-fir-pool{border:1px solid var(--brd2);border-radius:8px;overflow-y:auto;max-height:160px;margin-bottom:10px}
+.ba-fir-pool::-webkit-scrollbar{width:3px}
+.ba-fir-pool::-webkit-scrollbar-thumb{background:var(--txt3);border-radius:3px}
+.ba-pool-row{display:flex;align-items:center;gap:8px;padding:5px 10px;border-bottom:1px solid var(--brd);cursor:pointer;transition:.12s}
+.ba-pool-row:last-child{border-bottom:none}
+.ba-pool-row:hover{background:var(--hov)}
+.ba-pool-row.selected{background:rgba(61,201,138,.08);border-left:2px solid #3dc98a}
+.ba-pool-firno{font-weight:700;color:var(--acc);font-size:11px;width:50px;flex-shrink:0}
+.ba-pool-ps{font-size:10px;color:var(--txt2);flex:1}
+.ba-pool-cur{font-size:9px;padding:1px 6px;border-radius:8px;font-weight:600;flex-shrink:0}
+.ba-pool-add{font-size:9px;font-weight:700;padding:2px 8px;border-radius:5px;cursor:pointer;border:none;transition:.12s;flex-shrink:0}
+.ba-selected-wrap{border:1px solid rgba(61,201,138,.3);border-radius:8px;min-height:44px;max-height:120px;overflow-y:auto;padding:6px 8px;display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;background:rgba(61,201,138,.04)}
+.ba-selected-wrap::-webkit-scrollbar{width:3px}
+.ba-selected-wrap::-webkit-scrollbar-thumb{background:#3dc98a44;border-radius:3px}
+.ba-chip{display:inline-flex;align-items:center;gap:5px;background:rgba(61,201,138,.15);border:1px solid rgba(61,201,138,.35);color:#3dc98a;font-size:10px;font-weight:700;padding:3px 8px;border-radius:12px}
+.ba-chip-x{cursor:pointer;font-size:11px;color:#3dc98a;opacity:.7;transition:.1s;line-height:1}
+.ba-chip-x:hover{opacity:1}
+.ba-status-row{display:flex;gap:10px;margin-bottom:12px;flex-wrap:wrap;align-items:flex-end}
+.ba-status-row label{font-size:10px;color:var(--txt3);font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:4px}
+.ba-status-row select,.ba-status-row input{background:var(--c3);border:1px solid var(--brd2);color:var(--txt);font-size:12px;padding:6px 10px;border-radius:7px;outline:none}
+.ba-status-row select:focus,.ba-status-row input:focus{border-color:#3dc98a}
+.ba-prog{height:5px;background:rgba(255,255,255,.07);border-radius:3px;margin-bottom:8px;overflow:hidden;display:none}
+.ba-prog.show{display:block}
+.ba-prog-fill{height:100%;background:#3dc98a;border-radius:3px;transition:width .25s}
+.ba-result{font-size:11px;color:var(--txt2);margin-bottom:8px;display:none}
+.ba-result.show{display:block}
+.ba-err{font-size:11px;color:#e85d5d;padding:7px 10px;background:rgba(232,93,93,.1);border:1px solid rgba(232,93,93,.3);border-radius:5px;margin-bottom:8px;display:none}
+.ba-err.show{display:block}
+.ba-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px;border-top:1px solid var(--brd);padding-top:12px}
+.ba-btn{padding:8px 16px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid transparent;transition:.12s}
+.ba-btn.cancel{background:transparent;color:var(--txt2);border-color:var(--brd2)}
+.ba-btn.cancel:hover{color:var(--txt);border-color:var(--txt3)}
+.ba-btn.confirm{background:#3dc98a;color:#000}
+.ba-btn.confirm:hover{background:#4ddda0}
+.ba-btn:disabled{opacity:.5;cursor:wait}
+/* BNS tag-input filter */
+.ba-bns-wrap{display:flex;flex-wrap:wrap;align-items:center;gap:5px;background:var(--c3);border:1px solid var(--brd2);border-radius:7px;padding:4px 8px;min-height:34px;cursor:text;transition:.12s}
+.ba-bns-wrap:focus-within{border-color:#3dc98a}
+.ba-bns-chip{display:inline-flex;align-items:center;gap:4px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.35);color:#a78bfa;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.ba-bns-chip-x{cursor:pointer;font-size:11px;opacity:.7;transition:.1s}
+.ba-bns-chip-x:hover{opacity:1}
+#ba-bns-input{background:transparent;border:none;outline:none;color:var(--txt);font-size:11px;min-width:120px;flex:1;padding:1px 0}
+.ba-bns-hint{font-size:9px;color:var(--txt3);margin-top:3px}
+.ba-pool-bns{font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(167,139,250,.12);color:#a78bfa;font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex-shrink:0}
+/* BNS suggestions dropdown */
+.ba-bns-suggestions{position:absolute;background:#0f1826;border:1px solid rgba(167,139,250,.4);border-radius:7px;z-index:9999;max-height:160px;overflow-y:auto;box-shadow:0 8px 24px rgba(0,0,0,.6);min-width:200px}
+.ba-bns-suggestions::-webkit-scrollbar{width:3px}
+.ba-bns-suggestions::-webkit-scrollbar-thumb{background:#a78bfa44;border-radius:3px}
+.ba-bns-sug-item{padding:6px 12px;font-size:11px;color:var(--txt2);cursor:pointer;transition:.1s}
+.ba-bns-sug-item:hover,.ba-bns-sug-item.active{background:rgba(167,139,250,.15);color:#a78bfa}
+.ba-bns-sug-count{font-size:9px;color:var(--txt3);float:right;margin-left:8px}
+
+/* Small button on each task row */
+.task-bulk-btn{display:inline-flex;align-items:center;gap:3px;background:rgba(61,201,138,.1);border:1px solid rgba(61,201,138,.25);color:#3dc98a;font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;cursor:pointer;transition:.12s;white-space:nowrap;margin-left:6px;flex-shrink:0}
+.task-bulk-btn:hover{background:rgba(61,201,138,.22);border-color:#3dc98a}
+
+/* Pending Tasks hover tooltip */
+.pt-hover{cursor:help;border-bottom:1px dashed #e85d5d;padding:1px 5px;display:inline-block;border-radius:3px;transition:background .12s}
+.pt-hover:hover{background:rgba(232,93,93,.12)}
+#pt-float{display:none;position:fixed;background:#0f1826;border:1.5px solid #e85d5d;border-radius:8px;padding:9px 11px;box-shadow:0 10px 32px rgba(0,0,0,.78);z-index:99999;min-width:230px;max-width:380px;text-align:left;pointer-events:none}
+#pt-float.show{display:block}
+#pt-float .pt-head{font-size:9px;color:#8fa3bc;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;border-bottom:1px solid rgba(232,93,93,.25);padding-bottom:4px}
+#pt-float .pt-row{font-size:10.5px;color:#f87171;font-weight:600;padding:4px 7px;margin:3px 0;background:rgba(232,93,93,.1);border-left:2px solid #e85d5d;border-radius:3px;line-height:1.35}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo-wrap">
+    <div class="logo-mark">S</div>
+    <div>
+      <div class="logo-text">Sadrakshan.AI Investigation Tracker</div>
+      <div class="logo-sub">Khamgaon Division — SDPO Review System</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="chip chip-load" id="chip">
+      <span class="pulse" id="chip-dot"></span>
+      <span id="chip-txt">Fetching data from local server…</span>
+    </div>
+    <button class="ref-btn" onclick="doRefresh()"><span id="ri">↻</span> Refresh</button>
+  </div>
+</div>
+
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="ns">
+      <div class="nl">Analysis</div>
+      <div class="ni active" id="n-tasks" onclick="goNav('tasks',this)">
+        <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="2" rx="1" fill="currentColor"/><rect x="1" y="6" width="8" height="2" rx="1" fill="currentColor" opacity=".6"/><rect x="1" y="10" width="5" height="2" rx="1" fill="currentColor" opacity=".35"/></svg>
+        Task Analysis
+      </div>
+      <div class="ni" id="n-subdiv" onclick="goNav('subdiv',this)">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L13 4v6l-6 3L1 10V4l6-3z" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
+        Sub Division
+      </div>
+      <div class="ni" id="n-ps" onclick="goNav('ps',this)">
+        <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="6" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 6V4a3 3 0 016 0v2" stroke="currentColor" stroke-width="1.1"/></svg>
+        Police Station
+      </div>
+      <div class="ni" id="n-io" onclick="goNav('io',this)">
+        <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="2.5" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M1 13c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.1"/></svg>
+        IO Wise
+      </div>
+      <div class="ni" id="n-bns" onclick="goNav('bns',this)">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M3 3h8M3 7h5M3 11h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        BNS Section
+      </div>
+    </div>
+    <div class="ns">
+      <div class="nl">Drill Down</div>
+      <div class="ni" id="n-heatmap" onclick="goNav('heatmap',this)">
+        <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="3" height="3" rx=".5" fill="currentColor"/><rect x="5.5" y="1" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/><rect x="10" y="1" width="3" height="3" rx=".5" fill="currentColor" opacity=".9"/><rect x="1" y="5.5" width="3" height="3" rx=".5" fill="currentColor" opacity=".3"/><rect x="5.5" y="5.5" width="3" height="3" rx=".5" fill="currentColor" opacity=".7"/><rect x="10" y="5.5" width="3" height="3" rx=".5" fill="currentColor" opacity=".2"/><rect x="1" y="10" width="3" height="3" rx=".5" fill="currentColor" opacity=".8"/><rect x="5.5" y="10" width="3" height="3" rx=".5" fill="currentColor" opacity=".4"/><rect x="10" y="10" width="3" height="3" rx=".5" fill="currentColor" opacity=".6"/></svg>
+        Heat Map
+      </div>
+      <div class="ni" id="n-cases" onclick="goNav('cases',this)">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M2 3h10M2 7h7M2 11h5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Case Register
+      </div>
+    </div>
+
+    <div class="sf">
+      <div class="sfl">Last updated</div>
+      <div class="sfv" id="lu">—</div>
+      <div class="sfl" style="margin-top:6px">Records loaded</div>
+      <div class="sfb" id="rc">—</div>
+      <div class="sfl" style="margin-top:6px">Data source</div>
+      <div style="font-size:10px;color:var(--acc);margin-top:2px">Apps Script API</div>
+    </div>
+  </div>
+
+  <div class="content" id="content">
+    <div class="ls">
+      <div class="spinner"></div>
+      <div style="color:var(--txt2);font-size:13px">Fetching data from the local server…</div>
+      <div style="color:var(--txt3);font-size:11px">Connecting to Sadrakshan.ai data service</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FIR TRACKER — fixed top-right small overlay -->
+<div id="fir-tracker-fixed" style="position:fixed;top:60px;right:10px;background:#1e2d42;border:1.5px solid rgba(240,165,0,.45);border-radius:9px;padding:7px 10px;z-index:500;box-shadow:0 4px 18px rgba(0,0,0,.5)">
+  <div style="display:flex;align-items:center;gap:7px">
+    <div style="display:flex;align-items:center;gap:4px;flex-shrink:0">
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="#f0a500" stroke-width="1.6"/><path d="M9.5 9.5l3 3" stroke="#f0a500" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <span style="font-size:11px;font-weight:700;color:#f0a500;letter-spacing:.05em;white-space:nowrap">FIR TRACKER</span>
+    </div>
+    <input id="fir-search" placeholder="FIR No…"
+      style="width:110px;background:#243447;border:1px solid rgba(240,165,0,.3);color:#e8edf5;font-size:11px;padding:4px 8px;border-radius:6px;outline:none;box-sizing:border-box"
+      oninput="firSearchSuggest()" onkeydown="if(event.key==='Enter')firSearchGo()">
+    <select id="fir-ps-filter"
+      style="width:120px;background:#243447;border:1px solid rgba(240,165,0,.2);color:#e8edf5;font-size:11px;padding:4px 8px;border-radius:6px;outline:none;appearance:none;box-sizing:border-box"
+      onchange="firSearchSuggest()">
+      <option value="">All Stations</option>
+    </select>
+    <button onclick="firSearchGo()" style="background:#f0a500;color:#1a1a00;border:none;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">Track FIR</button>
+  </div>
+  <div id="fir-suggestions" style="margin-top:4px;max-height:130px;overflow-y:auto"></div>
+</div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbxNJlZsXoiSee1Cxnmusv_nWutWEmwu7bYYWPHB5GNYZdlJVhXzFKvQzi79Hvs1fbaO/exec';
+
+/* ── Global fixed tooltip — one div reused for all dot hovers ── */
+let _tlTip = null;
+function _ensureTip(){
+  if(_tlTip) return _tlTip;
+  _tlTip = document.createElement('div');
+  _tlTip.id = 'tl-global-tip';
+  _tlTip.style.cssText = 'display:none;position:fixed;z-index:99999;background:#1a2332;border-radius:10px;padding:10px 11px;box-shadow:0 6px 24px rgba(0,0,0,.8);pointer-events:none;max-width:520px;white-space:normal;';
+  document.body.appendChild(_tlTip);
+  return _tlTip;
+}
+
+function fixPopup(wrap){
+  const src = wrap.querySelector('.tl-popup');
+  const btn = wrap.querySelector('.tl-dot-btn');
+  if(!src || !btn) return;
+
+  const tip = _ensureTip();
+  /* Copy inner content and border style */
+  tip.innerHTML = src.innerHTML;
+  const srcBorder = src.style.border || src.getAttribute('data-border') || '';
+  tip.style.border = srcBorder;
+  /* Match flex direction for pending (column) vs completed (row) */
+  tip.style.display = src.classList.contains('pend-popup') ? 'flex' : 'flex';
+  tip.style.flexDirection = src.classList.contains('pend-popup') ? 'column' : 'row';
+  tip.style.gap = '8px';
+  tip.style.flexWrap = 'nowrap';
+  tip.style.alignItems = 'flex-start';
+  tip.style.visibility = 'hidden';
+
+  /* Measure */
+  const pw = tip.offsetWidth;
+  const ph = tip.offsetHeight;
+  const br = btn.getBoundingClientRect();
+  const PAD = 10;
+  const SIDEBAR_W = 214;
+
+  /* Horizontal: centre on dot, clamp away from sidebar & right edge */
+  let left = br.left + br.width / 2 - pw / 2;
+  left = Math.max(SIDEBAR_W + PAD, left);
+  left = Math.min(window.innerWidth - pw - PAD, left);
+
+  /* Vertical: above the dot, flip below if too close to top */
+  const isComp = src.classList.contains('comp-popup');
+  const gap = isComp ? 58 : 12;
+  let top = br.top - ph - gap;
+  if(top < PAD) top = br.bottom + 6;
+
+  tip.style.left = left + 'px';
+  tip.style.top  = top  + 'px';
+  tip.style.visibility = 'visible';
+}
+
+function resetPopup(){
+  if(_tlTip) _tlTip.style.display = 'none';
+}
+
+/* Dismiss tooltip when mouse leaves any dot-wrap or moves elsewhere */
+document.addEventListener('mouseover', function(ev){
+  if(!_tlTip || _tlTip.style.display === 'none') return;
+  if(!ev.target.closest('.tl-dot-wrap')) resetPopup();
+});
+
+
+const TASKS = [
+  'Medical Examination of Victim','Medical Examination of Accused','FSL & Dog Squad Visit',
+  'Spot Panchanama','E-Sakshya','Seizure','Muddemal to CA/FSL','Weapon Query',
+  'Injury Certificate','Arrest / Notice to Accused','Witness Statement','183 BNSS Statement',
+  'Birth Certificate / TC / Ossification Test','Caste Certificate','Residential Documents',
+  'Documentary Evidence','TIP (Test Identification Parade)','Handwriting Expert Opinion',
+  'CCTV Analysis','CDR / IPDR / Tower Dump Analysis','Known Criminal Check',
+  'IRAD/DAR Form Submited'  // matches sheet col AY header (single 't')
+];
+const TC = [
+  '#378ADD','#3dc98a','#f0a500','#e85d5d','#a78bfa','#fb923c','#34d399','#f472b6',
+  '#60a5fa','#fbbf24','#4ade80','#c084fc','#38bdf8','#fb7185','#a3e635',
+  '#e879f9','#22d3ee','#facc15','#86efac','#f9a8d4','#67e8f9','#f43f5e'
+];
+
+let allRows = [], nav = 'tasks', F = {subdiv:'',ps:'',io:'',bns:''}, drill = null;
+/* Remembers the last drill entry point so we can replay it after in-place edits
+   — without this, the drill body is a stale HTML string built from pre-edit data. */
+let _lastDrill = null;  // { fn: function, args: [...] }
+let _drillRefreshing = false;
+function refreshDrill(){
+  if(!drill || !_lastDrill) return;
+  _drillRefreshing = true;
+  try { _lastDrill.fn.apply(null, _lastDrill.args); } catch(e){ console.error('refreshDrill failed', e); }
+  finally { _drillRefreshing = false; }
+}
+let _keyCache = {};
+
+function pd(s){
+  if(!s||s===''||s==='undefined'||s==='null') return null;
+  const str=String(s).trim();
+  /* Priority 1: dd-mm-yyyy or dd/mm/yyyy */
+  const dmy=str.match(/^(\d{1,2})[-\/\.](\d{1,2})[-\/\.](\d{4})$/);
+  if(dmy){const day=parseInt(dmy[1]),mon=parseInt(dmy[2]),yr=parseInt(dmy[3]);if(mon>=1&&mon<=12&&day>=1&&day<=31){const d=new Date(yr,mon-1,day);if(!isNaN(d.getTime()))return d;}}
+  /* Priority 2: yyyy-mm-dd */
+  const ymd=str.match(/^(\d{4})[-\/\.](\d{1,2})[-\/\.](\d{1,2})$/);
+  if(ymd){const d=new Date(parseInt(ymd[1]),parseInt(ymd[2])-1,parseInt(ymd[3]));if(!isNaN(d.getTime()))return d;}
+  /* Priority 3: only for non-numeric strings like "01 Apr 2026" */
+  if(!/^\d/.test(str)||str.includes(' ')){const d=new Date(str);if(!isNaN(d.getTime()))return d;}
+  return null;
+}
+function dB(a,b){
+  if(!a||!b) return null;
+  const d=Math.round((b-a)/86400000);
+  return Math.abs(d)<500?d:null; /* signed: negative = before FIR */
+}
+
+/* Robust key finder — tries exact match first, then normalised match */
+function findKey(r, taskIdx, type){
+  const cacheKey = taskIdx+'_'+type;
+  if(_keyCache[cacheKey] !== undefined){
+    const k = _keyCache[cacheKey];
+    return k ? r[k] : '';
+  }
+  const n = taskIdx+1;
+  const tname = TASKS[taskIdx];
+  const keys = Object.keys(r);
+  function norm(s){ return s.replace(/[\u2014\u2013\u2012\u2010]/g,'-').replace(/\s+/g,' ').trim().toLowerCase(); }
+
+  /* Tier 1: exact standard match "N. Name — Status/Completion Date" */
+  const needle = type==='status'
+    ? norm(`${n}. ${tname} — Status`)
+    : norm(`${n}. ${tname} — Completion Date`);
+  let found = keys.find(k => norm(k) === needle);
+
+  /* Tier 2: starts with "N." + contains task name fragment + keyword */
+  if(!found){
+    const kw = type==='status' ? 'status' : 'date';
+    found = keys.find(k => {
+      const nk = norm(k);
+      return nk.startsWith(`${n}.`) && nk.includes(tname.substring(0,12).toLowerCase()) && nk.includes(kw);
+    });
+  }
+
+  /* Tier 3: starts with "N." + keyword only */
+  if(!found){
+    const kw = type==='status' ? 'status' : 'date';
+    found = keys.find(k => norm(k).startsWith(`${n}.`) && norm(k).includes(kw));
+  }
+
+  /* Tier 4 (handles T22-style headers like "22. IRAD/DAR Form Submited?"):
+     starts with "N." — for status pick the FIRST such key,
+     for date pick the SECOND such key (or any key containing "date"/"completion") */
+  if(!found){
+    const candidates = keys.filter(k => norm(k).startsWith(`${n}.`));
+    if(type === 'status'){
+      found = candidates[0] || null;
+    } else {
+      found = candidates.find(k => norm(k).includes('date') || norm(k).includes('completion'))
+           || candidates[1]
+           || null;
+    }
+  }
+
+  _keyCache[cacheKey] = found || null;
+  return found ? r[found] : '';
+}
+
+/* T10 = "Arrest / Notice to Accused" status is computed from numeric data:
+     - If form marks it "Not Required" → respect that (IO knows it doesn't apply)
+     - Otherwise → Completed if (arrested + notice) >= accused, else Pending
+   For zero-accused cases (gambling, unidentified) this naturally evaluates
+   to Completed since 0+0 >= 0.
+   The override applies everywhere: KPI rollups, drill filters, pending lists,
+   and the FIR timeline — all status reads flow through this one function. */
+const ARREST_NOTICE_TASK_INDEX = 9;  /* TASKS[9] = 'Arrest / Notice to Accused' */
+function gSt(r,i){
+  const raw = findKey(r,i,'status') || '';
+  if(i !== ARREST_NOTICE_TASK_INDEX) return raw;
+  /* Respect IO's explicit Not Required judgement */
+  if(raw === 'Not Required') return 'Not Required';
+  /* Otherwise derive from accused vs arrested+notice */
+  const accused  = getAccused(r);
+  const arrested = getArrested(r);
+  const notice   = getNotice(r);
+  return (arrested + notice) >= accused ? 'Completed' : 'Pending';
+}
+function gDt(r,i){ return findKey(r,i,'date')||''; }
+
+/* Sort priority for per-task drill-downs: urgent work on top, completed at bottom.
+   Pending = 0, Not Required = 1, Completed = 2, unknown/blank = 3. */
+function _statusPriority(s){
+  if(s==='Pending') return 0;
+  if(s==='Not Required') return 1;
+  if(s==='Completed') return 2;
+  return 3;
+}
+
+/* Clear key cache when new data arrives */
+function clearKeyCache(){ _keyCache = {}; }
+
+function getFIRDate(r){return r['FIR Date']||r['FIRDate']||r['Fir Date']||'';}
+function getPS(r){return r['Police Station']||r['PoliceStation']||'';}
+function getSubDiv(r){return r['Sub Division']||r['SubDivision']||r['Sub_Division']||'';}
+function getIO(r){return r['IO Name']||r['IOName']||r['IO_Name']||'';}
+function getFIRNo(r){return r['FIR No']||r['FIRNo']||r['Fir No']||String(r['FIR No ']||'').trim()||'';}
+function getBNS(r){return((r['BNS Sections']||r['BNSSections']||'').split(/[,\/]/)[0]).trim()||'Unknown';}
+function getPD(r){return parseInt(r['14/28 Day Alert?']||r['14/28 Day Alert']||r['Pending Days']||r['PendingDays']||0)||0;}
+
+/* Tolerant Inv Days Left getter — tries exact keys first, then falls back to
+   scanning all keys for anything containing both "inv" and "left" (or "days" and "left"). */
+/* Returns:
+     - integer (days remaining) when investigation is ongoing
+     - string 'completed' when master sheet shows '---' (investigation closed)
+     - null when no data / not yet computed                                */
+function getInvDaysLeft(r){
+  const exact = r['Inv Days Left'] ?? r['InvDaysLeft'] ?? r['Inv_Days_Left']
+             ?? r['Investigation Days Left'] ?? r['Inv. Days Left']
+             ?? r['inv days left'] ?? r['INV DAYS LEFT'];
+  let raw = exact;
+  if(raw===undefined||raw===null||raw===''){
+    /* Fallback: fuzzy match on any key */
+    const keys = Object.keys(r);
+    const k = keys.find(k=>{
+      const lk = k.toLowerCase();
+      return (lk.includes('inv') && lk.includes('left')) ||
+             (lk.includes('days') && lk.includes('left'));
+    });
+    if(k) raw = r[k];
+  }
+  if(raw===undefined||raw===null||raw==='') return null;
+  /* '---' (any number of dashes) = investigation completed */
+  const s = String(raw).trim();
+  if(/^-+$/.test(s) || s.toLowerCase()==='completed' || s.toLowerCase()==='done') return 'completed';
+  const n = parseInt(s);
+  return isNaN(n) ? null : n;
+}
+/* Color scale: 'completed' green, <=7d critical red, <=14d warning amber, else safe green. null = grey. */
+function idlColor(v){
+  if(v==='completed') return '#3dc98a';
+  if(v===null) return '#5a7494';
+  return v<=7?'#e85d5d':v<=14?'#f0a500':'#3dc98a';
+}
+function idlCell(r){
+  const v=getInvDaysLeft(r);
+  if(v===null) return '<td style="text-align:center;font-size:10px;color:var(--txt3)">—</td>';
+  if(v==='completed'){
+    return '<td style="text-align:center"><span style="font-weight:700;color:#3dc98a;background:rgba(61,201,138,.12);padding:3px 9px;border-radius:10px;font-size:10px;white-space:nowrap">✓ Completed</span></td>';
+  }
+  const col=idlColor(v);
+  const bg=v<=7?'rgba(232,93,93,.12)':v<=14?'rgba(240,165,0,.12)':'rgba(61,201,138,.1)';
+  return `<td style="text-align:center"><span style="font-weight:700;color:${col};background:${bg};padding:3px 9px;border-radius:10px;font-size:10px;white-space:nowrap">${v}d</span></td>`;
+}
+/* One-time diagnostic: dump the keys of the first row to console so we can see
+   exactly what the Apps Script is sending. Runs once per page load. */
+let _invDaysLeftDiagLogged = false;
+function _logInvDaysLeftDiagnostic(rows){
+  if(_invDaysLeftDiagLogged || !rows || !rows.length) return;
+  _invDaysLeftDiagLogged = true;
+  try{
+    const r0 = rows[0];
+    const keys = Object.keys(r0);
+    const invKeys = keys.filter(k=>{
+      const lk = k.toLowerCase();
+      return lk.includes('inv') || lk.includes('left') || lk.includes('day');
+    });
+    console.group('[Sadrakshan.AI] Inv Days Left diagnostic');
+    console.log('Total columns in first row:', keys.length);
+    console.log('All keys:', keys);
+    console.log('Columns matching inv/left/day:', invKeys);
+    console.log('getInvDaysLeft(firstRow) =', getInvDaysLeft(r0));
+    console.log('Sample values for matching keys:');
+    invKeys.forEach(k=>console.log('  ', JSON.stringify(k), '=>', JSON.stringify(r0[k])));
+    console.groupEnd();
+  }catch(e){ console.error(e); }
+}
+
+/* Column J — Chargesheet filed date. Primary header: "CC No. Date" */
+function getCSDate(r){
+  return r['CC No. Date']||r['CC No Date']||r['CC No. Date ']||r['cc no. date']||r['CC NO. DATE']||
+         r['Chargesheet Filed Date']||r['Chargesheet Date']||r['Charge Sheet Date']||
+         r['ChargeSheetDate']||r['CS Filed Date']||r['CS Date']||
+         r['Date of Chargesheet']||r['Court Filing Date']||
+         (()=>{
+           const k=Object.keys(r).find(k=>{
+             const n=k.toLowerCase().trim();
+             return n==='cc no. date'||n==='cc no date'||n.includes('cc no')||
+                    (n.includes('charg')&&(n.includes('date')||n.includes('filed')))||
+                    (n.includes('court')&&n.includes('date'));
+           });
+           if(k) return r[k];
+           /* Last resort: column J is the 10th column (index 9) by position */
+           const vals=Object.values(r);
+           return vals.length>9?vals[9]:'';
+         })();
+}
+/* A case counts as Chargesheet Filed if column J has a non-empty value */
+function isCSFiled(r){ const v=getCSDate(r); return !!(v&&String(v).trim()&&String(v).trim()!=='—'&&String(v).trim().toLowerCase()!=='undefined'); }
+function dc(v){if(v===null)return'#8fa3bc';if(v<0)return'#a78bfa';return v<=14?'#3dc98a':v<=60?'#f0a500':'#e85d5d';}
+function cc(cr){return cr>=70?'#3dc98a':cr>=40?'#f0a500':'#e85d5d';}
+function cbg(cr){return cr>=70?'rgba(61,201,138,.12)':cr>=40?'rgba(240,165,0,.12)':'rgba(232,93,93,.12)';}
+function esc(s){return(s||'').replace(/'/g,"\\'");}
+
+function fRows(){
+  return allRows.filter(r=>{
+    if(F.subdiv && getSubDiv(r)!==F.subdiv) return false;
+    if(F.ps && getPS(r)!==F.ps) return false;
+    if(F.io && getIO(r)!==F.io) return false;
+    if(F.bns && !(r['BNS Sections']||'').includes(F.bns)) return false;
+    return true;
+  });
+}
+
+function tStats(rows){
+  const today=new Date();
+  return TASKS.map((t,i)=>{
+    let c=0,p=0,nr=0,ds=0,dk=0;
+    rows.forEach(r=>{
+      const s=gSt(r,i);
+      if(s==='Completed'){
+        c++;
+        const firD=pd(getFIRDate(r));
+        const compD=pd(gDt(r,i));
+        const d=dB(firD,compD);
+        if(d!==null){ds+=d;dk++;}
+        else if(firD){
+          /* completion date missing — use pending days as proxy */
+          const el=getPD(r)||dB(firD,today)||0;
+          if(el>0){ds+=el;dk++;}
+        }
+      } else if(s==='Pending'){
+        p++;
+        const firD=pd(getFIRDate(r));
+        /* elapsed = Pending Days field, or computed from FIR date to today */
+        const elapsed=getPD(r)||(firD?dB(firD,today):0)||0;
+        if(elapsed>0){ds+=elapsed;dk++;}
+      } else if(s==='Not Required') nr++;
+    });
+    return{name:t,c,p,nr,total:c+p+nr,avg:dk?Math.round(ds/dk):null};
+  });
+}
+
+function gStats(rows,key){
+  const g={};
+  rows.forEach(r=>{
+    const k = key==='bns'?getBNS(r) : key==='subdiv'?getSubDiv(r) : key==='ps'?getPS(r) : getIO(r);
+    if(!g[k||'Unknown']) g[k||'Unknown']=[];
+    g[k||'Unknown'].push(r);
+  });
+  return Object.entries(g).map(([name,rws])=>{
+    const ts=tStats(rws); let c=0,p=0,nr=0;
+    ts.forEach(t=>{c+=t.c;p+=t.p;nr+=t.nr;});
+    const tot=c+p, cr=tot?Math.round(c/tot*100):0;
+    const avgs=ts.map(t=>t.avg).filter(x=>x!==null);
+    const avgD=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):null;
+    const slowT=ts.reduce((a,b)=>(b.avg||0)>(a.avg||0)?b:a, ts[0]);
+    const fTs=ts.filter(t=>t.avg!==null);
+    const fastT=fTs.length?fTs.reduce((a,b)=>b.avg<a.avg?b:a):null;
+    return{name,count:rws.length,cr,c,p,nr,avgD,slowT,fastT};
+  }).sort((a,b)=>b.cr-a.cr);
+}
+
+function uniq(rows,fn){return[...new Set(rows.map(fn).filter(Boolean))].sort();}
+
+/* ── Field getters for case info columns — scan all key variants ── */
+function _scanKey(r, ...fragmentSets){
+  /* Returns value of first key whose lowercase contains ALL fragments in a set */
+  const keys = Object.keys(r);
+  for(const frags of fragmentSets){
+    const f = Array.isArray(frags) ? frags : [frags];
+    const k = keys.find(k => f.every(frag => k.toLowerCase().includes(frag.toLowerCase())));
+    if(k && r[k] !== undefined && String(r[k]).trim() !== '') return String(r[k]).trim();
+  }
+  return '';
+}
+function getAccused(r){
+  /* Col BE — "How many accused in the case?" */
+  const v=_scanKey(r,['accused','case'],['how many accused'],['accused']);
+  return parseInt(v)||0;
+}
+function getArrested(r){
+  /* Col BF — "How many arrested?" */
+  const v=_scanKey(r,['how many arrested'],['many arrested'],['arrested']);
+  return parseInt(v)||0;
+}
+function getNotice(r){
+  /* Col BG — "How many given notice?" — must NOT match "accused" or "arrested" */
+  const keys=Object.keys(r);
+  const k=keys.find(k=>{
+    const n=k.toLowerCase();
+    return (n.includes('given notice')||n.includes('how many given')||(n.includes('notice')&&n.includes('many')))
+      && !n.includes('arrest') && !n.includes('accused');
+  });
+  return k?parseInt(r[k])||0:0;
+}
+function getMuddemalSeized(r){
+  /* Col BB — "What was the muddemal seized?" */
+  const v=_scanKey(r,['muddemal','seiz'],['muddemal seized'],['muddemal','seized']);
+  return (v&&v.toLowerCase()!=='no'&&v.trim()!=='')?v:'';
+}
+function getMuddemalNo(r){
+  /* Col BC — "What is the muddemal number?" */
+  const v=_scanKey(r,['muddemal','number'],['muddemal no'],['muddemal num']);
+  return (v&&v.toLowerCase()!=='no'&&v.trim()!=='')?v:'';
+}
+
+function setChip(mode,txt){
+  const chip=document.getElementById('chip');
+  chip.className='chip chip-'+(mode==='live'?'live':mode==='err'?'err':'load');
+  document.getElementById('chip-txt').textContent=txt||(mode==='live'?'Live':mode==='err'?'Error':'Loading…');
+}
+
+function goNav(n,el){
+  nav=n; drill=null; _lastDrill=null;
+  document.querySelectorAll('.ni').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  render();
+}
+function setF(k,v){
+  F[k]=v;
+  if(k==='subdiv'){F.ps='';F.io='';}
+  if(k==='ps') F.io='';
+  drill=null; _lastDrill=null; render();
+}
+function resetF(){F={subdiv:'',ps:'',io:'',bns:''};drill=null;_lastDrill=null;render();}
+
+function kpisHTML(rows){
+  let c=0,p=0,nr=0;
+  rows.forEach(r=>TASKS.forEach((_,i)=>{
+    const s=gSt(r,i);
+    if(s==='Completed')c++; else if(s==='Pending')p++; else if(s==='Not Required')nr++;
+  }));
+  const tot=c+p, cr=tot?Math.round(c/tot*100):0;
+  const pds=rows.map(r=>getPD(r)).filter(x=>x>0);
+  const avgPD=pds.length?Math.round(pds.reduce((a,b)=>a+b,0)/pds.length):0;
+  const od=rows.filter(r=>getPD(r)>60).length;
+  const ts=tStats(rows); const avgs=ts.map(t=>t.avg).filter(x=>x!==null);
+  const oavg=avgs.length?Math.round(avgs.reduce((a,b)=>a+b,0)/avgs.length):0;
+  /* CS filed but tasks still pending */
+  const csFiled=rows.filter(r=>isCSFiled(r)&&TASKS.some((_,i)=>gSt(r,i)==='Pending'));
+  /* URGENT: FIRs with pending task AND ≤7 days left before statutory deadline */
+  const urgent = rows.filter(r=>{
+    const idl = getInvDaysLeft(r);
+    if(typeof idl !== 'number') return false;   // skips 'completed' string and null
+    if(idl > 7) return false;
+    return TASKS.some((_,i)=>gSt(r,i)==='Pending');
+  });
+  /* Accused / Arrested / Notice / Muddemal aggregates */
+  let totAccused=0, totArrested=0, totNotice=0, totMuddemalSeized=0, totMuddemalNo=0;
+  rows.forEach(r=>{
+    totAccused  += getAccused(r);
+    totArrested += getArrested(r);
+    totNotice   += getNotice(r);
+    if(getMuddemalSeized(r)) totMuddemalSeized++;
+    if(getMuddemalNo(r))     totMuddemalNo++;
+  });
+  const arrPct  = totAccused?Math.round(totArrested/totAccused*100):0;
+  const notPct  = totAccused?Math.round(totNotice/totAccused*100):0;
+  const mudPct  = totMuddemalSeized?Math.round(totMuddemalNo/totMuddemalSeized*100):0;
+  const kStyle=`cursor:pointer;transition:.15s;`;
+  const kHov=`onmouseenter="this.style.borderColor='rgba(240,165,0,.4)'" onmouseleave="this.style.borderColor=''"`;
+  return `<div class="kg">
+    <div class="kc" style="${kStyle}" ${kHov} onclick="kpiDrill('all')"><div class="kt" style="background:var(--acc)"></div><div class="kl">Total FIRs <span style="font-size:8px;color:var(--txt3)">▼ click</span></div><div class="kv">${rows.length}</div><div class="ks">${uniq(rows,getPS).length} stations · ${uniq(rows,getIO).length} IOs</div></div>
+    <div class="kc" style="${kStyle}" ${kHov} onclick="kpiDrill('completion')"><div class="kt" style="background:${cc(cr)}"></div><div class="kl">Completion <span style="font-size:8px;color:var(--txt3)">▼ click</span></div><div class="kv" style="color:${cc(cr)}">${cr}%</div><div class="ks">${c} / ${tot} tasks</div></div>
+    <div class="kc" style="${kStyle}" ${kHov} onclick="kpiDrill('pending')"><div class="kt" style="background:#e85d5d"></div><div class="kl">Pending Tasks <span style="font-size:8px;color:var(--txt3)">▼ click</span></div><div class="kv" style="color:#e85d5d">${p}</div><div class="ks">${nr} not required</div></div>
+    <div class="kc" style="${kStyle}" ${kHov} onclick="kpiDrill('overdue')"><div class="kt" style="background:#a78bfa"></div><div class="kl">Avg Pending Days <span style="font-size:8px;color:var(--txt3)">▼ click</span></div><div class="kv">${avgPD}</div><div class="ks">${od} overdue &gt;60d</div></div>
+    <div class="kc" style="${kStyle};border-color:${csFiled.length?'rgba(232,93,93,.4)':''};" ${kHov} onclick="kpiDrill('csfiled')"><div class="kt" style="background:#e85d5d"></div><div class="kl" style="color:#e85d5d;font-weight:700">⚠ CS Filed · Tasks Pending <span style="font-size:8px;color:var(--txt3);font-weight:400">▼ click</span></div><div class="kv" style="color:#e85d5d">${csFiled.length}</div><div class="ks">${csFiled.length?'Chargesheet filed but investigation incomplete':'No such cases'}</div></div>
+    <div class="kc" style="${kStyle};border-color:${urgent.length?'rgba(232,93,93,.5)':''};" ${kHov} onclick="kpiDrill('urgent')"><div class="kt" style="background:#e85d5d"></div><div class="kl" style="color:#e85d5d;font-weight:700">🔥 Urgent · ≤7 Days Left <span style="font-size:8px;color:var(--txt3);font-weight:400">▼ click</span></div><div class="kv" style="color:#e85d5d">${urgent.length}</div><div class="ks">${urgent.length?'Pending tasks · deadline in 7 days or less':'No urgent cases'}</div></div>
+    <div class="kc"><div class="kt" style="background:#38bdf8"></div><div class="kl">Avg Task Duration</div><div class="kv">${oavg}<span style="font-size:12px;font-weight:400;color:var(--txt2)">d</span></div><div class="ks">FIR → completion</div></div>
+    <div class="kc" style="${kStyle}" ${kHov} onclick="kpiDrill('arrested')"><div class="kt" style="background:#f43f5e"></div><div class="kl">Arrested / Accused <span style="font-size:8px;color:var(--txt3)">▼ click</span></div><div class="kv" style="color:#f43f5e">${totArrested}<span style="font-size:13px;font-weight:500;color:var(--txt2)"> / ${totAccused}</span></div><div class="ks">${arrPct}% arrest rate</div></div>
+    <div class="kc" style="${kStyle}" ${kHov} onclick="kpiDrill('notice')"><div class="kt" style="background:#fb923c"></div><div class="kl">Notice / Accused <span style="font-size:8px;color:var(--txt3)">▼ click</span></div><div class="kv" style="color:#fb923c">${totNotice}<span style="font-size:13px;font-weight:500;color:var(--txt2)"> / ${totAccused}</span></div><div class="ks">${notPct}% notice rate</div></div>
+    <div class="kc" style="${kStyle}" ${kHov} onclick="kpiDrill('muddemal')"><div class="kt" style="background:#34d399"></div><div class="kl">Muddemal No. / Seized <span style="font-size:8px;color:var(--txt3)">▼ click</span></div><div class="kv" style="color:#34d399">${totMuddemalNo}<span style="font-size:13px;font-weight:500;color:var(--txt2)"> / ${totMuddemalSeized}</span></div><div class="ks">${mudPct}% registered</div></div>
+  </div>`;
+}
+
+function kpiDrill(mode){
+  _lastDrill = { fn: kpiDrill, args: [mode] };
+  const rows=fRows();
+  let filtered, title, sub;
+  if(mode==='all'){
+    filtered=rows;
+    title=`All FIRs (${rows.length})`;
+    sub=`Complete case list · click any row to open full investigation timeline`;
+  } else if(mode==='completion'){
+    filtered=[...rows].sort((a,b)=>{
+      let ca=0,ta=0,cb=0,tb=0;
+      TASKS.forEach((_,i)=>{const sa=gSt(a,i),sb=gSt(b,i);if(sa==='Completed')ca++;if(sa==='Completed'||sa==='Pending')ta++;if(sb==='Completed')cb++;if(sb==='Completed'||sb==='Pending')tb++;});
+      const pca=ta?ca/ta:0, pcb=tb?cb/tb:0;
+      return pca-pcb; /* lowest completion first */
+    });
+    title=`FIRs by Completion (${filtered.length})`;
+    sub=`Sorted lowest to highest completion · click row to open full timeline`;
+  } else if(mode==='pending'){
+    filtered=rows.filter(r=>TASKS.some((_,i)=>gSt(r,i)==='Pending'));
+    filtered.sort((a,b)=>{
+      let pa=0,pb=0;
+      TASKS.forEach((_,i)=>{if(gSt(a,i)==='Pending')pa++;if(gSt(b,i)==='Pending')pb++;});
+      return pb-pa;
+    });
+    title=`FIRs with Pending Tasks (${filtered.length})`;
+    sub=`Sorted by most pending tasks first · hover pending count to see task list · click row to open`;
+  } else if(mode==='overdue'){
+    filtered=rows.filter(r=>getPD(r)>60).sort((a,b)=>getPD(b)-getPD(a));
+    title=`Overdue FIRs >60 days (${filtered.length})`;
+    sub=`Sorted by most days pending first · click row to open timeline`;
+  } else if(mode==='csfiled'){
+    filtered=rows.filter(r=>isCSFiled(r)&&TASKS.some((_,i)=>gSt(r,i)==='Pending'));
+    title=`⚠ Chargesheet Filed But Tasks Pending (${filtered.length})`;
+    sub=`Chargesheet was filed (Col J entry present) but investigation steps are still incomplete · click row to open`;
+  } else if(mode==='urgent'){
+    filtered=rows.filter(r=>{
+      const idl=getInvDaysLeft(r);
+      if(typeof idl!=='number'||idl>7) return false;
+      return TASKS.some((_,i)=>gSt(r,i)==='Pending');
+    }).sort((a,b)=>getInvDaysLeft(a)-getInvDaysLeft(b));  /* fewest days left first */
+    /* Build a context line showing which top-of-page filters are active */
+    const scope = [
+      F.subdiv && `Sub Div: ${F.subdiv}`,
+      F.ps     && `PS: ${F.ps}`,
+      F.io     && `IO: ${F.io}`,
+      F.bns    && `BNS: ${F.bns}`,
+    ].filter(Boolean).join(' · ');
+    title=`🔥 Urgent — Pending Tasks · ≤7 Days Left (${filtered.length})`;
+    sub=`Sorted by fewest days remaining · use Sub Div / PS / IO / BNS filters at top of page to narrow${scope?' · <b>Active: '+scope+'</b>':''}`;
+  } else if(mode==='arrested'){
+    filtered=rows.filter(r=>getAccused(r)>0).sort((a,b)=>{
+      const gapA=Math.max(0,getAccused(a)-getArrested(a)-getNotice(a));
+      const gapB=Math.max(0,getAccused(b)-getArrested(b)-getNotice(b));
+      if(gapB!==gapA) return gapB-gapA;
+      if(getAccused(b)!==getAccused(a)) return getAccused(b)-getAccused(a);
+      return getArrested(a)-getArrested(b);
+    });
+    title=`Arrested vs Accused — Case Wise`;
+    sub=`FIRs with pending coverage (accused not yet arrested/noticed) shown first · click row to open`;
+  } else if(mode==='notice'){
+    filtered=rows.filter(r=>getAccused(r)>0).sort((a,b)=>{
+      const gapA=Math.max(0,getAccused(a)-getArrested(a)-getNotice(a));
+      const gapB=Math.max(0,getAccused(b)-getArrested(b)-getNotice(b));
+      if(gapB!==gapA) return gapB-gapA;
+      if(getAccused(b)!==getAccused(a)) return getAccused(b)-getAccused(a);
+      return getNotice(a)-getNotice(b);
+    });
+    title=`Notice Given vs Accused — Case Wise`;
+    sub=`FIRs with pending coverage (accused not yet given notice/arrested) shown first · click row to open`;
+  } else if(mode==='muddemal'){
+    filtered=rows.filter(r=>getMuddemalSeized(r)).sort((a,b)=>{
+      const pendA=getMuddemalNo(a)?0:1;
+      const pendB=getMuddemalNo(b)?0:1;
+      return pendB-pendA;
+    });
+    title=`Muddemal — Seized vs Registered`;
+    sub=`FIRs where muddemal is seized but not yet registered shown first · click row to open`;
+  }
+  const isCSDrill    = mode==='csfiled';
+  const isArrest     = mode==='arrested';
+  const isNotice     = mode==='notice';
+  const isMuddemal   = mode==='muddemal';
+  const isAccusedDrill = isArrest||isNotice;
+  const tbody=filtered.map(r=>{
+    let c2=0,p2=0,nr2=0;
+    const pendingTaskNames=[];
+    TASKS.forEach((t,i)=>{const s=gSt(r,i);if(s==='Completed')c2++;else if(s==='Pending'){p2++;pendingTaskNames.push(`T${i+1}: ${t}`);}else if(s==='Not Required')nr2++;});
+    const tot2=c2+p2,cr2=tot2?Math.round(c2/tot2*100):0;
+    const pd2=getPD(r),pdc=pd2>60?'#e85d5d':pd2>30?'#f0a500':'#3dc98a';
+    const csDateVal=getCSDate(r);
+    const accused=getAccused(r), arrested=getArrested(r), notice=getNotice(r);
+    const mudSeized=getMuddemalSeized(r)||'—', mudNo=getMuddemalNo(r)||'—';
+    const mudRegistered=getMuddemalNo(r);
+    return `<tr class="cr" onclick="caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')">
+      <td>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-weight:700;color:var(--acc);font-size:12px">${getFIRNo(r)||'—'}</span>
+          <span style="font-size:10px;color:#8fa3bc">${getPS(r)||'—'}</span>
+        </div>
+      </td>
+      <td style="font-size:10px;color:var(--txt2)">${getFIRDate(r)||'—'}</td>
+      <td style="font-size:10px">${getSubDiv(r)||'—'}</td>
+      <td style="font-size:10px">${getIO(r)||'—'}</td>
+      <td><span class="tag" style="background:rgba(167,139,250,.1);color:#a78bfa;font-size:9px">${r['BNS Sections']||'—'}</span></td>
+      ${isCSDrill?`<td style="font-size:10px;font-weight:700;color:#e85d5d">${csDateVal||'—'}</td>`:''}
+      ${isAccusedDrill?`
+        <td style="font-weight:700;color:var(--txt);text-align:center">${accused||'—'}</td>
+        <td style="font-weight:700;color:#f43f5e;text-align:center">${arrested||'—'}</td>
+        <td style="font-weight:700;color:#fb923c;text-align:center">${notice||'—'}</td>
+        <td style="text-align:center"><span style="padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;background:${accused>0&&(arrested+notice)>=accused?'rgba(61,201,138,.15)':'rgba(232,93,93,.12)'};color:${accused>0&&(arrested+notice)>=accused?'#3dc98a':'#e85d5d'}">${accused>0?Math.round((arrested+notice)/accused*100)+'%':'—'}</span></td>
+        ${idlCell(r)}
+      `:''}
+      ${isMuddemal?`
+        <td style="font-size:10px;color:var(--txt2)">${mudSeized}</td>
+        <td style="font-weight:700;color:${mudRegistered?'#3dc98a':'#e85d5d'}">${mudNo}</td>
+        <td><span style="padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;background:${mudRegistered?'rgba(61,201,138,.15)':'rgba(232,93,93,.12)'};color:${mudRegistered?'#3dc98a':'#e85d5d'}">${mudRegistered?'Registered':'Pending'}</span></td>
+        ${idlCell(r)}
+      `:''}
+      ${!isCSDrill&&!isAccusedDrill&&!isMuddemal?`<td style="font-weight:600;color:${pdc}">${pd2||'—'}d</td><td><div class="bw"><div class="bb"><div class="bf" style="width:${cr2}%;background:${cc(cr2)}"></div></div><span style="font-size:10px;font-weight:700;color:${cc(cr2)}">${cr2}%</span></div></td><td style="color:#e85d5d;font-weight:600">${p2>0?`<span class="pt-hover" data-tasks="${esc(pendingTaskNames.join('||'))}">${p2}</span>`:'—'}</td>${idlCell(r)}`:''}
+      ${isCSDrill?`<td style="font-weight:600;color:${pdc}">${pd2||'—'}d</td><td><div class="bw"><div class="bb"><div class="bf" style="width:${cr2}%;background:${cc(cr2)}"></div></div><span style="font-size:10px;font-weight:700;color:${cc(cr2)}">${cr2}%</span></div></td><td style="color:#e85d5d;font-weight:600">${p2>0?`<span class="pt-hover" data-tasks="${esc(pendingTaskNames.join('||'))}">${p2} task${p2>1?'s':''}</span>`:'—'}</td>${idlCell(r)}`:''}
+      <td><button onclick="event.stopPropagation();caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')" style="background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.3);color:#f0a500;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;cursor:pointer;white-space:nowrap">Track ▶</button></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="12" style="text-align:center;color:var(--txt3);padding:1.5rem">No cases found</td></tr>`;
+  const csFiledHeader  = isCSDrill    ? '<th style="color:#e85d5d">CS Filed Date</th>' : '';
+  const arrestHeaders  = isAccusedDrill ? '<th style="text-align:center">Accused</th><th style="text-align:center;color:#f43f5e">Arrested</th><th style="text-align:center;color:#fb923c">Notice</th><th style="text-align:center">Coverage</th><th style="text-align:center">Inv Days Left</th>' : '';
+  const mudHeaders     = isMuddemal   ? '<th>Muddemal Seized</th><th style="color:#34d399">Muddemal No.</th><th>Status</th><th style="text-align:center">Inv Days Left</th>' : '';
+  const stdHeaders     = (!isAccusedDrill&&!isMuddemal) ? '<th>14/28 Day Alert</th><th>Completion</th><th>Pending Tasks</th><th style="text-align:center">Inv Days Left</th>' : '';
+  showDrill(title, sub,
+    `<table class="tbl"><thead><tr><th>FIR No · Station</th><th>FIR Date</th><th>Sub Div</th><th>IO</th><th>BNS</th>${csFiledHeader}${arrestHeaders}${mudHeaders}${stdHeaders}<th></th></tr></thead><tbody>${tbody}</tbody></table>`);
+}
+
+function filtersHTML(){
+  const subdivs=uniq(allRows,getSubDiv);
+  const pss=F.subdiv?uniq(allRows.filter(r=>getSubDiv(r)===F.subdiv),getPS):uniq(allRows,getPS);
+  const ios=F.ps?uniq(allRows.filter(r=>getPS(r)===F.ps),getIO):uniq(allRows,getIO);
+  const bnsAll=[...new Set(allRows.flatMap(r=>(r['BNS Sections']||'').split(/[,\/]/).map(s=>s.trim()).filter(Boolean)))].sort();
+  return `<div class="fb">
+    <div class="fg"><label>Sub Division</label><select onchange="setF('subdiv',this.value)">
+      <option value="">All Sub Divisions</option>${subdivs.map(s=>`<option value="${s}"${F.subdiv===s?' selected':''}>${s}</option>`).join('')}
+    </select></div>
+    <div class="fg"><label>Police Station</label><select onchange="setF('ps',this.value)">
+      <option value="">All Stations</option>${pss.map(s=>`<option value="${s}"${F.ps===s?' selected':''}>${s}</option>`).join('')}
+    </select></div>
+    <div class="fg"><label>IO Name</label><select onchange="setF('io',this.value)">
+      <option value="">All IOs</option>${ios.map(s=>`<option value="${s}"${F.io===s?' selected':''}>${s}</option>`).join('')}
+    </select></div>
+    <div class="fg"><label>BNS Section</label><select onchange="setF('bns',this.value)">
+      <option value="">All Sections</option>${bnsAll.map(s=>`<option value="${s}"${F.bns===s?' selected':''}>${s}</option>`).join('')}
+    </select></div>
+    <button class="rb" onclick="resetF()">✕ Reset</button>
+  </div>`;
+}
+
+function taskBarsHTML(rows,lbl){
+  const ts=tStats(rows);
+  const hdr=`<div style="display:flex;align-items:center;gap:6px;padding:3px 7px;margin-bottom:5px">
+    <div style="width:22px;flex-shrink:0"></div>
+    <div style="font-size:9px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;width:165px;flex-shrink:0">Task</div>
+    <div style="font-size:9px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;width:140px;flex-shrink:0;text-align:center">Total · Done · Pending · NR</div>
+    <div style="font-size:9px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;flex:1;min-width:80px">Completion</div>
+    <div style="font-size:9px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;width:48px;text-align:right;flex-shrink:0">Avg days</div>
+    <div style="font-size:9px;font-weight:600;color:var(--txt3);text-transform:uppercase;letter-spacing:.04em;width:38px;text-align:right;flex-shrink:0">Done%</div>
+  </div>`;
+  const taskRows=ts.map((t,i)=>{
+    const cp=(t.c+t.p)?Math.round(t.c/(t.c+t.p)*100):0;
+    const barColor=cc(cp);
+    /* Four-part breakdown badge */
+    const breakdown=`<div style="display:flex;align-items:center;gap:4px;font-size:10px;width:140px;flex-shrink:0;justify-content:center">
+      <span style="background:rgba(255,255,255,.08);color:var(--txt2);padding:1px 6px;border-radius:4px;font-weight:600">${t.total}</span>
+      <span style="color:#3dc98a;font-weight:700">${t.c}</span>
+      <span style="color:var(--txt3)">·</span>
+      <span style="color:#e85d5d;font-weight:700">${t.p}</span>
+      <span style="color:var(--txt3)">·</span>
+      <span style="color:#8fa3bc;font-weight:600">${t.nr}</span>
+    </div>`;
+    return `<div class="tr" style="position:relative">
+      <div style="flex:1;display:flex;align-items:center;gap:8px;min-width:0" onclick="taskDrill(${i})">
+        <div class="tn" style="background:${TC[i]}22;color:${TC[i]}">${i+1}</div>
+        <div class="tname" style="width:165px" title="${t.name}">${t.name}</div>
+        ${breakdown}
+        <div class="tbo"><div class="tbi" style="width:${cp}%;background:${barColor}"></div></div>
+        <div style="font-size:11px;font-weight:700;width:48px;text-align:right;flex-shrink:0;color:${dc(t.avg)}">${t.avg!==null?t.avg+'d':'—'}</div>
+        <div style="width:38px;text-align:right;flex-shrink:0"><span class="pill" style="background:${cbg(cp)};color:${barColor};font-size:9px">${cp}%</span></div>
+      </div>
+      <button class="task-bulk-btn" onclick="event.stopPropagation();openBulkAddModal(${i})" title="Add this task to multiple FIRs at once">⚡ Add to FIRs</button>
+    </div>`;
+  }).join('');
+  return `<div class="sec">
+    <div class="st">Task analysis${lbl?' — '+lbl:''}</div>
+    <div class="ss">Total · <span style="color:#3dc98a">Completed</span> · <span style="color:#e85d5d">Pending</span> · <span style="color:#8fa3bc">Not Required</span> · Avg days = (sum of days for completed + elapsed days for pending) ÷ (completed + pending) · click any row</div>
+    ${hdr}${taskRows}
+  </div>`;
+}
+
+function taskDrill(ti){
+  _lastDrill = { fn: taskDrill, args: [ti] };
+  const rows=fRows().filter(r=>gSt(r,ti)!=='');
+  /* Sort: Pending first (most urgent), then Not Required, then Completed.
+     Stable sort keeps existing order within each status group. */
+  rows.sort((a,b)=>_statusPriority(gSt(a,ti))-_statusPriority(gSt(b,ti)));
+  const tbody=rows.map(r=>{
+    const s=gSt(r,ti),d=gDt(r,ti),days=dB(pd(getFIRDate(r)),pd(d));
+    const sc=s==='Completed'?'#3dc98a':s==='Pending'?'#e85d5d':'#8fa3bc';
+    const firNo=getFIRNo(r)||'—', ps=getPS(r)||'—';
+    return `<tr class="cr" onclick="caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')">
+      <td>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-weight:700;color:var(--acc);font-size:12px">${firNo}</span>
+          <span style="font-size:10px;color:#8fa3bc;white-space:nowrap">${ps}</span>
+        </div>
+      </td>
+      <td style="font-size:10px;color:var(--txt2)">${getFIRDate(r)||'—'}</td>
+      <td style="font-size:10px">${getIO(r)||'—'}</td>
+      <td><span class="tag" style="background:rgba(167,139,250,.1);color:#a78bfa;font-size:9px">${r['BNS Sections']||'—'}</span></td>
+      <td><span class="pill" style="background:${sc}22;color:${sc}">${s||'—'}</span></td>
+      <td style="color:var(--txt2);font-size:10px">${d||'—'}</td>
+      <td style="font-weight:600;color:${dc(days)}">${days!==null?days+'d':'—'}</td>
+      ${idlCell(r)}
+      <td><button onclick="event.stopPropagation();caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')" style="background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.3);color:#f0a500;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;cursor:pointer;white-space:nowrap">Track ▶</button></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="9" style="text-align:center;color:var(--txt3);padding:1rem">No cases with data for this task</td></tr>`;
+  showDrill(`Task ${ti+1}: ${TASKS[ti]}`,`${rows.length} cases · FIR No &amp; Station shown · click row or Track to open full timeline`,
+    `<table class="tbl"><thead><tr><th>FIR No · Station</th><th>FIR Date</th><th>IO Name</th><th>BNS</th><th>Status</th><th>Completion Date</th><th>Days Taken</th><th style="text-align:center">Inv Days Left</th><th></th></tr></thead><tbody>${tbody}</tbody></table>`);
+}
+
+function showDrill(title,sub,body,skipScroll){
+  drill={title,sub,body}; render();
+  if(!skipScroll && !_drillRefreshing) setTimeout(()=>{const el=document.getElementById('dp');if(el)el.scrollIntoView({behavior:'smooth',block:'nearest'});},80);
+}
+function drillHTML(){
+  if(!drill) return '';
+  return `<div class="dp" id="dp">
+    <div class="dh"><div><div class="dt">${drill.title}</div><div class="ds2">${drill.sub}</div></div>
+    <button class="cx" onclick="drill=null;_lastDrill=null;render()">✕ Close</button></div>
+    <div class="tw">${drill.body}</div>
+  </div>`;
+}
+
+function caseDrill(firNo, ps, subDiv){
+  /* Build composite key when PS is provided to avoid wrong-match across stations */
+  const key = (ps && subDiv) ? firNo+'||'+ps+'||'+subDiv : (ps ? firNo+'||'+ps : firNo);
+  openFIRTracker(key);
+}
+
+function groupTableHTML(data,label,key){
+  return `<div class="tw"><table class="tbl">
+    <thead><tr><th>${label}</th><th>Cases</th><th>Completion</th><th>Done</th><th>Pending</th><th>Avg Days</th><th>Slowest Task</th><th>Fastest Task</th><th style="text-align:center">Actions</th></tr></thead>
+    <tbody>${data.map(d=>`<tr class="cr" onclick="groupDrill('${key}','${esc(d.name)}')">
+      <td style="font-weight:600;color:var(--acc)">${d.name}</td>
+      <td>${d.count}</td>
+      <td><div class="bw"><div class="bb"><div class="bf" style="width:${d.cr}%;background:${cc(d.cr)}"></div></div><span class="pill" style="background:${cbg(d.cr)};color:${cc(d.cr)}">${d.cr}%</span></div></td>
+      <td style="color:#3dc98a">${d.c}</td>
+      <td style="color:#e85d5d">${d.p}</td>
+      <td style="font-weight:600;color:${dc(d.avgD)}">${d.avgD!==null?d.avgD+'d':'—'}</td>
+      <td style="font-size:10px;color:#e85d5d">${d.slowT&&d.slowT.avg?`T${TASKS.indexOf(d.slowT.name)+1}: ${d.slowT.name.substring(0,18)}… (${d.slowT.avg}d)`:'—'}</td>
+      <td style="font-size:10px;color:#3dc98a">${d.fastT&&d.fastT.avg!==null?`T${TASKS.indexOf(d.fastT.name)+1}: ${d.fastT.name.substring(0,18)}… (${d.fastT.avg}d)`:'—'}</td>
+      <td style="text-align:center;white-space:nowrap">
+        <button onclick="event.stopPropagation();groupCasesDrill('${key}','${esc(d.name)}')" style="background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.3);color:#f0a500;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;cursor:pointer;margin-right:4px" title="Show all FIRs in this group">Cases ▼</button>
+        <button onclick="event.stopPropagation();groupDrill('${key}','${esc(d.name)}')" style="background:rgba(61,201,138,.1);border:1px solid rgba(61,201,138,.25);color:#3dc98a;font-size:9px;font-weight:700;padding:2px 8px;border-radius:4px;cursor:pointer" title="Drill into task analysis">Tasks ▶</button>
+      </td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+
+function groupCasesDrill(key, name){
+  _lastDrill = { fn: groupCasesDrill, args: [key, name] };
+  /* Get the rows for this group */
+  let rows=fRows();
+  if(key==='subdiv') rows=rows.filter(r=>getSubDiv(r)===name);
+  else if(key==='ps') rows=rows.filter(r=>getPS(r)===name);
+  else if(key==='io') rows=rows.filter(r=>getIO(r)===name);
+  else if(key==='bns') rows=rows.filter(r=>(r['BNS Sections']||'').split(/[,\/]/).map(s=>s.trim()).includes(name));
+
+  const labelMap={subdiv:'Sub Division',ps:'Police Station',io:'IO',bns:'BNS Section'};
+  const tbody=rows.map(r=>{
+    let c2=0,p2=0,nr2=0;
+    TASKS.forEach((_,i)=>{const s=gSt(r,i);if(s==='Completed')c2++;else if(s==='Pending')p2++;else if(s==='Not Required')nr2++;});
+    const tot2=c2+p2,cr2=tot2?Math.round(c2/tot2*100):0;
+    const pd2=getPD(r),pdc=pd2>60?'#e85d5d':pd2>30?'#f0a500':'#3dc98a';
+    return `<tr class="cr" onclick="caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')">
+      <td>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-weight:700;color:var(--acc);font-size:12px">${getFIRNo(r)||'—'}</span>
+          <span style="font-size:10px;color:#8fa3bc">${getPS(r)||'—'}</span>
+        </div>
+      </td>
+      <td style="font-size:10px;color:var(--txt2)">${getFIRDate(r)||'—'}</td>
+      <td style="font-size:10px">${getSubDiv(r)||'—'}</td>
+      <td style="font-size:10px">${getIO(r)||'—'}</td>
+      <td><span class="tag" style="background:rgba(167,139,250,.1);color:#a78bfa;font-size:9px">${r['BNS Sections']||'—'}</span></td>
+      <td style="font-weight:600;color:${pdc}">${pd2||'—'}d</td>
+      <td><div class="bw"><div class="bb"><div class="bf" style="width:${cr2}%;background:${cc(cr2)}"></div></div><span style="font-size:10px;font-weight:700;color:${cc(cr2)}">${cr2}%</span></div></td>
+      <td style="color:#e85d5d;font-weight:600">${p2}</td>
+      ${idlCell(r)}
+      <td><button onclick="event.stopPropagation();caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')" style="background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.3);color:#f0a500;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;cursor:pointer;white-space:nowrap">Track ▶</button></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="10" style="text-align:center;color:var(--txt3);padding:1.5rem">No cases found</td></tr>`;
+  showDrill(`${labelMap[key]}: ${name} — All Cases (${rows.length})`,
+    `FIR No &amp; Station shown · click row or Track to open full investigation timeline`,
+    `<table class="tbl"><thead><tr><th>FIR No · Station</th><th>FIR Date</th><th>Sub Div</th><th>IO</th><th>BNS</th><th>14/28 Day Alert</th><th>Completion</th><th>Pending Tasks</th><th style="text-align:center">Inv Days Left</th><th></th></tr></thead><tbody>${tbody}</tbody></table>`);
+}
+
+function groupDrill(key,name){
+  F[key]=name;
+  if(key==='subdiv'){F.ps='';F.io='';}
+  if(key==='ps') F.io='';
+  drill=null;
+  goNav('tasks',document.getElementById('n-tasks'));
+}
+
+function heatmapHTML(rows){
+  const gs={};
+  rows.forEach(r=>{const k=getPS(r)||'Unknown';if(!gs[k])gs[k]=[];gs[k].push(r);});
+  const gKeys=Object.keys(gs).sort();
+  const mat={};const allA=[];
+  gKeys.forEach(g=>{mat[g]={};const ts=tStats(gs[g]);ts.forEach((t,i)=>{mat[g][i]=t.avg;if(t.avg!==null)allA.push(t.avg);});});
+  const mn=Math.min(...allA)||0, mx=Math.max(...allA)||1;
+  function hc(v){if(v===null)return'rgba(255,255,255,.04)';const t=(v-mn)/((mx-mn)||1);if(t<0.25)return'#0fb8a0';if(t<0.5)return'#3dc98a';if(t<0.75)return'#f0a500';return'#e85d5d';}
+  let html=`<div style="display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--txt2);margin-bottom:10px">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#0fb8a0;border-radius:2px;display:inline-block"></span>Very fast</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#3dc98a;border-radius:2px;display:inline-block"></span>Fast ≤${Math.round(mn+.25*(mx-mn))}d</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#f0a500;border-radius:2px;display:inline-block"></span>Normal</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:9px;height:9px;background:#e85d5d;border-radius:2px;display:inline-block"></span>Delayed</span>
+  </div><div style="overflow-x:auto"><table style="border-collapse:separate;border-spacing:2px;min-width:600px">
+  <thead><tr><td style="padding:4px 8px;font-size:10px;font-weight:600;color:var(--txt3);min-width:90px">PS \\ T#</td>`;
+  TASKS.forEach((_,i)=>html+=`<td style="text-align:center;padding:1px" title="${TASKS[i]}"><div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:9px;color:var(--txt3);white-space:nowrap;max-height:60px;overflow:hidden">T${i+1}</div></td>`);
+  html+=`</tr></thead><tbody>`;
+  gKeys.forEach(g=>{
+    html+=`<tr><td style="padding:3px 8px;font-size:10px;color:var(--txt);font-weight:500;white-space:nowrap">${g}</td>`;
+    TASKS.forEach((_,i)=>{const v=mat[g][i];html+=`<td style="padding:1px" title="${TASKS[i]}: ${v!==null?v+' days':'no data'}"><div class="hmc" style="background:${hc(v)};color:#fff" onclick="hmDrill('${esc(g)}',${i})">${v!==null?v+'d':'—'}</div></td>`;});
+    html+=`</tr>`;
+  });
+  html+=`</tbody></table></div>`;
+  return html;
+}
+
+function hmDrill(ps,ti){
+  _lastDrill = { fn: hmDrill, args: [ps, ti] };
+  const rows=allRows.filter(r=>getPS(r)===ps&&gSt(r,ti)!=='');
+  /* Same status priority as taskDrill: Pending → Not Required → Completed */
+  rows.sort((a,b)=>_statusPriority(gSt(a,ti))-_statusPriority(gSt(b,ti)));
+  const tbody=rows.map(r=>{
+    const s=gSt(r,ti),d=gDt(r,ti),days=dB(pd(getFIRDate(r)),pd(d));
+    const sc=s==='Completed'?'#3dc98a':s==='Pending'?'#e85d5d':'#8fa3bc';
+    const firNo=getFIRNo(r)||'—';
+    return `<tr class="cr" onclick="caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')">
+      <td>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-weight:700;color:var(--acc);font-size:12px">${firNo}</span>
+          <span style="font-size:10px;color:#8fa3bc;white-space:nowrap">${ps}</span>
+        </div>
+      </td>
+      <td style="font-size:10px;color:var(--txt2)">${getFIRDate(r)||'—'}</td>
+      <td style="font-size:10px">${getIO(r)||'—'}</td>
+      <td><span class="tag" style="background:rgba(167,139,250,.1);color:#a78bfa;font-size:9px">${r['BNS Sections']||'—'}</span></td>
+      <td><span class="pill" style="background:${sc}22;color:${sc}">${s||'—'}</span></td>
+      <td style="color:var(--txt2);font-size:10px">${d||'—'}</td>
+      <td style="font-weight:600;color:${dc(days)}">${days!==null?days+'d':'—'}</td>
+      ${idlCell(r)}
+      <td><button onclick="event.stopPropagation();caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')" style="background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.3);color:#f0a500;font-size:9px;font-weight:700;padding:2px 7px;border-radius:4px;cursor:pointer;white-space:nowrap">Track ▶</button></td>
+    </tr>`;
+  }).join('')||`<tr><td colspan="9" style="text-align:center;color:var(--txt3);padding:1rem">No cases with data</td></tr>`;
+  showDrill(`${ps} — Task ${ti+1}: ${TASKS[ti]}`,`${rows.length} cases · FIR No &amp; Station shown · click row or Track to open full timeline`,
+    `<table class="tbl"><thead><tr><th>FIR No · Station</th><th>FIR Date</th><th>IO Name</th><th>BNS</th><th>Status</th><th>Completion Date</th><th>Days Taken</th><th style="text-align:center">Inv Days Left</th><th></th></tr></thead><tbody>${tbody}</tbody></table>`);
+}
+
+function casesHTML(rows){
+  return `<div class="tw"><table class="tbl">
+    <thead><tr><th>FIR No</th><th>FIR Date</th><th>Sub Div</th><th>Station</th><th>IO Name</th><th>BNS Sections</th><th>14/28 Day Alert</th><th>Completion</th><th>Pending</th></tr></thead>
+    <tbody>${rows.map(r=>{
+      let c=0,p=0,nr=0;
+      TASKS.forEach((_,i)=>{const s=gSt(r,i);if(s==='Completed')c++;else if(s==='Pending')p++;else if(s==='Not Required')nr++;});
+      const tot=c+p,cr=tot?Math.round(c/tot*100):0;
+      const pd2=getPD(r),pdc=pd2>60?'#e85d5d':pd2>30?'#f0a500':'#8fa3bc';
+      return `<tr class="cr" onclick="caseDrill('${esc(getFIRNo(r))}','${esc(getPS(r))}','${esc(getSubDiv(r))}')">
+        <td style="font-weight:600;color:var(--acc)">${getFIRNo(r)||'—'}</td>
+        <td>${getFIRDate(r)||'—'}</td><td>${getSubDiv(r)||'—'}</td>
+        <td>${getPS(r)||'—'}</td><td style="font-size:10px">${getIO(r)||'—'}</td>
+        <td><span class="tag" style="background:rgba(167,139,250,.1);color:#a78bfa">${r['BNS Sections']||'—'}</span></td>
+        <td style="font-weight:600;color:${pdc}">${pd2||'—'}</td>
+        <td><div class="bw"><div class="bb"><div class="bf" style="width:${cr}%;background:${cc(cr)}"></div></div><span style="font-size:10px;font-weight:600;color:${cc(cr)}">${cr}%</span></div></td>
+        <td style="color:#e85d5d;font-weight:500">${p}</td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table></div>`;
+}
+
+const NT={tasks:'Task Delay & Speed Analysis',subdiv:'Sub Division Analysis',ps:'Police Station Analysis',io:'IO Wise Analysis',bns:'BNS Section Analysis',heatmap:'Heat Map — PS × Task',cases:'Case Register'};
+const NS={tasks:'Done/Total · avg days from FIR to completion · click any task row to drill into cases',subdiv:'Click a row to drill into its task analysis',ps:'Station-wise performance · click to drill down',io:'IO performance · click to drill down',bns:'BNS section analysis · click to drill down',heatmap:'Each cell = avg days for that station × task · click to see cases',cases:'All FIRs · click any row for full 21-task breakdown'};
+
+function render(){
+  resetPopup();
+  const rows=fRows();
+  let html=`<div class="pg-title">${NT[nav]}</div><div class="pg-sub">${NS[nav]}</div>`;
+  html+=filtersHTML(); html+=kpisHTML(rows);
+  if(nav==='tasks'){html+=taskBarsHTML(rows,'');html+=drillHTML();}
+  else if(nav==='subdiv'){const d=gStats(rows,'subdiv');html+=`<div class="sec"><div class="st">Sub Division performance</div><div class="ss">Click row to drill into task analysis</div>${groupTableHTML(d,'Sub Division','subdiv')}</div>`;if(F.subdiv)html+=taskBarsHTML(rows,F.subdiv);html+=drillHTML();}
+  else if(nav==='ps'){const d=gStats(rows,'ps');html+=`<div class="sec"><div class="st">Police Station performance</div><div class="ss">Click row to drill into task analysis</div>${groupTableHTML(d,'Police Station','ps')}</div>`;if(F.ps)html+=taskBarsHTML(rows,F.ps);html+=drillHTML();}
+  else if(nav==='io'){const d=gStats(rows,'io');html+=`<div class="sec"><div class="st">IO-wise performance</div><div class="ss">Click row to filter task analysis</div>${groupTableHTML(d,'IO Name','io')}</div>`;if(F.io)html+=taskBarsHTML(rows,F.io);html+=drillHTML();}
+  else if(nav==='bns'){const d=gStats(rows,'bns');html+=`<div class="sec"><div class="st">BNS Section analysis</div><div class="ss">Click row to filter task analysis</div>${groupTableHTML(d,'BNS Section','bns')}</div>`;if(F.bns)html+=taskBarsHTML(rows,`Section ${F.bns}`);html+=drillHTML();}
+  else if(nav==='heatmap'){html+=`<div class="sec"><div class="st">Police Station × Task delay heat map</div><div class="ss">Click any cell to see cases for that station + task combination</div>${heatmapHTML(rows)}</div>`;html+=drillHTML();}
+  else if(nav==='cases'){html+=`<div class="sec"><div class="st">All FIRs (${rows.length})</div><div class="ss">Click any row to see all 22 task statuses</div>${casesHTML(rows)}</div>`;}
+  else if(nav==='fir-tracker'){html=firTrackerHTML(currentFIR);}
+  document.getElementById('content').innerHTML=html;
+}
+
+
+/* ── FIR TRACKER ── */
+function populatePSFilter(){
+  const sel=document.getElementById('fir-ps-filter');
+  if(!sel) return;
+  const pss=uniq(allRows,getPS);
+  sel.innerHTML='<option value="">All Stations</option>'+pss.map(p=>`<option value="${p}">${p}</option>`).join('');
+}
+
+function firSearchSuggest(){
+  const q=(document.getElementById('fir-search').value||'').trim().toLowerCase();
+  const ps=(document.getElementById('fir-ps-filter').value||'');
+  const box=document.getElementById('fir-suggestions');
+  if(!q){box.innerHTML='';return;}
+  const matches=allRows.filter(r=>{
+    const firno=(getFIRNo(r)||'').toLowerCase();
+    const psMatch=!ps||getPS(r)===ps;
+    return psMatch&&firno.includes(q);
+  }).slice(0,6);
+  if(!matches.length){box.innerHTML=`<div style="font-size:10px;color:var(--txt3);padding:4px 8px">No FIRs found</div>`;return;}
+  box.innerHTML=matches.map(r=>`<div class="fir-sug-item" onclick="openFIRTracker('${esc(getFIRNo(r)+'||'+getPS(r)+'||'+getSubDiv(r))}')">
+    <div class="fir-sug-firno">${getFIRNo(r)}</div>
+    <div class="fir-sug-ps">${getPS(r)} · ${getSubDiv(r)} · ${getIO(r)}</div>
+  </div>`).join('');
+}
+
+function firSearchGo(){
+  const q=(document.getElementById('fir-search').value||'').trim();
+  const ps=(document.getElementById('fir-ps-filter').value||'');
+  if(!q) return;
+  const match=allRows.find(r=>{
+    const firno=(getFIRNo(r)||'').toLowerCase();
+    const psMatch=!ps||getPS(r)===ps;
+    return psMatch&&firno.toLowerCase()===q.toLowerCase();
+  })||allRows.find(r=>{
+    const firno=(getFIRNo(r)||'').toLowerCase();
+    const psMatch=!ps||getPS(r)===ps;
+    return psMatch&&firno.toLowerCase().includes(q.toLowerCase());
+  });
+  if(match) openFIRTracker(getFIRNo(match)+'||'+getPS(match)+'||'+getSubDiv(match));
+  else document.getElementById('fir-suggestions').innerHTML=`<div style="font-size:10px;color:#e85d5d;padding:4px 8px">FIR not found. Try a different number.</div>`;
+}
+
+function openFIRTracker(firKey){
+  /* firKey can be plain FIR No (legacy) or 'FIRNo||PS||SubDiv' composite */
+  const displayNo = firKey.includes('||') ? firKey.split('||')[0] : firKey;
+  document.getElementById('fir-search').value=displayNo;
+  document.getElementById('fir-suggestions').innerHTML='';
+  nav='fir-tracker';
+  document.querySelectorAll('.ni').forEach(e=>e.classList.remove('active'));
+  currentFIR=firKey;
+  render();
+  setTimeout(()=>window.scrollTo({top:0,behavior:'smooth'}),80);
+}
+
+let currentFIR=null;
+
+/* SVG icons for each task */
+const TASK_ICONS=[
+  /* 1 Medical Exam Victim */
+  `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="12" r="7" stroke="currentColor" stroke-width="2.2"/><path d="M7 36c0-7.2 5.8-13 13-13s13 5.8 13 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M17 12h6M20 9v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  /* 2 Medical Exam Accused */
+  `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="12" r="7" stroke="currentColor" stroke-width="2.2"/><path d="M7 36c0-7.2 5.8-13 13-13s13 5.8 13 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M16 10l8 4M24 10l-8 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  /* 3 FSL Dog Squad */
+  `<svg viewBox="0 0 40 40" fill="none"><ellipse cx="24" cy="22" rx="10" ry="7" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="18" r="5" stroke="currentColor" stroke-width="2"/><path d="M24 29v4M20 29v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1.5" fill="currentColor"/><path d="M10 13c0-2 2-4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  /* 4 Spot Panchanama */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="8" y="10" width="24" height="22" rx="3" stroke="currentColor" stroke-width="2"/><path d="M14 18h12M14 23h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="28" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M26 12h4M28 10v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  /* 5 E-Sakshya */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="8" y="8" width="24" height="18" rx="3" stroke="currentColor" stroke-width="2"/><path d="M14 14h12M14 19h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 26v6M14 32h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="28" cy="28" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M26 28l1.5 1.5L30 26" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  /* 6 Seizure */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="10" y="14" width="20" height="14" rx="2" stroke="currentColor" stroke-width="2"/><path d="M15 14v-3a5 5 0 0110 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="21" r="2.5" fill="currentColor" opacity=".5"/></svg>`,
+  /* 7 Muddemal CA/FSL */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="12" y="8" width="16" height="24" rx="3" stroke="currentColor" stroke-width="2"/><path d="M16 16h8M16 21h6M16 26h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M28 20l6 0M31 17l3 3-3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  /* 8 Weapon Query */
+  `<svg viewBox="0 0 40 40" fill="none"><path d="M8 24l10-10 4 4-10 10H8v-4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M24 10l6 6M27 7l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="30" cy="30" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M28.5 30h3M30 28.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  /* 9 Injury Certificate */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="10" y="8" width="20" height="26" rx="3" stroke="currentColor" stroke-width="2"/><path d="M17 17h3v-3h4v3h3v4h-3v3h-4v-3h-3v-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+  /* 10 Arrest/Notice */
+  `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="13" r="6" stroke="currentColor" stroke-width="2"/><path d="M10 34c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M15 30l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  /* 11 Witness Statement */
+  `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="13" r="5" stroke="currentColor" stroke-width="2"/><path d="M11 32c0-5 4-9 9-9s9 4 9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M26 20h8M26 24h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`,
+  /* 12 183 BNSS Statement */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="9" y="9" width="22" height="26" rx="3" stroke="currentColor" stroke-width="2"/><path d="M14 16h12M14 21h12M14 26h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><text x="29" y="14" font-size="7" fill="currentColor" font-family="sans-serif" font-weight="700">§</text></svg>`,
+  /* 13 Birth Cert/TC/Ossification */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="9" y="9" width="22" height="26" rx="3" stroke="currentColor" stroke-width="2"/><path d="M14 17h12M14 22h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="13" r="3" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  /* 14 Caste Certificate */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="9" y="9" width="22" height="26" rx="3" stroke="currentColor" stroke-width="2"/><path d="M14 17h12M14 22h12M14 27h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M24 11l2 2-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  /* 15 Residential Docs */
+  `<svg viewBox="0 0 40 40" fill="none"><path d="M8 20L20 9l12 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><rect x="13" y="20" width="14" height="13" rx="1" stroke="currentColor" stroke-width="2"/><rect x="17" y="26" width="6" height="7" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  /* 16 Documentary Evidence */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="9" y="8" width="16" height="20" rx="2" stroke="currentColor" stroke-width="2"/><rect x="15" y="14" width="16" height="20" rx="2" stroke="currentColor" stroke-width="2" fill="var(--c2)"/><path d="M19 20h8M19 25h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  /* 17 TIP */
+  `<svg viewBox="0 0 40 40" fill="none"><circle cx="14" cy="14" r="5" stroke="currentColor" stroke-width="2"/><circle cx="27" cy="14" r="5" stroke="currentColor" stroke-width="2"/><path d="M7 32c0-4 3-7 7-7M26 32c0-4 3-7 7-7M17 32c0-4 3-7 6.5-7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="20" cy="24" r="2" fill="currentColor"/></svg>`,
+  /* 18 Handwriting Expert */
+  `<svg viewBox="0 0 40 40" fill="none"><path d="M10 30l4-2 14-14-2-2-14 14-2 4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M26 12l2 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M28 8l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M13 32h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  /* 19 CCTV Analysis */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="6" y="13" width="20" height="14" rx="3" stroke="currentColor" stroke-width="2"/><path d="M26 18l8-4v12l-8-4" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="14" cy="20" r="3" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  /* 20 CDR/IPDR/Tower */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="14" y="22" width="12" height="12" rx="2" stroke="currentColor" stroke-width="2"/><path d="M20 10v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M13 14c0-3.9 3.1-7 7-7s7 3.1 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 17c0-6.1 4.9-11 11-11s11 4.9 11 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".5"/></svg>`,
+  /* 21 Known Criminal Check */
+  `<svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="13" r="6" stroke="currentColor" stroke-width="2"/><path d="M10 33c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="30" cy="10" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M28 10h4M30 8v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  /* 22 IRAD/DAR Form Submitted */
+  `<svg viewBox="0 0 40 40" fill="none"><rect x="8" y="8" width="18" height="24" rx="3" stroke="currentColor" stroke-width="2"/><path d="M13 15h8M13 20h6M13 25h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="30" cy="28" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M27 28l2 2 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+];
+
+function firTrackerHTML(firKey){
+  /* firKey = 'FIRNo||PS||SubDiv' composite — fall back to legacy plain firNo */
+  let row;
+  if(firKey && firKey.includes('||')){
+    const [fno,fps,fsd]=firKey.split('||');
+    row=allRows.find(r=>getFIRNo(r)===fno && getPS(r)===fps && getSubDiv(r)===fsd);
+    if(!row) row=allRows.find(r=>getFIRNo(r)===fno && getPS(r)===fps);
+  } else {
+    row=allRows.find(r=>getFIRNo(r)===firKey);
+  }
+  const firNo = row ? getFIRNo(row) : (firKey||'');
+  if(!row) return `<div class="eb">FIR "${firNo}" not found in loaded data.</div>`;
+
+  const firDate=pd(getFIRDate(row));
+  const today=new Date();
+  const pendingDays=getPD(row)||Math.round((today-firDate)/86400000);
+
+  const tasks=TASKS.map((t,i)=>{
+    const s=gSt(row,i);
+    const d=gDt(row,i);
+    const compDate=pd(d);
+    const daysFromFIR=dB(firDate,compDate);
+    return{idx:i,name:t,status:s,compDate:d,compDateObj:compDate,daysFromFIR};
+  });
+
+  const completed=tasks.filter(t=>t.status==='Completed');
+  const pending=tasks.filter(t=>t.status==='Pending'||t.status==='');  /* blank = treated as pending so T22 shows */
+  const nr=tasks.filter(t=>t.status==='Not Required');
+  const applicable=tasks.filter(t=>t.status!=='Not Required'&&t.status!=='');
+  const cr=applicable.length?Math.round(completed.length/applicable.length*100):0;
+  const completedSorted=[...completed].filter(t=>t.compDateObj).sort((a,b)=>a.compDateObj-b.compDateObj);
+
+  /* Donut */
+  const r2=54,circ=2*Math.PI*r2,filled=circ*(1-cr/100);
+  const donutSVG=`<svg width="140" height="140" viewBox="0 0 140 140">
+    <circle cx="70" cy="70" r="${r2}" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="12"/>
+    <circle cx="70" cy="70" r="${r2}" fill="none" stroke="${cc(cr)}" stroke-width="12"
+      stroke-dasharray="${circ.toFixed(2)}" stroke-dashoffset="${filled.toFixed(2)}"
+      stroke-linecap="round" transform="rotate(-90 70 70)"/>
+    <text x="70" y="65" text-anchor="middle" fill="${cc(cr)}" font-size="22" font-weight="700" font-family="Segoe UI,sans-serif">${cr}%</text>
+    <text x="70" y="82" text-anchor="middle" fill="#8fa3bc" font-size="10" font-family="Segoe UI,sans-serif">Complete</text>
+    <text x="70" y="95" text-anchor="middle" fill="#5a7494" font-size="9" font-family="Segoe UI,sans-serif">${completed.length}/${applicable.length} tasks</text>
+  </svg>`;
+
+  /* Stats */
+  const statsHTML=`<div class="fir-stats-row">
+    <div class="fir-stat"><div class="fir-stat-lbl">Completion</div><div class="fir-stat-val" style="color:${cc(cr)}">${cr}%</div></div>
+    <div class="fir-stat"><div class="fir-stat-lbl">Done Tasks</div><div class="fir-stat-val" style="color:#3dc98a">${completed.length}</div></div>
+    <div class="fir-stat"><div class="fir-stat-lbl">Pending</div><div class="fir-stat-val" style="color:#e85d5d">${pending.length}</div></div>
+    <div class="fir-stat"><div class="fir-stat-lbl">Not Required</div><div class="fir-stat-val" style="color:#8fa3bc">${nr.length}</div></div>
+    <div class="fir-stat"><div class="fir-stat-lbl">14/28 Day Alert</div><div class="fir-stat-val" style="color:${pendingDays>60?'#e85d5d':pendingDays>30?'#f0a500':'#3dc98a'}">${pendingDays}</div></div>
+    <div class="fir-stat"><div class="fir-stat-lbl">FIR Date</div><div class="fir-stat-val" style="font-size:13px">${fmtDate(getFIRDate(row))}</div></div>
+  </div>
+
+  <!-- Case Info Panel: editable fields with inline pencil icon on hover -->
+  ${(()=>{
+    const idl=getInvDaysLeft(row);
+    const idlTxt = idl===null ? '—' : (idl==='completed' ? '✓ Completed' : idl+' days');
+    const idlCol=idlColor(idl);
+    /* [label, value, color, fieldKey (Form Response header to write to), type, identifier?]
+       fieldKey === null → read-only (no pencil button)
+       identifier === true → extra confirm dialog before saving */
+    const ciFields = [
+      ['FIR No.',           getFIRNo(row),                    '#f0a500',  'FIR No',          'text',   true],
+      ['FIR Date',          fmtDate(getFIRDate(row)),         '#fbbf24',  'FIR Date',        'date',   false],
+      ['Inv Days Left',     idlTxt,                           idlCol,      null,             null,     false],
+      ['Police Station',    getPS(row),                       '#3dc98a',  'Police Station',  'text',   true],
+      ['IO Name',           getIO(row),                       '#60a5fa',  'IO Name',         'text',   true],
+      ['BNS Section',       row['BNS Sections']||'',          '#a78bfa',  'BNS Sections',    'text',   false],
+      ['MOB',               _scanKey(row,['mob'],['23']),     null,        '23. What was the MOB?',                    'text',    false],
+      ['Muddemal Seized',   getMuddemalSeized(row),           null,        '24. What was the muddemal seized?',        'text',    false],
+      ['Muddemal No.',      getMuddemalNo(row),               null,        '25. What is the muddemal number? ',        'text',    false],
+      ['Weapon Used',       _scanKey(row,['weapon','used'],['26'],['weapon']),  null,  '26. What was the weapon used?', 'text',    false],
+      ['Accused Count',     String(getAccused(row)||'—'),     null,        '27. How many accused in the case?',        'number',  false],
+      ['Arrested',          String(getArrested(row)||'—'),    null,        '28.  How many arrested?',                  'number',  false],
+      ['Given Notice',      String(getNotice(row)||'—'),      null,        '29.  How many given notice?',              'number',  false],
+    ];
+    const firNoEsc = esc(getFIRNo(row)), psEsc = esc(getPS(row)), sdEsc = esc(getSubDiv(row));
+    return `<div style="background:var(--c1);border:1px solid var(--brd2);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+    <div style="font-size:10px;color:var(--txt3);grid-column:1/-1;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:2px">Case Information</div>
+    ${ciFields.map(([lbl,val,col,fieldKey,type,isIdent])=>{
+      const displayVal = val || '—';
+      const rawVal = (val && val !== '—') ? val : '';
+      const pencil = fieldKey
+        ? `<span class="ci-edit-pencil" title="Edit ${lbl}" onclick="editField(this,'${firNoEsc}','${psEsc}','${sdEsc}','${esc(fieldKey)}','${esc(lbl)}','${type}',${isIdent?'true':'false'},${JSON.stringify(String(rawVal)).replace(/"/g,'&quot;')})">✎</span>`
+        : '';
+      return `<div class="ci-field" data-ci-label="${esc(lbl)}">
+      <div style="font-size:9px;color:var(--txt3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">${lbl}</div>
+      <div class="ci-val" style="font-size:12px;font-weight:600;color:${col||'var(--txt)'}">${displayVal}</div>
+      ${pencil}
+    </div>`;
+    }).join('')}
+  </div>`;
+  })()}`;
+
+  /* ── HTML/CSS ICON TIMELINE ── */
+  const CHARGESHEET_DAYS=60;
+  const maxDay=Math.max(CHARGESHEET_DAYS+5, pendingDays+5,
+    completedSorted.length&&completedSorted[completedSorted.length-1].daysFromFIR
+      ?completedSorted[completedSorted.length-1].daysFromFIR+5:0, 65);
+
+  /* ── EVENT-AWARE COMPRESSED SCALE ──
+     Key events (completed task days, today, FIR=0, chargesheet=60) each get
+     a guaranteed minimum visual spacing. Empty stretches between events are
+     compressed proportionally so the axis stays readable without clutter. */
+  const allDays = completedSorted.filter(t=>t.daysFromFIR!==null).map(t=>t.daysFromFIR);
+
+  /* Collect all "anchor" day values that need to appear on the axis */
+  const anchorDaySet = new Set([0, pendingDays, CHARGESHEET_DAYS]);
+  allDays.forEach(d => anchorDaySet.add(d));
+  /* Also add pending task virtual positions slightly past today */
+  pending.forEach((t, pi) => {
+    anchorDaySet.add(pendingDays + (pi + 1) * 3); /* virtual spacing for pending dots */
+  });
+  const anchorDays = [...anchorDaySet].sort((a, b) => a - b);
+
+  const axisMin = Math.min(0, ...allDays);
+  const axisMax = maxDay;
+
+  /* For each gap between consecutive anchors, assign visual weight:
+     - Gaps with real events (≤2 days apart): full weight = gap size
+     - Gaps that are "empty" (no events inside): compressed to sqrt of gap size
+     The minimum visual slot per anchor = MIN_SLOT_PCT */
+  const MIN_SLOT_PCT = 3.5; /* minimum % width between any two event dots */
+  const USABLE_PCT = 97;    /* 1% margin each side */
+
+  /* Build segments between consecutive anchors */
+  const segments = [];
+  for (let i = 0; i < anchorDays.length - 1; i++) {
+    const gap = anchorDays[i+1] - anchorDays[i];
+    /* Weight: compressed for large empty gaps */
+    const weight = gap <= 3 ? gap * 2.5 : Math.sqrt(gap) * 2;
+    segments.push({ from: anchorDays[i], to: anchorDays[i+1], gap, weight });
+  }
+  const totalWeight = segments.reduce((s, seg) => s + seg.weight, 0);
+
+  /* Map a day value to % position using piecewise linear from anchor->pct table */
+  const pctTable = new Map();
+  pctTable.set(anchorDays[0], 1);
+  let cumPct = 1;
+  for (let i = 0; i < segments.length; i++) {
+    const seg = segments[i];
+    const allocatedPct = Math.max(MIN_SLOT_PCT, (seg.weight / totalWeight) * USABLE_PCT);
+    cumPct += allocatedPct;
+    pctTable.set(seg.to, Math.min(cumPct, 99));
+  }
+
+  /* Normalise so last anchor = 99% */
+  const lastAnchor = anchorDays[anchorDays.length - 1];
+  const rawMax = pctTable.get(lastAnchor) || 99;
+  const scaleFactor = 98 / rawMax;
+  for (const [k, v] of pctTable) pctTable.set(k, v * scaleFactor);
+
+  function dayToPct(d) {
+    if (pctTable.has(d)) return pctTable.get(d);
+    /* Interpolate between two nearest anchors */
+    let lo = anchorDays[0], hi = anchorDays[anchorDays.length - 1];
+    for (const a of anchorDays) {
+      if (a <= d) lo = a;
+      if (a >= d && hi === anchorDays[anchorDays.length - 1]) hi = a;
+    }
+    for (const a of anchorDays) {
+      if (a >= d) { hi = a; break; }
+    }
+    if (lo === hi) return pctTable.get(lo) || 1;
+    const t = (d - lo) / (hi - lo);
+    return (pctTable.get(lo) || 1) + t * ((pctTable.get(hi) || 99) - (pctTable.get(lo) || 1));
+  }
+
+  /* Tick values: show each unique event day and a few round-number landmarks */
+  const tickDaySet = new Set(allDays);
+  tickDaySet.add(0);
+  if (CHARGESHEET_DAYS <= axisMax) tickDaySet.add(CHARGESHEET_DAYS);
+  tickDaySet.add(pendingDays);
+  const sqrtTicks = [...tickDaySet].sort((a, b) => a - b);
+
+  const todayFullPct = dayToPct(pendingDays);
+  const csPct = dayToPct(CHARGESHEET_DAYS);
+  const firPct = dayToPct(0);
+
+  /* Format date dd/mm/yyyy */
+  function fmtDate(s){
+    if(!s)return'—';
+    const d=pd(s);
+    if(!d)return s;
+    return ('0'+d.getDate()).slice(-2)+'/'+('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear();
+  }
+
+  /* Helper: icon HTML with explicit color */
+  function iconHTML(idx,color,size){
+    const svg=TASK_ICONS[idx].replace(/currentColor/g,color).replace(/var\(--c2\)/g,'#1e2d42');
+    return svg.replace('<svg ','<svg width="'+size+'" height="'+size+'" ');
+  }
+
+  /* ── TIMELINE: time-accurate axis, grouped same-day popups ── */
+
+  /* Group completed tasks by day */
+  const dayGroups = {};
+  completedSorted.forEach(t => {
+    if(t.daysFromFIR === null) return;
+    const key = t.daysFromFIR;
+    if(!dayGroups[key]) dayGroups[key] = [];
+    dayGroups[key].push(t);
+  });
+
+  /* Popup CSS */
+  const popupStyle = `<style>
+    .tl-dot-wrap{position:relative;display:inline-block}
+    .tl-dot-btn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;cursor:pointer;border:2px solid;position:relative;z-index:2;transition:transform .15s}
+    .tl-dot-btn:hover{transform:scale(1.2);z-index:20}
+    .tl-popup{display:none;position:absolute;z-index:9999;background:#1a2332;border-radius:10px;padding:10px 11px;box-shadow:0 6px 24px rgba(0,0,0,.7);pointer-events:none;min-width:140px;max-width:480px;white-space:normal}
+    .comp-popup{bottom:calc(100% + 54px)}
+    .pend-popup{bottom:calc(100% + 10px)}
+    .tl-conn{position:absolute;left:50%;transform:translateX(-50%);width:1.5px;z-index:1}
+    .tl-task-card{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:100px;padding:4px 6px;border-radius:7px}
+  </style>`
+
+  /* Build one dot per unique day, popup shows ALL tasks completed that day */
+  const compDots = Object.entries(dayGroups)
+    .sort((a,b) => Number(a[0]) - Number(b[0]))
+    .map(([dayStr, tasks]) => {
+      const day = Number(dayStr);
+      const pct = dayToPct(day);
+      /* Use first task's color for the dot if single, gold if multiple */
+      const dotColor = tasks.length === 1 ? TC[tasks[0].idx] : '#f0a500';
+      const dotLabel = tasks.length === 1 ? String(tasks[0].idx+1) : tasks.length+'✓';
+
+      /* Popup: one card per task, side by side */
+      const taskCards = tasks
+        .sort((a,b) => a.idx - b.idx)
+        .map(t => {
+          const color = TC[t.idx];
+          return `<div class="tl-task-card" style="background:${color}18;border:1px solid ${color}44">
+            <div style="display:flex;align-items:center;gap:4px">
+              <div style="width:22px;height:22px;border-radius:50%;background:${color}22;border:1.5px solid ${color};display:flex;align-items:center;justify-content:center;flex-shrink:0">${iconHTML(t.idx,color,14)}</div>
+              <span style="font-size:9px;font-weight:700;color:${color}">T${t.idx+1}</span>
+            </div>
+            <div style="font-size:9px;font-weight:600;color:${color};text-align:center;line-height:1.2;max-width:100px">${t.name}</div>
+            <div style="font-size:8px;color:#8fa3bc">${fmtDate(t.compDate)}</div>
+            <div style="font-size:9px;font-weight:700;color:${dc(t.daysFromFIR)}">${day}d from FIR</div>
+          </div>`;
+        }).join('');
+
+      const popupAlign = pct < 25 ? 'left:0;transform:translateX(0)' : pct > 75 ? 'left:auto;right:0;transform:translateX(0)' : 'left:50%;transform:translateX(-50%)';
+      const popupBorder = tasks.length===1 ? `1.5px solid ${TC[tasks[0].idx]}` : '1.5px solid #f0a500';
+
+      return `<div style="position:absolute;left:${pct.toFixed(1)}%;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+        <div class="tl-conn" style="top:0;height:16px;background:${dotColor};opacity:.7"></div>
+        <div style="margin-top:16px" class="tl-dot-wrap" onmouseenter="fixPopup(this)" onmouseleave="resetPopup()">
+          <div class="tl-dot-btn" style="background:${dotColor}22;border-color:${dotColor}">
+            ${dotLabel}
+          </div>
+          <div class="tl-popup comp-popup" data-border="${popupBorder}" style="border:${popupBorder};${popupAlign}">
+            ${taskCards}
+          </div>
+        </div>
+        <div style="margin-top:3px;text-align:center;width:52px">
+          <div style="font-size:7.5px;color:#8fa3bc">${fmtDate(tasks[0].compDate)}</div>
+          <div style="font-size:8px;font-weight:700;color:${dc(day)}">${day}d</div>
+        </div>
+      </div>`;
+    }).join('');
+
+  /* Pending dots — full task name always visible */
+  const pendDots = pending.map((t, pi) => {
+    const color = '#e85d5d';
+    const pct = Math.min(todayFullPct + (pi+1)*(99-todayFullPct)/(pending.length+1), 99);
+    const pendPopupAlign = pct < 25 ? 'left:0;transform:translateX(0)' : pct > 75 ? 'left:auto;right:0;transform:translateX(0)' : 'left:50%;transform:translateX(-50%)';
+    return `<div style="position:absolute;left:${pct.toFixed(1)}%;bottom:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center">
+      <div style="margin-bottom:4px;text-align:center;width:110px;display:flex;flex-direction:column;align-items:center;gap:2px">
+        <div style="font-size:9px;font-weight:700;color:${color};letter-spacing:.03em">T${t.idx+1}</div>
+        <div style="font-size:7.5px;background:rgba(232,93,93,.22);color:${color};border-radius:3px;padding:1px 5px;font-weight:700;letter-spacing:.05em">PENDING</div>
+        <div style="font-size:9px;color:${color};font-weight:600;line-height:1.25;text-align:center;background:rgba(232,93,93,.08);border:1px dashed rgba(232,93,93,.35);border-radius:4px;padding:3px 5px;margin-top:2px;max-width:110px;word-wrap:break-word;overflow-wrap:break-word">${t.name}</div>
+      </div>
+      <div class="tl-dot-wrap" onmouseenter="fixPopup(this)" onmouseleave="resetPopup()">
+        <div class="tl-dot-btn" style="background:rgba(232,93,93,.12);border-color:${color};border-style:dashed">
+          ${t.idx+1}
+        </div>
+        <div class="tl-popup pend-popup" data-border="1.5px dashed ${color}" style="border:1.5px dashed ${color};flex-direction:column!important;${pendPopupAlign}">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <div style="width:26px;height:26px;border-radius:50%;background:rgba(232,93,93,.15);border:1.5px dashed ${color};display:flex;align-items:center;justify-content:center;flex-shrink:0">${iconHTML(t.idx,color,16)}</div>
+            <div style="font-size:10px;font-weight:600;color:${color};line-height:1.3">${t.name}</div>
+          </div>
+          <div style="font-size:8px;background:rgba(232,93,93,.15);color:${color};border-radius:3px;padding:2px 6px;font-weight:700;text-align:center">PENDING</div>
+          <div style="font-size:8px;color:#8fa3bc;margin-top:3px">${pendingDays}d elapsed since FIR</div>
+        </div>
+      </div>
+      <div class="tl-conn" style="bottom:0;height:16px;border-left:1.5px dashed ${color};opacity:.45;background:none"></div>
+    </div>`;
+  }).join('');
+
+  const COMP_ZONE_H = 90;
+  const PEND_ZONE_H = 130;
+
+  /* Axis tick labels — one per event day */
+  const axisTicks = sqrtTicks.map((dayVal) => {
+    const pct = dayToPct(dayVal);
+    return `<div style="position:absolute;left:${pct.toFixed(1)}%;top:50%;transform:translate(-50%,-50%)">
+       <div style="width:1px;height:10px;background:rgba(255,255,255,.18);margin:0 auto"></div>
+     </div>
+     <div style="position:absolute;left:${pct.toFixed(1)}%;top:100%;transform:translateX(-50%);font-size:7.5px;color:#5a7494;margin-top:3px;white-space:nowrap">${dayVal}d</div>`;
+  }).join('');
+
+  const timelineHTML = popupStyle + `<div style="margin-bottom:28px">
+    <div class="timeline-title" style="margin-bottom:8px">Case progress timeline — hover any dot for details · same-day tasks shown together · completed below axis · pending above axis</div>
+
+    <!-- PENDING ZONE (above axis) -->
+    <div style="position:relative;height:${PEND_ZONE_H}px;margin:0 48px 0 40px;overflow:visible">
+      ${pendDots}
+    </div>
+
+    <!-- AXIS BAR -->
+    <div style="position:relative;margin:0 48px 0 40px;height:38px">
+      <div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);height:7px;border-radius:5px;background:rgba(255,255,255,.08)"></div>
+      <div style="position:absolute;left:${firPct.toFixed(1)}%;top:50%;transform:translateY(-50%);height:7px;border-radius:5px;background:linear-gradient(to right,#3dc98a,#f0a500);width:${(todayFullPct-firPct).toFixed(1)}%"></div>
+      <!-- FIR dot -->
+      <div style="position:absolute;left:${firPct.toFixed(1)}%;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;background:#f0a500;border:2px solid #1a2332;z-index:3"></div>
+      <div style="position:absolute;left:${firPct.toFixed(1)}%;bottom:-1px;transform:translateX(-50%);font-size:8px;font-weight:700;color:#f0a500;white-space:nowrap">${fmtDate(getFIRDate(row))}</div>
+      <!-- CS marker -->
+      <div style="position:absolute;left:${csPct.toFixed(1)}%;top:50%;transform:translate(-50%,-50%);z-index:3">
+        <div style="position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:#a78bfa;color:white;font-size:7.5px;font-weight:700;padding:2px 5px;border-radius:3px;white-space:nowrap">CS: ${fmtDate(new Date(firDate.getTime()+CHARGESHEET_DAYS*86400000).toISOString().split('T')[0])}</div>
+        <div style="width:1.5px;height:22px;background:#a78bfa;margin:0 auto"></div>
+        <div style="width:7px;height:7px;border-radius:50%;background:#a78bfa;margin:-3px auto 0"></div>
+      </div>
+      <!-- Today marker -->
+      <div style="position:absolute;left:${todayFullPct.toFixed(1)}%;top:50%;transform:translate(-50%,-50%);z-index:4">
+        <div style="position:absolute;top:-24px;left:50%;transform:translateX(-50%);background:#e85d5d;color:white;font-size:8px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap">Today · ${pendingDays}d</div>
+        <div style="width:2px;height:20px;background:#e85d5d;margin:0 auto"></div>
+        <div style="width:9px;height:9px;border-radius:50%;background:#e85d5d;border:2px solid #1a2332;margin:-4px auto 0;position:relative;z-index:5"></div>
+      </div>
+      ${axisTicks}
+      <!-- Axis dots for each unique day -->
+      ${Object.entries(dayGroups).map(([dayStr,tasks])=>{
+        const pct=dayToPct(Number(dayStr));
+        const dotColor=tasks.length===1?TC[tasks[0].idx]:'#f0a500';
+        return `<div style="position:absolute;left:${pct.toFixed(1)}%;top:50%;transform:translate(-50%,-50%);width:8px;height:8px;border-radius:50%;background:${dotColor};border:1.5px solid #1a2332;z-index:2"></div>`;
+      }).join('')}
+    </div>
+
+    <!-- COMPLETED ZONE (below axis) -->
+    <div style="position:relative;height:${COMP_ZONE_H}px;margin:0 48px 0 40px;overflow:visible">
+      ${compDots || '<div style="position:absolute;top:10px;left:0;font-size:11px;color:var(--txt3,#5a7494)">No completed tasks with recorded dates</div>'}
+    </div>
+
+    <!-- Legend -->
+    <div style="display:flex;gap:14px;margin-top:4px;margin-left:40px;flex-wrap:wrap;align-items:center">
+      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:#8fa3bc"><span style="width:8px;height:8px;border-radius:50%;background:#3dc98a;display:inline-block"></span>Completed (below · hover to see all tasks for that date)</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:#8fa3bc"><span style="width:8px;height:8px;border-radius:50%;border:1.5px dashed #e85d5d;display:inline-block"></span>Pending (above · hover for details)</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:#8fa3bc"><span style="width:8px;height:8px;border-radius:50%;background:#a78bfa;display:inline-block"></span>Chargesheet due (60d)</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:9px;color:#8fa3bc"><span style="width:8px;height:8px;border-radius:50%;background:#f0a500;display:inline-block"></span>Multiple tasks same day</span>
+    </div>
+  </div>`;
+
+
+
+  /* Completed list */
+  const tlHTML=completedSorted.length?`
+    <div style="margin-bottom:20px">
+      <div class="timeline-title">Completed milestones — chronological</div>
+      <div class="tl-outer">
+        <div class="tl-line"></div>
+        ${completedSorted.map(t=>`<div class="tl-item">
+          <div class="tl-dot" style="border-color:${TC[t.idx]};color:${TC[t.idx]}">${t.idx+1}</div>
+          <div class="tl-card" style="background:${TC[t.idx]}11;border-color:${TC[t.idx]}33">
+            <div class="tl-card-title" style="color:${TC[t.idx]}">${t.name}</div>
+            <div class="tl-card-meta">
+              <span>Completed: <strong style="color:var(--txt)">${fmtDate(t.compDate)}</strong></span>
+              <span>Days from FIR: <strong style="color:${dc(t.daysFromFIR)}">${t.daysFromFIR}d</strong></span>
+              <button class="t-edit-btn" onclick="editTask('${esc(getFIRNo(row))}','${esc(getPS(row))}','${esc(getSubDiv(row))}',${t.idx},'Completed')">✎ Edit</button>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>`:'';
+
+  /* ── COMPLETION BANNER vars ── */
+  const lastCompDate = completedSorted.length ? completedSorted[completedSorted.length-1].compDate : null;
+  const lastCompDays = completedSorted.length ? completedSorted[completedSorted.length-1].daysFromFIR : null;
+  const chargesheetDueDate = firDate ? fmtDate(new Date(firDate.getTime()+CHARGESHEET_DAYS*86400000).toISOString().split('T')[0]) : '—';
+  const isOnTime = lastCompDays !== null && lastCompDays <= CHARGESHEET_DAYS;
+
+  /* ── COMPLETION BANNER (top, only when all done) ── */
+  const completionBanner = pending.length===0 ? `
+    <div style="position:relative;background:linear-gradient(135deg,rgba(61,201,138,.12) 0%,rgba(240,165,0,.08) 50%,rgba(56,189,248,.08) 100%);border:1.5px solid rgba(61,201,138,.4);border-radius:14px;padding:18px 22px 16px;margin-bottom:14px;overflow:hidden">
+
+      <!-- Gold badge — top right corner -->
+      <div style="position:absolute;top:0;right:0;width:88px;height:88px;overflow:hidden;border-radius:0 14px 0 0">
+        <div style="position:absolute;top:14px;right:-22px;width:110px;background:linear-gradient(135deg,#f0a500,#ffd060);color:#1a1a00;font-size:9px;font-weight:800;text-align:center;padding:5px 0;letter-spacing:.06em;transform:rotate(45deg);box-shadow:0 2px 8px rgba(240,165,0,.5)">COMPLETE</div>
+      </div>
+
+      <!-- Header row -->
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-right:60px">
+        <div style="width:42px;height:42px;border-radius:50%;background:rgba(61,201,138,.18);border:2px solid #3dc98a;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#3dc98a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <div style="font-size:16px;font-weight:700;color:#3dc98a;letter-spacing:.01em">Investigation Completed</div>
+          <div style="font-size:11px;color:#8fa3bc;margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;align-items:center">
+            <span>All tasks finished on <strong style="color:#e8edf5">${fmtDate(lastCompDate)}</strong></span>
+            <span style="color:var(--txt3)">·</span>
+            <span><strong style="color:${isOnTime?'#3dc98a':'#e85d5d'}">${lastCompDays}d</strong> from FIR date</span>
+            <span style="color:var(--txt3)">·</span>
+            <span>Chargesheet due: <strong style="color:#a78bfa">${chargesheetDueDate}</strong></span>
+            <span style="padding:2px 9px;border-radius:20px;background:${isOnTime?'rgba(61,201,138,.15)':'rgba(232,93,93,.12)'};border:1px solid ${isOnTime?'rgba(61,201,138,.35)':'rgba(232,93,93,.3)'};font-size:9px;font-weight:700;color:${isOnTime?'#3dc98a':'#e85d5d'};white-space:nowrap">${isOnTime?'✓ Within 60d Limit':'⚠ Exceeded 60d Limit'}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="border-top:1px solid rgba(255,255,255,.07);margin-bottom:14px"></div>
+
+      <!-- Action steps -->
+      <div style="font-size:10px;font-weight:700;color:#e8edf5;margin-bottom:9px;letter-spacing:.06em;text-transform:uppercase">Next Steps — Action Required</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px">
+
+        <div style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);border-radius:9px;padding:11px 13px;display:flex;gap:9px;align-items:flex-start">
+          <div style="width:26px;height:26px;border-radius:7px;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:800;color:#38bdf8">1</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#38bdf8;margin-bottom:3px">Feed Chargesheet in CCTNS</div>
+            <div style="font-size:10px;color:#8fa3bc;line-height:1.5">Enter chargesheet data in CCTNS portal for FIR <strong style="color:#e8edf5">${firNo}</strong> before <strong style="color:#a78bfa">${chargesheetDueDate}</strong></div>
+          </div>
+        </div>
+
+        <div style="background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.2);border-radius:9px;padding:11px 13px;display:flex;gap:9px;align-items:flex-start">
+          <div style="width:26px;height:26px;border-radius:7px;background:rgba(167,139,250,.15);border:1px solid rgba(167,139,250,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;font-weight:800;color:#a78bfa">2</div>
+          <div>
+            <div style="font-size:11px;font-weight:700;color:#a78bfa;margin-bottom:3px">File Chargesheet in Court</div>
+            <div style="font-size:10px;color:#8fa3bc;line-height:1.5">Submit chargesheet to court under BNS <strong style="color:#e8edf5">${row['BNS Sections']||'—'}</strong>. Attach all supporting documents and muddemal.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:11px;font-size:9.5px;color:#5a7494;display:flex;align-items:center;gap:5px">
+        <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#5a7494" stroke-width="1.2"/><path d="M7 6v4M7 4.5v.5" stroke="#5a7494" stroke-width="1.3" stroke-linecap="round"/></svg>
+        IO: <strong style="color:#8fa3bc">${getIO(row)||'—'}</strong> is responsible · Station: <strong style="color:#8fa3bc">${getPS(row)||'—'}</strong> · Sub Div: <strong style="color:#8fa3bc">${getSubDiv(row)||'—'}</strong>
+      </div>
+    </div>` : '';
+
+  /* Not Required tasks — editable so SDPO can flip to Pending/Completed */
+  const nrHTML = nr.length ? `
+    <div style="margin-bottom:20px">
+      <div class="timeline-title" style="color:#8fa3bc">Not Required — ${nr.length} task${nr.length>1?'s':''} marked N/A · click Edit if status needs to change</div>
+      <div class="milestone-grid">
+        ${nr.map(t=>`<div class="milestone-card" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;border-color:var(--brd2);background:var(--c2)">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(143,163,188,.1);border:2px dashed rgba(143,163,188,.4);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:0 auto;color:#8fa3bc;font-weight:700;font-size:16px">${t.idx+1}</div>
+          <div class="milestone-num" style="color:#8fa3bc">TASK ${t.idx+1} · NOT REQUIRED</div>
+          <div class="milestone-name">${t.name}</div>
+          <button class="t-edit-btn" onclick="editTask('${esc(getFIRNo(row))}','${esc(getPS(row))}','${esc(getSubDiv(row))}',${t.idx},'Not Required')">✎ Edit status</button>
+        </div>`).join('')}
+      </div>
+    </div>` : '';
+
+  /* Pending milestones (bottom, only when tasks remain) */
+  const pendingHTML=pending.length?`
+    <div>
+      <div class="timeline-title" style="color:#e85d5d">Pending milestones — ${pending.length} task${pending.length>1?'s':''} remaining</div>
+      <div class="milestone-grid">
+        ${pending.map(t=>`<div class="milestone-card" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px">
+          <div style="width:52px;height:52px;border-radius:50%;background:rgba(232,93,93,.15);border:2px solid rgba(232,93,93,.5);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin:0 auto">${TASK_ICONS[t.idx].replace(/currentColor/g,'#e85d5d').replace(/var\(--c2\)/g,'#243447').replace('viewBox','width="36" height="36" viewBox')}</div>
+          <div class="milestone-num">${t.status===''?'TASK '+( t.idx+1)+' · NO DATA YET':'TASK '+(t.idx+1)+' · PENDING'}</div>
+          <div class="milestone-name">${t.name}</div>
+          <div class="milestone-days">${pendingDays} days elapsed since FIR</div>
+          <button class="t-edit-btn" onclick="editTask('${esc(getFIRNo(row))}','${esc(getPS(row))}','${esc(getSubDiv(row))}',${t.idx},'Pending')">✎ Edit status</button>
+        </div>`).join('')}
+      </div>
+    </div>`:'';
+
+  /* ── CS FILED BUT TASKS PENDING ALERT ── */
+  const csFiledPending = isCSFiled(row) && pending.length > 0;
+  const csFiledDate = getCSDate(row);
+  const pendingNames = pending.map(t=>`T${t.idx+1}: ${t.name}`);
+  const csAlertBanner = csFiledPending ? `
+    <div style="background:#1a0a0a;border:2px solid #e85d5d;border-radius:12px;padding:16px 20px;margin-bottom:14px;position:relative;overflow:hidden">
+      <!-- Pulsing left bar -->
+      <div style="position:absolute;left:0;top:0;bottom:0;width:5px;background:#e85d5d;animation:pu 1.2s infinite"></div>
+      <div style="display:flex;align-items:flex-start;gap:14px;padding-left:6px">
+        <!-- Alert icon -->
+        <div style="width:42px;height:42px;border-radius:50%;background:rgba(232,93,93,.2);border:2px solid #e85d5d;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 17h.01" stroke="#e85d5d" stroke-width="2.5" stroke-linecap="round"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke="#e85d5d" stroke-width="2"/></svg>
+        </div>
+        <div style="flex:1">
+          <!-- Big red heading -->
+          <div style="font-size:16px;font-weight:900;color:#e85d5d;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px">⚠ Chargesheet Filed But Tasks Pending</div>
+          <div style="font-size:11px;color:#f87171;margin-bottom:10px">
+            Chargesheet was filed on <strong style="color:#fff">${csFiledDate}</strong> but the following investigation steps were <strong style="color:#e85d5d">not completed</strong>:
+          </div>
+          <!-- Pending task pills -->
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">
+            ${pendingNames.map(n=>`<span style="background:rgba(232,93,93,.15);border:1px solid rgba(232,93,93,.4);color:#f87171;font-size:10px;font-weight:600;padding:3px 9px;border-radius:4px">${n}</span>`).join('')}
+          </div>
+          <div style="font-size:10px;color:#9ca3af;border-top:1px solid rgba(232,93,93,.2);padding-top:8px">
+            IO: <strong style="color:#f87171">${getIO(row)||'—'}</strong> &nbsp;·&nbsp; Station: <strong style="color:#f87171">${getPS(row)||'—'}</strong> &nbsp;·&nbsp; Sub Div: <strong style="color:#f87171">${getSubDiv(row)||'—'}</strong>
+          </div>
+        </div>
+      </div>
+    </div>` : '';
+
+  return `<div class="fir-tracker-wrap">
+    ${csAlertBanner}
+    ${completionBanner}
+    <div class="fir-hdr">
+      <div class="fir-hdr-left">
+        <div class="fir-title">FIR No: ${firNo}</div>
+        <div class="fir-meta">
+          <span>Station: <strong style="color:var(--txt)">${getPS(row)}</strong></span>
+          <span>Sub Div: <strong style="color:var(--txt)">${getSubDiv(row)}</strong></span>
+          <span>IO: <strong style="color:var(--txt)">${getIO(row)}</strong></span>
+          <span>BNS: <strong style="color:var(--acc)">${row['BNS Sections']||'—'}</strong></span>
+        </div>
+      </div>
+      <div class="arc-wrap">${donutSVG}</div>
+    </div>
+    ${statsHTML}
+    ${timelineHTML}
+    ${tlHTML}
+    ${pendingHTML}
+    ${nrHTML}
+  </div>`;
+}
+
+async function doRefresh(){
+  const ri=document.getElementById('ri');
+  if(ri) ri.classList.add('sp');
+  setChip('load','Fetching…');
+  try{
+    /* Append timestamp to URL to bypass Google's CDN cache on every request */
+    const res=await fetch(API + '?t=' + Date.now(), {cache: 'no-store'});
+    if(!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
+    const json=await res.json();
+    if(!json.data) throw new Error('Response has no "data" field. Check Apps Script code returns {data:[...]}');
+    const parsed=json.data.filter(r=>getFIRNo(r)||getPS(r)||getFIRDate(r)||r['Timestamp']);
+    if(!parsed.length) throw new Error('Apps Script returned 0 rows. Make sure the sheet has data.');
+    allRows=parsed;
+    clearKeyCache();
+    _logInvDaysLeftDiagnostic(allRows);
+    setChip('live','Live');
+    document.getElementById('lu').textContent=new Date().toLocaleTimeString('en-IN');
+    document.getElementById('rc').textContent=allRows.length+' FIRs';
+    populatePSFilter();
+    render();
+  }catch(e){
+    setChip('err','Error');
+    document.getElementById('content').innerHTML=`
+      <div class="eb">
+        <strong>Failed to fetch data:</strong> ${e.message}
+      </div>
+      <div class="gb">
+        <strong>How to fix:</strong><br><br>
+        1. Open your Google Sheet → <strong>Extensions → Apps Script</strong><br>
+        2. Click <strong>Deploy → Manage deployments</strong><br>
+        3. Confirm: <strong>Execute as: Me</strong> and <strong>Who has access: Anyone</strong><br>
+        4. To test: open this URL in your browser tab:<br>
+        <code>${API}</code><br><br>
+        You should see <code>{"data":[...]}</code> — if you see an error page, redeploy as a <strong>New Deployment</strong>.
+      </div>`;
+  }
+  if(ri) ri.classList.remove('sp');
+}
+
+doRefresh();
+setInterval(doRefresh, 2 * 60 * 1000);
+</script>
+<div id="pt-float"></div>
+<div id="edit-backdrop" onclick="if(event.target.id==='edit-backdrop')cancelTaskEdit()">
+  <div id="edit-modal" role="dialog" aria-modal="true">
+    <h3 id="em-title">Edit Task Status</h3>
+    <div class="em-sub" id="em-sub"></div>
+    <div class="em-current" id="em-current"></div>
+    <div class="em-opts">
+      <button class="em-opt pending" data-status="Pending" onclick="selectTaskStatus('Pending')"><span class="em-dot" style="background:#e85d5d"></span>Mark as Pending</button>
+      <button class="em-opt completed" data-status="Completed" onclick="selectTaskStatus('Completed')"><span class="em-dot" style="background:#3dc98a"></span>Mark as Completed</button>
+      <button class="em-opt nr" data-status="Not Required" onclick="selectTaskStatus('Not Required')"><span class="em-dot" style="background:#8fa3bc"></span>Mark as Not Required</button>
+    </div>
+    <div class="em-date" id="em-date-wrap">
+      <label>Completion date</label>
+      <input type="text" id="em-date-input" placeholder="dd-mm-yyyy (e.g. 17-04-2026)" autocomplete="off">
+    </div>
+    <div class="em-err" id="em-err"></div>
+    <div class="em-actions">
+      <button class="em-btn cancel" onclick="cancelTaskEdit()">Cancel</button>
+      <button class="em-btn confirm" id="em-confirm" onclick="confirmTaskEdit()" disabled>Confirm</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const floater = document.getElementById('pt-float');
+  function showTip(target){
+    const raw = target.getAttribute('data-tasks') || '';
+    if(!raw){ floater.classList.remove('show'); return; }
+    const tasks = raw.split('||').filter(Boolean);
+    floater.innerHTML =
+      '<div class="pt-head">Pending Tasks (' + tasks.length + ')</div>' +
+      tasks.map(t => '<div class="pt-row">' + t.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>').join('');
+    floater.classList.add('show');
+    const r = target.getBoundingClientRect();
+    const fw = floater.offsetWidth;
+    const fh = floater.offsetHeight;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let left = r.left - fw - 12;
+    if(left < 8) left = r.right + 12;
+    if(left + fw > vw - 8) left = vw - fw - 8;
+    let top = r.top + (r.height/2) - (fh/2);
+    if(top < 8) top = 8;
+    if(top + fh > vh - 8) top = vh - fh - 8;
+    floater.style.left = left + 'px';
+    floater.style.top  = top + 'px';
+  }
+  function hideTip(){ floater.classList.remove('show'); }
+  document.addEventListener('mouseover', e => {
+    const el = e.target.closest('.pt-hover');
+    if(el) showTip(el);
+  });
+  document.addEventListener('mouseout', e => {
+    const el = e.target.closest('.pt-hover');
+    if(el && !el.contains(e.relatedTarget)) hideTip();
+  });
+  document.addEventListener('scroll', hideTip, true);
+})();
+
+/* ───────────────────── Task Status Editor ───────────────────────
+   Opens a modal for the user to change a task's status. On confirm,
+   POSTs to the Apps Script which updates Form Responses + audit log.
+   Optimistically updates the in-memory row so UI reflects immediately. */
+let _editState = null;  // {firNo, ps, subDiv, taskIdx, currentStatus, pickedStatus}
+
+function editTask(firNo, ps, subDiv, taskIdx, currentStatus){
+  _editState = { firNo, ps, subDiv, taskIdx, currentStatus, pickedStatus: null };
+  const modal = document.getElementById('edit-backdrop');
+  document.getElementById('em-title').textContent = `Edit T${taskIdx+1}: ${TASKS[taskIdx]}`;
+  document.getElementById('em-sub').textContent = `FIR ${firNo} · ${ps}${subDiv?' · '+subDiv:''}`;
+  document.getElementById('em-current').innerHTML = `Current status: <strong style="color:${currentStatus==='Completed'?'#3dc98a':currentStatus==='Pending'?'#e85d5d':'#8fa3bc'}">${currentStatus}</strong>`;
+  document.getElementById('em-date-wrap').classList.remove('show');
+  document.getElementById('em-date-input').value = '';
+  document.getElementById('em-err').classList.remove('show');
+  document.getElementById('em-err').textContent = '';
+  document.getElementById('em-confirm').disabled = true;
+  /* Clear previous selection styling */
+  document.querySelectorAll('.em-opt').forEach(b => b.style.borderWidth = '1.5px');
+  modal.classList.add('show');
+}
+
+function selectTaskStatus(status){
+  if(!_editState) return;
+  _editState.pickedStatus = status;
+  /* Highlight selection */
+  document.querySelectorAll('.em-opt').forEach(b => {
+    b.style.borderWidth = b.dataset.status === status ? '2.5px' : '1.5px';
+  });
+  /* Show date input only for Completed */
+  const dateWrap = document.getElementById('em-date-wrap');
+  if(status === 'Completed'){
+    dateWrap.classList.add('show');
+    /* Pre-fill with today in dd-mm-yyyy */
+    const d = new Date();
+    const today = String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear();
+    const inp = document.getElementById('em-date-input');
+    if(!inp.value) inp.value = today;
+    setTimeout(()=>inp.focus(), 50);
+  } else {
+    dateWrap.classList.remove('show');
+  }
+  document.getElementById('em-confirm').disabled = false;
+}
+
+function cancelTaskEdit(){
+  _editState = null;
+  document.getElementById('edit-backdrop').classList.remove('show');
+}
+
+async function confirmTaskEdit(){
+  if(!_editState || !_editState.pickedStatus) return;
+  const { firNo, ps, subDiv, taskIdx, currentStatus, pickedStatus } = _editState;
+  /* If no actual change, just close */
+  if(pickedStatus === currentStatus){ cancelTaskEdit(); return; }
+
+  const errEl = document.getElementById('em-err');
+  errEl.classList.remove('show');
+  const confirmBtn = document.getElementById('em-confirm');
+  confirmBtn.disabled = true;
+  confirmBtn.textContent = 'Saving…';
+
+  let compDate = '';
+  if(pickedStatus === 'Completed'){
+    compDate = document.getElementById('em-date-input').value.trim();
+    if(!compDate){
+      errEl.textContent = 'Completion date is required.';
+      errEl.classList.add('show');
+      confirmBtn.disabled = false; confirmBtn.textContent = 'Confirm';
+      return;
+    }
+  }
+
+  try {
+    /* Apps Script doPost — Google blocks cross-origin preflight for custom
+       JSON types, so we send as text/plain and parse on the server. */
+
+    /* Resolve exact column header names from live row data and send them
+       so Apps Script can do a direct header match — avoids T22 "not found"
+       when sheet header spelling differs from TASKS[] string. */
+    const _postRow = allRows.find(r =>
+      String(getFIRNo(r)).trim() === String(firNo).trim()
+      && String(getPS(r)).trim().toLowerCase() === String(ps).trim().toLowerCase()
+    );
+    function _norm(s){ return s.replace(/[\u2014\u2013\u2012\u2010]/g,'-').replace(/\s+/g,' ').trim().toLowerCase(); }
+    let statusColHeader = '', dateColHeader = '';
+    if(_postRow){
+      const keys = Object.keys(_postRow);
+      const kw = `${taskIdx+1}.`;
+      const skFull = keys.find(k => _norm(k) === _norm(`${taskIdx+1}. ${TASKS[taskIdx]} — Status`));
+      const skFall = keys.find(k => _norm(k).startsWith(kw) && _norm(k).includes('status'));
+      statusColHeader = (skFull || skFall || '');
+      const dkFull = keys.find(k => _norm(k) === _norm(`${taskIdx+1}. ${TASKS[taskIdx]} — Completion Date`));
+      const dkFall = keys.find(k => _norm(k).startsWith(kw) && _norm(k).includes('date'));
+      dateColHeader = (dkFull || dkFall || '');
+    }
+
+    const res = await fetch(API, {
+      method: 'POST',
+      mode:   'cors',
+      headers:{ 'Content-Type':'text/plain;charset=utf-8' },
+      body:   JSON.stringify({ firNo, ps, subDiv, taskIdx, status: pickedStatus, compDate,
+                               statusColHeader, dateColHeader })
+    });
+    const json = await res.json();
+    if(!json.ok) throw new Error(json.error || 'Unknown error');
+
+    /* Optimistically update the in-memory row so UI reflects immediately.
+       Next auto-refresh (every 2 min) or manual Refresh will confirm. */
+    const row = allRows.find(r =>
+      String(getFIRNo(r)).trim() === String(firNo).trim()
+      && String(getPS(r)).trim().toLowerCase() === String(ps).trim().toLowerCase()
+      && (!subDiv || String(getSubDiv(r)).trim().toLowerCase() === String(subDiv).trim().toLowerCase())
+    );
+    if(row){
+      const keys = Object.keys(row);
+      const n = taskIdx+1;
+      function _sk(k){ return k.replace(/[\u2014\u2013\u2012\u2010]/g,'-').replace(/\s+/g,' ').trim().toLowerCase(); }
+      const statusKey = (statusColHeader && keys.find(k => k === statusColHeader))
+                     || keys.find(k => _sk(k).startsWith(n+'.') && _sk(k).includes('status'))
+                     || keys.find(k => _sk(k).startsWith(n+'.') && !_sk(k).includes('date'));
+      const dateKey   = (dateColHeader && keys.find(k => k === dateColHeader))
+                     || keys.find(k => _sk(k).startsWith(n+'.') && _sk(k).includes('date'))
+                     || keys.find(k => _sk(k).startsWith(n+'.') && k !== statusKey);
+      if(statusKey) row[statusKey] = pickedStatus;
+      if(dateKey)   row[dateKey]   = pickedStatus === 'Completed' ? (json.compDate || compDate) : '';
+      clearKeyCache();
+    }
+
+    cancelTaskEdit();
+    render();
+    refreshDrill();  /* rebuild the drill body so pending-count tooltips reflect the change */
+  } catch(err){
+    errEl.textContent = 'Failed to save: ' + err.message + '. Your change was NOT saved. Please retry.';
+    errEl.classList.add('show');
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Confirm';
+  }
+}
+
+/* Close modal on Escape */
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && _editState) cancelTaskEdit();
+});
+
+/* ─────────── Inline Case Info field editor ───────────
+   Click pencil → value cell turns into an input with Save/Cancel.
+   Enter = save, Escape = cancel. Optimistic UI on success; rollback on error. */
+function editField(pencilEl, firNo, ps, subDiv, fieldKey, label, type, isIdent, currentValue){
+  const wrapper = pencilEl.closest('.ci-field');
+  const valDiv = wrapper.querySelector('.ci-val');
+  const originalHTML = valDiv.innerHTML;
+  /* Always use text input — we accept whatever anyone types (nil, none, 0, zero, etc.)
+     The `type` parameter is retained for future UX hints but no longer restricts input. */
+  valDiv.innerHTML = `<div class="ci-edit-wrap">
+    <input type="text" class="ci-edit-input" value="${String(currentValue).replace(/"/g,'&quot;')}" />
+    <button class="ci-edit-save">Save</button>
+    <button class="ci-edit-cancel">✕</button>
+  </div><div class="ci-edit-err"></div>`;
+  const input = valDiv.querySelector('input');
+  const saveBtn = valDiv.querySelector('.ci-edit-save');
+  const cancelBtn = valDiv.querySelector('.ci-edit-cancel');
+  const errEl = valDiv.querySelector('.ci-edit-err');
+  input.focus(); input.select();
+  pencilEl.style.display = 'none';
+
+  function cancel(){
+    valDiv.innerHTML = originalHTML;
+    pencilEl.style.display = '';
+  }
+  async function save(){
+    const newVal = input.value;  /* preserve whitespace as-entered; no validation */
+    /* Identifier confirm */
+    if(isIdent){
+      const ok = confirm(`You are changing ${label} — this is an identifier field. Changing it will make future edits to this FIR temporarily misalign until the dashboard refreshes. Continue?`);
+      if(!ok) return;
+    }
+    /* If unchanged, just cancel */
+    if(newVal === String(currentValue)){ cancel(); return; }
+
+    saveBtn.disabled = true; cancelBtn.disabled = true;
+    valDiv.classList.add('ci-edit-saving');
+    errEl.textContent = '';
+    try {
+      const res = await fetch(API, {
+        method: 'POST',
+        mode: 'cors',
+        headers: {'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({
+          action: 'updateField',
+          firNo, ps, subDiv,
+          fieldKey,
+          value: newVal,
+        })
+      });
+      const json = await res.json();
+      if(!json.ok) throw new Error(json.error || 'Unknown error');
+
+      /* Optimistic: update in-memory row under the exact fieldKey the server wrote */
+      const row = allRows.find(r =>
+        String(getFIRNo(r)).trim() === String(firNo).trim()
+        && String(getPS(r)).trim().toLowerCase() === String(ps).trim().toLowerCase()
+        && (!subDiv || String(getSubDiv(r)).trim().toLowerCase() === String(subDiv).trim().toLowerCase())
+      );
+      if(row) row[fieldKey] = newVal;
+      clearKeyCache();
+      render();
+      refreshDrill();  /* rebuild drill body if one is open */
+    } catch(err) {
+      errEl.textContent = 'Save failed: ' + err.message + '. Not written.';
+      saveBtn.disabled = false; cancelBtn.disabled = false;
+      valDiv.classList.remove('ci-edit-saving');
+    }
+  }
+  saveBtn.addEventListener('click', save);
+  cancelBtn.addEventListener('click', cancel);
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter'){ e.preventDefault(); save(); }
+    else if(e.key === 'Escape'){ e.preventDefault(); cancel(); }
+  });
+}
+</script><!-- BULK ADD TASK TO MULTIPLE FIRs MODAL -->
+<div id="ba-backdrop" onclick="if(event.target.id==='ba-backdrop')closeBulkAdd()">
+<div id="ba-modal" role="dialog" aria-modal="true">
+  <h3>⚡ Add Task to Multiple FIRs</h3>
+  <div class="ba-task-lbl" id="ba-task-lbl">Task: —</div>
+
+  <!-- Status + Date -->
+  <div class="ba-section-lbl">Set Status</div>
+  <div class="ba-status-row">
+    <div>
+      <label>Status</label>
+      <select id="ba-status" onchange="baStatusChanged()">
+        <option value="Completed">✅ Completed</option>
+        <option value="Pending">🔴 Pending</option>
+        <option value="Not Required">⚪ Not Required</option>
+      </select>
+    </div>
+    <div id="ba-date-wrap">
+      <label>Completion Date</label>
+      <input type="text" id="ba-date" placeholder="dd-mm-yyyy" autocomplete="off" style="width:140px">
+    </div>
+  </div>
+
+  <!-- Search + filter to find FIRs -->
+  <div class="ba-section-lbl">Search &amp; Select FIRs <span style="font-size:9px;color:var(--txt3);font-weight:400;text-transform:none">— filter by FIR No, Station, or BNS Sections then click + to add</span></div>
+  <div class="ba-search-row" style="flex-wrap:wrap;gap:7px;margin-bottom:7px">
+    <input id="ba-search" type="text" placeholder="FIR No. (e.g. 82, 211…)" style="width:150px" oninput="baFilterPool()">
+    <select id="ba-ps-filter" onchange="baFilterPool()" style="min-width:145px">
+      <option value="">All Stations</option>
+    </select>
+  </div>
+  <!-- BNS Section tag-input -->
+  <div style="position:relative;margin-bottom:8px">
+    <div style="font-size:9px;color:var(--txt3);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">
+      BNS Section Filter <span style="font-weight:400;text-transform:none">(type section, press Enter or comma to add — OR logic)</span>
+    </div>
+    <div class="ba-bns-wrap" id="ba-bns-wrap" onclick="document.getElementById('ba-bns-input').focus()">
+      <div id="ba-bns-chips-inline"></div>
+      <input id="ba-bns-input" placeholder="e.g. 118(1), 302, 65E…" autocomplete="off"
+        oninput="baBnsInputChanged()" onkeydown="baBnsKeyDown(event)" onblur="baBnsBlur()">
+    </div>
+    <div id="ba-bns-suggestions" class="ba-bns-suggestions" style="display:none"></div>
+  </div>
+  <div style="display:flex;gap:7px;margin-bottom:8px;align-items:center">
+    <button onclick="baAddAllVisible()" style="background:rgba(61,201,138,.12);border:1px solid rgba(61,201,138,.3);color:#3dc98a;font-size:10px;font-weight:700;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap">+ Add All Visible</button>
+    <span id="ba-pool-count" style="font-size:10px;color:var(--txt3)"></span>
+  </div>
+  <div class="ba-fir-pool" id="ba-pool"></div>
+
+  <!-- Selected FIRs chips -->
+  <div class="ba-section-lbl">Selected FIRs: <span id="ba-sel-count" style="color:#3dc98a;font-weight:700">0</span></div>
+  <div class="ba-selected-wrap" id="ba-chips">
+    <span style="font-size:10px;color:var(--txt3);padding:4px">No FIRs selected yet — search above and click + to add</span>
+  </div>
+
+  <!-- Progress & results -->
+  <div class="ba-prog" id="ba-prog"><div class="ba-prog-fill" id="ba-prog-fill" style="width:0%"></div></div>
+  <div class="ba-result" id="ba-result"></div>
+  <div class="ba-err" id="ba-err"></div>
+
+  <div class="ba-actions">
+    <button class="ba-btn cancel" onclick="closeBulkAdd()">Cancel</button>
+    <button class="ba-btn confirm" id="ba-confirm" onclick="confirmBulkAdd()" disabled>Save to All Selected FIRs</button>
+  </div>
+</div>
+</div>
+
+<script>
+/* ═══════════════ BULK ADD TASK TO MULTIPLE FIRs ═══════════════
+   Opens when user clicks "⚡ Add to FIRs" on any task row.
+   Lets them search/pick FIRs, set status+date, save all at once.
+   Uses the same Apps Script POST endpoint as single-FIR edits.   */
+
+let _baTaskIdx = null;       // which task is being bulk-updated
+let _baSelected = [];        // array of {firNo, ps, subDiv, rowRef}
+
+function openBulkAddModal(ti){
+  _baTaskIdx = ti;
+  _baSelected = [];
+
+  /* Title */
+  document.getElementById('ba-task-lbl').textContent = `Task T${ti+1}: ${TASKS[ti]}`;
+
+  /* Pre-fill date to today */
+  const d = new Date();
+  document.getElementById('ba-date').value =
+    String(d.getDate()).padStart(2,'0')+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+d.getFullYear();
+  document.getElementById('ba-status').value = 'Completed';
+  document.getElementById('ba-date-wrap').style.display = '';
+
+  /* Populate PS filter */
+  const psSel = document.getElementById('ba-ps-filter');
+  psSel.innerHTML = '<option value="">All Stations</option>' +
+    uniq(allRows, getPS).map(p => `<option value="${p}">${p}</option>`).join('');
+
+  /* Clear search */
+  document.getElementById('ba-search').value = '';
+  document.getElementById('ba-bns-input').value = '';
+  _baBnsSections = [];
+  baBnsRenderChipsInline();
+  document.getElementById('ba-bns-suggestions').style.display = 'none';
+
+  /* Reset state */
+  document.getElementById('ba-prog').classList.remove('show');
+  document.getElementById('ba-result').classList.remove('show');
+  document.getElementById('ba-err').classList.remove('show');
+  document.getElementById('ba-confirm').disabled = true;
+
+  baRenderChips();
+  baFilterPool();
+
+  document.getElementById('ba-backdrop').classList.add('show');
+  setTimeout(()=>document.getElementById('ba-search').focus(), 80);
+}
+
+function closeBulkAdd(){
+  document.getElementById('ba-backdrop').classList.remove('show');
+  _baTaskIdx = null; _baSelected = [];
+}
+
+function baStatusChanged(){
+  const s = document.getElementById('ba-status').value;
+  document.getElementById('ba-date-wrap').style.display = s === 'Completed' ? '' : 'none';
+}
+
+/* Build the searchable pool list */
+function baFilterPool(){
+  const q   = (document.getElementById('ba-search').value||'').trim().toLowerCase();
+  const ps  = document.getElementById('ba-ps-filter').value;
+  const bns = _baBnsSections; // array of section strings to match (OR logic)
+
+  let rows = allRows;
+  if(ps)  rows = rows.filter(r => getPS(r) === ps);
+  if(q)   rows = rows.filter(r => String(getFIRNo(r)||'').toLowerCase().includes(q));
+  if(bns.length){
+    rows = rows.filter(r => {
+      const rBns = (r['BNS Sections']||'').toUpperCase();
+      return bns.some(sec => rBns.includes(sec.toUpperCase()));
+    });
+  }
+
+  /* Count before slice */
+  const total = rows.length;
+  rows = rows.slice(0, 80);
+  const poolCountEl = document.getElementById('ba-pool-count');
+  if(poolCountEl) poolCountEl.textContent = total > 0 ? `${total} FIR${total!==1?'s':''} match${total>80?' (showing first 80)':''}` : '';
+
+  const poolEl = document.getElementById('ba-pool');
+  if(!rows.length){
+    poolEl.innerHTML = `<div style="padding:10px 12px;font-size:11px;color:var(--txt3)">No FIRs match the current filters</div>`;
+    return;
+  }
+
+  const ti = _baTaskIdx;
+  poolEl.innerHTML = rows.map(r => {
+    const firNo = getFIRNo(r)||'', ps2 = getPS(r)||'', sd = getSubDiv(r)||'';
+    const bnsTxt = (r['BNS Sections']||'').trim();
+    const key = firNo+'||'+ps2+'||'+sd;
+    const alreadySel = _baSelected.some(s => s.key === key);
+    const curSt = gSt(r, ti);
+    const sc   = curSt==='Completed'?'#3dc98a':curSt==='Pending'?'#e85d5d':curSt==='Not Required'?'#8fa3bc':'#5a7494';
+    const scBg = curSt==='Completed'?'rgba(61,201,138,.14)':curSt==='Pending'?'rgba(232,93,93,.12)':curSt==='Not Required'?'rgba(143,163,188,.1)':'rgba(90,116,148,.1)';
+    /* Highlight matched BNS sections */
+    let bnsDisplay = bnsTxt;
+    if(bns.length && bnsTxt){
+      bnsDisplay = bnsTxt.replace(new RegExp('('+bns.map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')','gi'),
+        '<span style="background:rgba(167,139,250,.3);color:#c4b5fd;border-radius:3px;padding:0 2px">$1</span>');
+    }
+    return `<div class="ba-pool-row${alreadySel?' selected':''}">
+      <span class="ba-pool-firno">${firNo}</span>
+      <span class="ba-pool-ps" style="min-width:120px">${ps2}${sd?' · '+sd:''}</span>
+      ${bnsTxt?`<span class="ba-pool-bns" title="${bnsTxt}">${bnsDisplay}</span>`:'<span style="font-size:9px;color:var(--txt3);flex-shrink:0">No BNS</span>'}
+      <span class="ba-pool-cur" style="background:${scBg};color:${sc}">${curSt||'No data'}</span>
+      ${alreadySel
+        ? `<button class="ba-pool-add" style="background:rgba(232,93,93,.15);color:#e85d5d;border:1px solid rgba(232,93,93,.3)" onclick="baRemoveFIR('${esc(key)}')">✕ Remove</button>`
+        : `<button class="ba-pool-add" style="background:rgba(61,201,138,.15);color:#3dc98a;border:1px solid rgba(61,201,138,.3)" onclick="baAddFIR('${esc(firNo)}','${esc(ps2)}','${esc(sd)}')">+ Add</button>`
+      }
+    </div>`;
+  }).join('');
+}
+
+function baAddFIR(firNo, ps, subDiv){
+  const key = firNo+'||'+ps+'||'+subDiv;
+  if(_baSelected.some(s => s.key === key)) return;
+  const row = allRows.find(r => getFIRNo(r)===firNo && getPS(r)===ps && getSubDiv(r)===subDiv)
+            || allRows.find(r => getFIRNo(r)===firNo && getPS(r)===ps);
+  _baSelected.push({ key, firNo, ps, subDiv, row });
+  baRenderChips();
+  baFilterPool(); /* refresh pool to show "Remove" button */
+}
+
+function baRemoveFIR(key){
+  _baSelected = _baSelected.filter(s => s.key !== key);
+  baRenderChips();
+  baFilterPool();
+}
+
+function baAddAllVisible(){
+  const q = (document.getElementById('ba-search').value||'').trim().toLowerCase();
+  const ps = document.getElementById('ba-ps-filter').value;
+  let rows = allRows;
+  if(ps) rows = rows.filter(r => getPS(r) === ps);
+  if(q)  rows = rows.filter(r => String(getFIRNo(r)||'').toLowerCase().includes(q));
+  rows.slice(0,60).forEach(r => {
+    const firNo = getFIRNo(r)||'', ps2 = getPS(r)||'', sd = getSubDiv(r)||'';
+    const key = firNo+'||'+ps2+'||'+sd;
+    if(!firNo) return;
+    if(_baSelected.some(s => s.key === key)) return;
+    _baSelected.push({ key, firNo, ps: ps2, subDiv: sd, row: r });
+  });
+  baRenderChips();
+  baFilterPool();
+}
+
+function baRenderChips(){
+  const wrap = document.getElementById('ba-chips');
+  document.getElementById('ba-sel-count').textContent = _baSelected.length;
+  document.getElementById('ba-confirm').disabled = _baSelected.length === 0;
+  if(!_baSelected.length){
+    wrap.innerHTML = `<span style="font-size:10px;color:var(--txt3);padding:4px">No FIRs selected yet — search above and click + to add</span>`;
+    return;
+  }
+  wrap.innerHTML = _baSelected.map(s =>
+    `<span class="ba-chip">${s.firNo} <span style="font-size:9px;opacity:.7">${s.ps}</span>
+      <span class="ba-chip-x" onclick="baRemoveFIR('${esc(s.key)}')">✕</span>
+    </span>`
+  ).join('');
+}
+
+async function confirmBulkAdd(){
+  if(!_baSelected.length || _baTaskIdx === null) return;
+  const ti = _baTaskIdx;
+  const status = document.getElementById('ba-status').value;
+  let compDate = '';
+  if(status === 'Completed'){
+    compDate = document.getElementById('ba-date').value.trim();
+    if(!compDate){
+      const e = document.getElementById('ba-err');
+      e.textContent = 'Completion date is required when marking as Completed.';
+      e.classList.add('show'); return;
+    }
+  }
+
+  document.getElementById('ba-err').classList.remove('show');
+  document.getElementById('ba-confirm').disabled = true;
+  const prog = document.getElementById('ba-prog');
+  const fill = document.getElementById('ba-prog-fill');
+  const res  = document.getElementById('ba-result');
+  prog.classList.add('show');
+  res.classList.remove('show');
+  fill.style.width = '0%';
+
+  let done = 0, failed = [];
+  for(const sel of _baSelected){
+    fill.style.width = (done/_baSelected.length*100).toFixed(1)+'%';
+    try{
+      /* Resolve actual column headers from live row so Apps Script finds T22 */
+      function _bnorm(s){ return s.replace(/[\u2014\u2013\u2012\u2010]/g,'-').replace(/\s+/g,' ').trim().toLowerCase(); }
+      let statusColHeader = '', dateColHeader = '';
+      if(sel.row){
+        const keys = Object.keys(sel.row);
+        const kw = `${ti+1}.`;
+        statusColHeader = keys.find(k => _bnorm(k) === _bnorm(`${ti+1}. ${TASKS[ti]} — Status`))
+                       || keys.find(k => _bnorm(k).startsWith(kw) && _bnorm(k).includes('status')) || '';
+        dateColHeader   = keys.find(k => _bnorm(k) === _bnorm(`${ti+1}. ${TASKS[ti]} — Completion Date`))
+                       || keys.find(k => _bnorm(k).startsWith(kw) && _bnorm(k).includes('date')) || '';
+      }
+      const resp = await fetch(API, {
+        method:'POST', mode:'cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
+        body: JSON.stringify({ firNo: sel.firNo, ps: sel.ps, subDiv: sel.subDiv,
+                               taskIdx: ti, status, compDate,
+                               statusColHeader, dateColHeader })
+      });
+      const json = await resp.json();
+      if(!json.ok) throw new Error(json.error||'Server error');
+      /* Optimistic update — use gSt/findKey resolver which already handles
+         non-standard headers like "22. IRAD/DAR Form Submited?" */
+      if(sel.row){
+        /* Find the status key: try exact header sent back, then broadest fallback */
+        const keys = Object.keys(sel.row);
+        const n = ti+1;
+        function _ok(k){ return k.replace(/[\u2014\u2013\u2012\u2010]/g,'-').replace(/\s+/g,' ').trim().toLowerCase(); }
+        /* statusColHeader was resolved from the live row before POSTing — use it directly */
+        const statusKey = (statusColHeader && keys.find(k => k === statusColHeader))
+                       || keys.find(k => _ok(k).startsWith(n+'.') && _ok(k).includes('status'))
+                       || keys.find(k => _ok(k).startsWith(n+'.') && !_ok(k).includes('date'));
+        const dateKey   = (dateColHeader && keys.find(k => k === dateColHeader))
+                       || keys.find(k => _ok(k).startsWith(n+'.') && _ok(k).includes('date'))
+                       || keys.find(k => _ok(k).startsWith(n+'.') && k !== statusKey);
+        if(statusKey) sel.row[statusKey] = status;
+        if(dateKey)   sel.row[dateKey]   = status==='Completed' ? (json.compDate||compDate) : '';
+      }
+    } catch(err){ failed.push(`FIR ${sel.firNo} (${sel.ps}): ${err.message}`); }
+    done++;
+  }
+  fill.style.width = '100%';
+  clearKeyCache();
+
+  const ok = done - failed.length;
+  res.textContent = `✅ Done — ${ok} FIR${ok!==1?'s':''} updated successfully${failed.length?`, ${failed.length} failed`:''}`;
+  res.style.color = failed.length ? '#f0a500' : '#3dc98a';
+  res.classList.add('show');
+  if(failed.length){
+    const e = document.getElementById('ba-err');
+    e.textContent = failed.join(' | ');
+    e.classList.add('show');
+    document.getElementById('ba-confirm').disabled = false;
+  } else {
+    setTimeout(()=>{ closeBulkAdd(); render(); refreshDrill(); }, 900);
+  }
+}
+
+/* ── BNS Section tag-input ─────────────────────────────────── */
+let _baBnsSections = [];   // active filter chips
+let _baBnsSugIdx   = -1;   // keyboard nav index in suggestions
+
+/* Called on every keydown in BNS input */
+function baBnsKeyDown(e){
+  const sug = document.getElementById('ba-bns-suggestions');
+  const items = sug.querySelectorAll('.ba-bns-sug-item');
+
+  if(e.key === 'ArrowDown'){
+    e.preventDefault();
+    _baBnsSugIdx = Math.min(_baBnsSugIdx+1, items.length-1);
+    baBnsHighlightSug(items);
+  } else if(e.key === 'ArrowUp'){
+    e.preventDefault();
+    _baBnsSugIdx = Math.max(_baBnsSugIdx-1, -1);
+    baBnsHighlightSug(items);
+  } else if(e.key === 'Enter' || e.key === ','){
+    e.preventDefault();
+    if(_baBnsSugIdx >= 0 && items[_baBnsSugIdx]){
+      baBnsAddSection(items[_baBnsSugIdx].dataset.sec);
+    } else {
+      const val = document.getElementById('ba-bns-input').value.replace(/,/g,'').trim();
+      if(val) baBnsAddSection(val);
+    }
+  } else if(e.key === 'Backspace'){
+    const inp = document.getElementById('ba-bns-input');
+    if(!inp.value && _baBnsSections.length){
+      baBnsRemoveSection(_baBnsSections[_baBnsSections.length-1]);
+    }
+  } else if(e.key === 'Escape'){
+    sug.style.display = 'none';
+  }
+}
+
+function baBnsHighlightSug(items){
+  items.forEach((el,i) => el.classList.toggle('active', i === _baBnsSugIdx));
+}
+
+/* Show autocomplete suggestions based on current input */
+function baBnsInputChanged(){
+  _baBnsSugIdx = -1;
+  const val = (document.getElementById('ba-bns-input').value||'').trim().toUpperCase();
+  const sug = document.getElementById('ba-bns-suggestions');
+  if(!val){ sug.style.display='none'; return; }
+
+  /* Collect unique BNS section tokens from all rows */
+  if(!_baBnsAllSections){
+    const secSet = new Set();
+    allRows.forEach(r => {
+      const raw = (r['BNS Sections']||'');
+      /* Split on common delimiters: comma, semicolon, slash, space+BNS */
+      raw.split(/[,;\/]+/).forEach(s => {
+        const t = s.trim();
+        if(t) secSet.add(t.toUpperCase());
+      });
+    });
+    _baBnsAllSections = [...secSet].sort();
+  }
+
+  /* Count FIRs per section for display */
+  if(!_baBnsSecCount){
+    _baBnsSecCount = {};
+    _baBnsAllSections.forEach(sec => {
+      _baBnsSecCount[sec] = allRows.filter(r => (r['BNS Sections']||'').toUpperCase().includes(sec)).length;
+    });
+  }
+
+  const matches = _baBnsAllSections.filter(s => s.includes(val) && !_baBnsSections.includes(s));
+  if(!matches.length){ sug.style.display='none'; return; }
+
+  sug.style.display = 'block';
+  sug.innerHTML = matches.slice(0,12).map(s =>
+    `<div class="ba-bns-sug-item" data-sec="${s}" onmousedown="event.preventDefault();baBnsAddSection('${s}')">
+      ${s}<span class="ba-bns-sug-count">${_baBnsSecCount[s]||0} FIRs</span>
+    </div>`
+  ).join('');
+}
+
+let _baBnsAllSections = null;  // lazy-built from allRows
+let _baBnsSecCount    = null;
+
+function baBnsBlur(){
+  setTimeout(()=>{ document.getElementById('ba-bns-suggestions').style.display='none'; }, 150);
+}
+
+function baBnsAddSection(sec){
+  sec = sec.trim().toUpperCase();
+  if(!sec || _baBnsSections.includes(sec)) return;
+  _baBnsSections.push(sec);
+  document.getElementById('ba-bns-input').value = '';
+  document.getElementById('ba-bns-suggestions').style.display = 'none';
+  _baBnsSugIdx = -1;
+  baBnsRenderChipsInline();
+  baFilterPool();
+}
+
+function baBnsRemoveSection(sec){
+  _baBnsSections = _baBnsSections.filter(s => s !== sec);
+  baBnsRenderChipsInline();
+  baFilterPool();
+}
+
+function baBnsRenderChipsInline(){
+  const wrap = document.getElementById('ba-bns-chips-inline');
+  wrap.innerHTML = _baBnsSections.map(s =>
+    `<span class="ba-bns-chip">${s}
+      <span class="ba-bns-chip-x" onmousedown="event.preventDefault();baBnsRemoveSection('${s}')">✕</span>
+    </span>`
+  ).join('');
+}
+
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape') closeBulkAdd();
+});
+</script>
+</body>
+</html>

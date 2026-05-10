@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sadrakshan.AI — Khamgaon Division Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Nunito:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #eef2f7;
+    --bg2:     #e2eaf4;
+    --surface: #ffffff;
+    --sf2:     #f6f8fc;
+    --border:  #cdd8e8;
+    --navy:    #1a3a5c;
+    --blue:    #1d6fa4;
+    --teal:    #0d8a8a;
+    --green:   #1b8a5a;
+    --amber:   #c47d0e;
+    --red:     #c0392b;
+    --orange:  #c85d1e;
+    --purple:  #5c3d99;
+    --text:    #1a2b3c;
+    --muted:   #5a7490;
+    --light:   #8aa5be;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:'Nunito',sans-serif;overflow:hidden;height:100vh;width:100vw}
+  #deck{width:100%;height:100%;position:relative}
+
+  /* slides */
+  .slide{position:absolute;inset:0;display:flex;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s ease;overflow:hidden;padding-bottom:58px}
+  .slide.active{opacity:1;pointer-events:all}
+
+  /* nav */
+  #nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;z-index:100;background:var(--surface);border:1px solid var(--border);padding:7px 16px;border-radius:40px;box-shadow:0 2px 10px rgba(0,0,0,.1)}
+  #nav button{background:none;border:1px solid var(--border);color:var(--navy);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;padding:5px 14px;border-radius:20px;cursor:pointer;transition:all .2s}
+  #nav button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+  #slide-counter{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);min-width:48px;text-align:center}
+  .dot-row{display:flex;gap:5px}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:background .3s}
+  .dot.on{background:var(--blue)}
+
+  /* shared */
+  .slide-header{display:flex;align-items:center;gap:12px;padding:14px 36px 0;flex-shrink:0}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--blue);border:1px solid rgba(29,111,164,.3);padding:3px 10px;border-radius:4px;background:rgba(29,111,164,.07);white-space:nowrap}
+  h2.st{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(17px,2vw,26px);color:var(--navy)}
+  .snum{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--light);margin-left:auto}
+
+  .a-blue{color:var(--blue)} .a-green{color:var(--green)} .a-red{color:var(--red)} .a-amber{color:var(--amber)} .a-teal{color:var(--teal)} .a-purple{color:var(--purple)} .a-orange{color:var(--orange)}
+
+  /* stripe top */
+  .sb{border-top:3px solid var(--blue)}.st2{border-top:3px solid var(--teal)}.sg{border-top:3px solid var(--green)}.sa{border-top:3px solid var(--amber)}.sr{border-top:3px solid var(--red)}.so{border-top:3px solid var(--orange)}.sp{border-top:3px solid var(--purple)}
+
+  /* card */
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+
+  /* chip */
+  .chip{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9.5px;padding:2px 7px;border-radius:4px;border:1px solid var(--border);color:var(--muted);background:var(--sf2)}
+
+  /* bar */
+  .bt{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden}
+  .bf{height:100%;border-radius:4px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+
+  /* ── S1 TITLE ── */
+  #s1{background:linear-gradient(135deg,#f0f6ff,#e4ecf8,#dff0f0);justify-content:center;align-items:center}
+  #s1 .ctr{text-align:center;max-width:760px;padding:0 32px}
+  #s1 .logo{font-size:48px;display:block;margin-bottom:12px}
+  #s1 .ey{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--blue);text-transform:uppercase;margin-bottom:12px}
+  #s1 h1{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(44px,7vw,80px);color:var(--navy);line-height:1;letter-spacing:-1px;margin-bottom:8px}
+  #s1 .tg{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:22px}
+  #s1 .div{width:56px;height:3px;background:var(--blue);border-radius:2px;margin:0 auto 22px}
+  #s1 .mr{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+  #s1 .mp{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:11.5px;color:var(--navy);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+
+  /* ── S2 PROBLEM ── */
+  #s2 .body{flex:1;display:flex;gap:16px;padding:12px 36px 8px;min-height:0}
+  #s2 .left,#s2 .right{flex:1;display:flex;flex-direction:column;gap:9px}
+  .ps{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:11px 14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .ps .pv{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--red);line-height:1}
+  .ps .pl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+  .qbox{background:linear-gradient(135deg,#fff6f6,#fffafa);border:1px solid rgba(192,57,43,.2);border-radius:10px;padding:14px 16px;flex:1}
+  .qbox .qt{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:600;color:var(--navy);line-height:1.5;margin-bottom:7px}
+  .qbox .qs{font-size:12px;color:var(--muted);line-height:1.65}
+  .ps .pn{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:4px}
+  .pbox .pt{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:10px}
+  .pbox .pi{font-size:14.5px;color:var(--text);line-height:2.1;font-weight:500}
+
+  /* ── S3 SOLUTION ── */
+  #s3 .body{flex:1;display:flex;flex-direction:column;gap:10px;padding:11px 36px 8px;min-height:0}
+  #s3 .g6{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;min-height:0}
+  .pil{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:transform .2s}
+  .pil:hover{transform:translateY(-2px)}
+  .pi2{font-size:22px} .pt2{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--navy)}
+  .pb{font-size:11.5px;color:var(--muted);line-height:1.6;flex:1}
+  .zb{background:linear-gradient(90deg,#f0faf4,#f0f9ff);border:1px solid rgba(27,138,90,.25);border-radius:8px;padding:9px 16px;display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--text)}
+  .zb strong{color:var(--green)}
+
+  /* ── S4 HOW ── */
+  #s4 .body{flex:1;display:flex;gap:16px;padding:11px 36px 8px;min-height:0}
+  #s4 .left,#s4 .right{flex:1;display:flex;flex-direction:column;gap:7px}
+  .fb{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .fb .ft{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+  .fb .fbody{font-size:11.5px;color:var(--muted);line-height:1.6}
+  .fa{text-align:center;font-size:13px;color:var(--light);line-height:1}
+  .ac{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;flex:1}
+  .act{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .cr{display:flex;align-items:center;gap:9px;padding:7px 9px;border-radius:6px;margin-bottom:5px;font-size:11.5px}
+  .cr.d15{background:#eef7ff;border:1px solid #c5def5} .cr.d7{background:#fffbee;border:1px solid #f0dda0}
+  .cr.d3{background:#fff5ee;border:1px solid #f5c6a0} .cr.d1{background:#fff0f0;border:1px solid #f5a0a0}
+  .cr.dov{background:#f5f0ff;border:1px solid #c5a8f5}
+  .dt{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;min-width:50px;text-align:center;padding:3px 6px;border-radius:4px}
+  .cr.d15 .dt{background:#c5def5;color:var(--blue)} .cr.d7 .dt{background:#f0dda0;color:var(--amber)}
+  .cr.d3 .dt{background:#f5c6a0;color:var(--orange)} .cr.d1 .dt{background:#f5a0a0;color:var(--red)}
+  .cr.dov .dt{background:#c5a8f5;color:var(--purple)}
+  .cl{flex:1;color:var(--text);font-weight:600} .crc{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+  .psc{background:var(--sf2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:11.5px;color:var(--muted);line-height:1.7}
+  .psc strong{color:var(--navy)}
+
+  /* ── S5 METRICS ── */
+  #s6 .body{flex:1;display:flex;flex-direction:column;gap:11px;padding:11px 36px 8px;min-height:0}
+  #s6 .kr{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+  #s6 .br{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;min-height:0}
+  .kc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .kv{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:clamp(22px,3vw,34px);line-height:1}
+  .kl{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:3px}
+  .ks{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--green);margin-top:5px}
+  .bp{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+  .bpt{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--muted)}
+  .bi{display:flex;flex-direction:column;gap:3px}
+  .bm{display:flex;justify-content:space-between;font-size:11px;color:var(--text)}
+  .mt{display:flex;flex-wrap:wrap;gap:5px;margin-top:3px}
+  .mtg{background:var(--sf2);border:1px solid var(--border);border-radius:5px;padding:3px 9px;font-size:11px;color:var(--muted)}
+  .mtg strong{color:var(--navy)}
+
+  /* ── S6 YOY ── */
+  #s7 .body{flex:1;display:flex;gap:16px;padding:11px 36px 8px;min-height:0}
+  #s7 .left,#s7 .right{flex:1;display:flex;flex-direction:column;gap:10px}
+  .yc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;flex:1;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .yn{font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;margin-bottom:9px}
+  .yr{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .yl{font-size:11px;color:var(--muted);min-width:88px}
+  .yw{flex:1} .ybt{height:20px;background:var(--bg2);border-radius:4px;overflow:hidden}
+  .ybf{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;transition:width 1.3s cubic-bezier(.4,0,.2,1)}
+  .yold{background:#d8e3ee;color:var(--muted)} .ynb{background:linear-gradient(90deg,#1d6fa4,#4db8d4);color:#fff}
+  .yng{background:linear-gradient(90deg,#c47d0e,#e8b84b);color:#fff}
+  .mp2{display:flex;align-items:center;gap:9px;background:#f0faf4;border:1px solid rgba(27,138,90,.2);border-radius:8px;padding:9px 12px;margin-top:4px}
+  .mv{font-family:'Rajdhani',sans-serif;font-size:30px;font-weight:700;color:var(--green);line-height:1}
+  .md{font-size:11.5px;color:var(--muted);line-height:1.5}
+  .cc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;flex:1;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .tr{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .ty{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);min-width:30px}
+  .tbg{flex:1;height:24px;background:var(--bg2);border-radius:4px;overflow:hidden}
+  .tf{height:100%;border-radius:4px;display:flex;align-items:center;padding:0 9px;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;transition:width 1.3s cubic-bezier(.4,0,.2,1)}
+  .told{background:#d8e3ee;color:var(--muted)} .tnb{background:linear-gradient(90deg,#1d6fa4,#4db8d4);color:#fff}
+  .hlr{display:flex;gap:9px;margin-top:7px}
+  .hlb{flex:1;border-radius:8px;padding:10px 12px;text-align:center;background:var(--sf2);border:1px solid var(--border)}
+  .hlv{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;line-height:1}
+  .hll{font-size:9.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:2px}
+  .hls{font-size:11px;color:var(--muted);margin-top:1px}
+  .wc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+  .wct{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:7px}
+  .wci{font-size:11.5px;color:var(--muted);line-height:1.85}
+
+  /* ── S7 TABS ── */
+  #s8 .body{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;padding:10px 36px 8px;min-height:0}
+  .tc{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:5px;box-shadow:0 1px 4px rgba(0,0,0,.05);transition:transform .15s}
+  .tc:hover{transform:translateY(-2px)}
+  .tic{font-size:20px} .tti{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;color:var(--navy)}
+  .tde{font-size:11px;color:var(--muted);line-height:1.6;flex:1}
+  .tch{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+
+  /* ── S8 IMPACT ── */
+  #s9{background:linear-gradient(135deg,#f0f6ff,#e8f5ee)}
+  #s9 .body{flex:1;display:flex;flex-direction:column;gap:11px;padding:11px 36px 8px;min-height:0}
+  #s9 .k4{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+  #s9 .bot{display:grid;grid-template-columns:1fr 1fr;gap:11px;flex:1;min-height:0}
+  .icard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;box-shadow:0 1px 6px rgba(0,0,0,.07)}
+  .iv2{font-family:'Rajdhani',sans-serif;font-size:clamp(26px,4vw,40px);font-weight:700;line-height:1}
+  .il2{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-top:3px}
+  .is2{font-size:11px;color:var(--muted);margin-top:2px}
+  .rcard{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:9px}
+  .rt{font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;color:var(--navy)}
+  .rb{font-size:12.5px;color:var(--muted);line-height:1.75}
+  .rblist{list-style:none;display:flex;flex-direction:column;gap:9px;margin-top:4px}
+  .rblist li{font-size:14px;color:var(--text);font-weight:500;line-height:1.5;padding-left:22px;position:relative}
+  .rblist li::before{content:"✅";position:absolute;left:0;font-size:13px}
+  .cb2{background:linear-gradient(135deg,#eef7ee,#eef5ff);border:1px solid rgba(27,138,90,.25);border-radius:10px;padding:18px 22px;display:flex;align-items:center;gap:14px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+  .cbi{font-size:30px} .cbt{font-family:'Rajdhani',sans-serif;font-size:clamp(13px,1.5vw,17px);font-weight:600;color:var(--navy);line-height:1.5}
+  .cbt span{color:var(--green)} .cbs{font-size:11px;color:var(--muted);font-family:'Nunito',sans-serif;font-weight:400;margin-top:6px;display:block}
+
+
+  /* ── S5-ALERT ── */
+  #s5a{background:var(--bg)}
+  #s5a .body{flex:1;display:flex;gap:24px;padding:12px 36px 8px;min-height:0;align-items:stretch}
+
+  /* Designed message card */
+  #s5a .phone-wrap{flex:0 0 auto;width:300px;display:flex;align-items:center;justify-content:center}
+  .msg-card{background:#fff;border:1.5px solid #c8d8e8;border-radius:16px;box-shadow:0 6px 28px rgba(0,0,0,.12);width:288px;overflow:hidden;font-family:'Nunito',sans-serif}
+  .msg-header{background:#1a3a5c;padding:10px 14px;display:flex;align-items:center;gap:8px}
+  .msg-icon{font-size:16px;line-height:1}
+  .msg-title{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:1.5px;color:#fff}
+  .msg-divider{height:1px;background:#e4edf5}
+  .msg-body{padding:10px 14px;display:flex;flex-direction:column;gap:5px;background:#f8fbff}
+  .msg-row{display:flex;align-items:flex-start;font-size:11.5px;line-height:1.45}
+  .msg-lbl{color:#5a7490;min-width:88px;flex-shrink:0;font-size:11px}
+  .msg-val{color:#1a2b3c;font-weight:600}
+  .msg-link{color:#1d6fa4;text-decoration:underline}
+  .msg-io{font-weight:700;font-size:11px}
+  .msg-phone{color:#1d6fa4;font-family:'JetBrains Mono',monospace}
+  .msg-status{padding:9px 14px;display:flex;align-items:center;justify-content:space-between;background:#fff;gap:8px}
+  .msg-days{font-size:12.5px;font-weight:600;color:#1a2b3c}
+  .msg-days strong{font-size:20px;color:#c0392b;margin:0 2px}
+  .msg-badge-crit{background:#fff0f0;border:1.5px solid #f5a0a0;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#c0392b;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+  .msg-action{padding:9px 14px;background:#fffbf0;display:flex;gap:8px;align-items:flex-start;border-top:1px solid #f0dda0}
+  .msg-warn{font-size:15px;margin-top:1px;flex-shrink:0}
+  .msg-action-text{display:flex;flex-direction:column;gap:4px}
+  .msg-action-en{font-size:11.5px;font-weight:700;color:#c85d1e;line-height:1.4}
+  .msg-action-mr{font-size:10.5px;color:#5a7490;line-height:1.55}
+  .msg-footer{padding:7px 14px;background:#eef2f7;font-size:10px;color:#8aa5be;font-style:italic;text-align:right;border-top:1px solid #d6e0ea}
+
+  /* Annotation cards */
+  #s5a .annot-wrap{flex:1;display:flex;flex-direction:column;gap:7px;justify-content:center}
+  .annot-title{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);margin-bottom:2px}
+  .annot{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px 12px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .annot .aleft{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:24px}
+  .annot .aicon{font-size:16px;line-height:1}
+  .annot .abar{width:3px;flex:1;border-radius:2px;min-height:14px}
+  .annot .aright .atitle{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:2px}
+  .annot .aright .abody{font-size:11px;color:var(--muted);line-height:1.55}
+  /* animations */
+  @keyframes fu{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .slide.active .kc,.slide.active .pil,.slide.active .tc,.slide.active .icard,.slide.active .fb,.slide.active .cr,.slide.active .ps,.slide.active .yc,.slide.active .cc{animation:fu .38s ease both}
+  .slide.active .pil:nth-child(1){animation-delay:.03s}.slide.active .pil:nth-child(2){animation-delay:.08s}.slide.active .pil:nth-child(3){animation-delay:.13s}.slide.active .pil:nth-child(4){animation-delay:.18s}.slide.active .pil:nth-child(5){animation-delay:.23s}.slide.active .pil:nth-child(6){animation-delay:.28s}
+  .slide.active .tc:nth-child(1){animation-delay:.03s}.slide.active .tc:nth-child(2){animation-delay:.07s}.slide.active .tc:nth-child(3){animation-delay:.11s}.slide.active .tc:nth-child(4){animation-delay:.15s}.slide.active .tc:nth-child(5){animation-delay:.19s}.slide.active .tc:nth-child(6){animation-delay:.23s}.slide.active .tc:nth-child(7){animation-delay:.27s}.slide.active .tc:nth-child(8){animation-delay:.31s}.slide.active .tc:nth-child(9){animation-delay:.35s}
+  .slide.active .kc:nth-child(1){animation-delay:.03s}.slide.active .kc:nth-child(2){animation-delay:.07s}.slide.active .kc:nth-child(3){animation-delay:.11s}.slide.active .kc:nth-child(4){animation-delay:.15s}
+  .slide.active .icard:nth-child(1){animation-delay:.03s}.slide.active .icard:nth-child(2){animation-delay:.07s}.slide.active .icard:nth-child(3){animation-delay:.11s}.slide.active .icard:nth-child(4){animation-delay:.15s}
+  .slide.active .cr:nth-child(n+2){animation-delay:calc((.07s)*(var(--i,0)))}
+  .slide.active .cr:nth-child(2){animation-delay:.07s}.slide.active .cr:nth-child(3){animation-delay:.14s}.slide.active .cr:nth-child(4){animation-delay:.21s}.slide.active .cr:nth-child(5){animation-delay:.28s}.slide.active .cr:nth-child(6){animation-delay:.35s}
+</style>
+</head>
+<body>
+<div id="deck">
+
+<!-- ═════ SLIDE 1 — TITLE ═════ -->
+<div class="slide active" id="s1">
+  <div class="ctr">
+    <span class="logo">🛡️</span>
+    <p class="ey">Buldhana District Police · Khamgaon Division</p>
+    <h1>Sadrakshan<span style="color:var(--blue)">.AI</span></h1>
+    <div class="div"></div>
+    <p class="tg">A Zero-Cost Digital Intelligence System for<br>FIR Investigation Monitoring &amp; Performance Review</p>
+    <div class="mr">
+      <span class="mp">📍 Khamgaon &amp; Malkapur Sub-Divisions</span>
+      <span class="mp">🏛️ 15 Police Stations</span>
+      <span class="mp">📅 Q1 2025 → Q1 2026</span>
+      <span class="mp">💻 Built In-House · Zero Cost</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ SLIDE 2 — PROBLEM ═════ -->
+<div class="slide" id="s2">
+  <div class="slide-header">
+    <span class="badge">01 — THE CHALLENGE</span>
+    <h2 class="st">Why Was <span class="a-red">Action Needed?</span></h2>
+    <span class="snum">2 / 9</span>
+  </div>
+  <div class="body">
+    <div class="left">
+      <div class="ps"><div class="pv">22.1%</div><div class="pl">Combined disposal rate — Q1 2025 (Before system)</div><div class="pn">355 disposed out of 1,606 registered FIRs</div></div>
+      <div class="ps"><div class="pv">27.4%</div><div class="pl">Khamgaon Sub-Division — Q1 2025 baseline</div><div class="pn">215 disposed out of 784 registered FIRs</div></div>
+      <div class="ps"><div class="pv">17.0%</div><div class="pl">Malkapur Sub-Division — Q1 2025 baseline</div><div class="pn">140 disposed out of 822 registered FIRs</div></div>
+      <div class="ps" style="border-left-color:var(--orange)"><div class="pv" style="color:var(--orange)">355</div><div class="pl">Total FIRs disposed in Q1 2025 across both sub-divisions</div><div class="pn" style="color:var(--orange)">Khamgaon: 215 &nbsp;·&nbsp; Malkapur: 140 — combined pre-system total</div></div>
+    </div>
+    <div class="right">
+      <div class="qbox">
+        <div class="qt">"No real-time visibility into FIRs approaching chargesheet deadlines."</div>
+        <div class="qs">Investigation Officers had no automated reminders. SDPOs had no consolidated view. Critical deadlines were missed silently, leading to default cases and poor disposal rates across all 15 police stations.</div>
+      </div>
+      <div class="pbox">
+        <div class="pt">🔴 Core Pain Points</div>
+        <div class="pi">
+          🔴 &nbsp;No automated deadline tracking for investigation days<br>
+          🔴 &nbsp;No escalation to SDPO when chargesheet was overdue<br>
+          🔴 &nbsp;No comparison of performance across 15 police stations<br>
+          🔴 &nbsp;Manual, paper-based review prone to oversight<br>
+          🔴 &nbsp;No crime pattern or IO behaviour analysis available
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ SLIDE 3 — SOLUTION ═════ -->
+<div class="slide" id="s3">
+  <div class="slide-header">
+    <span class="badge">02 — THE SOLUTION</span>
+    <h2 class="st">Sadrakshan.AI — <span class="a-blue">Six Pillars</span></h2>
+    <span class="snum">3 / 9</span>
+  </div>
+  <div class="body">
+    <div class="g6">
+      <div class="pil sb"><div class="pi2">📡</div><div class="pt2">Live Dashboard</div><div class="pb">Real-time data sync. Every FIR, every IO, every PS visible to SDPO in a single view. Refreshes instantly on demand.</div><span class="chip">REAL-TIME</span></div>
+      <div class="pil sa"><div class="pi2">⏱️</div><div class="pt2">Investigation Tracking</div><div class="pb">Each FIR's investigation days tracked continuously. Performance graded: Excellent / Good / Default based on chargesheet timeline.</div><span class="chip">AUTOMATED</span></div>
+      <div class="pil so"><div class="pi2">🔔</div><div class="pt2">Automated Alert Engine</div><div class="pb">Milestone alerts at Day 15, 7, 3 and 1. Escalates progressively — PS to SDPO to Addl SP. Overdue cases trigger full chain instantly.</div><span class="chip">ESCALATION</span></div>
+      <div class="pil st2"><div class="pi2">🗺️</div><div class="pt2">Crime Map</div><div class="pb">Interactive map with crime category markers and heatmap view. Alert status shown live — High Alert in red, completed in green.</div><span class="chip">GEO-INTEL</span></div>
+      <div class="pil sp"><div class="pi2">📊</div><div class="pt2">Behaviour Analysis</div><div class="pb">PS performance matrix across all crime types — Arms, Assault, NDPS, Gambling. Scores each station objectively on a 0–5 scale.</div><span class="chip">ANALYTICS</span></div>
+      <div class="pil sg"><div class="pi2">💰</div><div class="pt2">Muddemal Tracking</div><div class="pb">Seized vs recovered property per PS. Lost and recovered ₹ amounts and property crime detection rates — all in one view.</div><span class="chip">PROPERTY</span></div>
+    </div>
+    <div class="zb">
+      <span style="font-size:18px">✅</span>
+      <span>Built entirely <strong>in-house using standard departmental tools</strong> — <strong>Zero financial cost</strong> to the department. No vendor, no subscription, no procurement needed.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ SLIDE 4 — HOW IT WORKS ═════ -->
+<div class="slide" id="s4">
+  <div class="slide-header">
+    <span class="badge">03 — HOW IT WORKS</span>
+    <h2 class="st">The Automated <span class="a-blue">Alert Escalation Chain</span></h2>
+    <span class="snum">4 / 9</span>
+  </div>
+  <div class="body">
+    <div class="left">
+      <div class="fb sb"><div class="ft">📋 Step 1 — Data Entry</div><div class="fbody">FIR details entered by PS staff: FIR No., BNS Sections, IO Name, FIR Date, Crime Category, E-Saksha, FSL status, and chargesheet details.</div></div>
+      <div class="fa">↓</div>
+      <div class="fb st2"><div class="ft">⚙️ Step 2 — Automated Engine</div><div class="fbody">The backend automation runs daily. It calculates investigation days remaining for each FIR and identifies which milestone threshold each case has reached.</div></div>
+      <div class="fa">↓</div>
+      <div class="fb so"><div class="ft">📲 Step 3 — Instant Alerts</div><div class="fbody">At defined milestones, instant mobile alerts are sent to the IO's Police Station, SDPO, and Addl SP — escalating progressively based on urgency.</div></div>
+      <div class="fa">↓</div>
+      <div class="fb sg"><div class="ft">📡 Step 4 — Dashboard Review</div><div class="fbody">The live HTML dashboard fetches the latest data automatically. SDPO reviews performance across all 15 PS and tracks all alert cases in real time.</div></div>
+    </div>
+    <div class="right">
+      <div class="ac">
+        <div class="act">🔔 Alert Milestone Schedule</div>
+        <div class="cr d15"><span class="dt">DAY 15</span><span class="cl">Early Warning</span><span class="crc">🔵 PS Only</span></div>
+        <div class="cr d7"><span class="dt">DAY 7</span><span class="cl">Urgent — SDPO Alerted</span><span class="crc">🔵 PS + SDPO</span></div>
+        <div class="cr d3"><span class="dt">DAY 3</span><span class="cl">High Risk — Full Escalation</span><span class="crc">🔴 PS + SDPO + Addl SP</span></div>
+        <div class="cr d1"><span class="dt">DAY 1</span><span class="cl">Critical — Final Alert</span><span class="crc">🔴 PS + SDPO + Addl SP</span></div>
+        <div class="cr dov"><span class="dt">⛔ OVRD</span><span class="cl">Overdue — Immediate Action</span><span class="crc">⛔ ALL LEVELS</span></div>
+      </div>
+      <div class="psc">
+        <strong>📍 Coverage — 15 Police Stations</strong><br>
+        <span style="color:var(--blue);font-weight:600">Khamgaon:</span> K.City · K.Gramin · S.Nagar · S.City · S.Gramin · Jalamb · Hiwarkhed · P.Raja<br>
+        <span style="color:var(--amber);font-weight:600">Malkapur:</span> M.City · M.Gramin · MIDC · Nandura · J.Jamod · Sonala · Tamgaon
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═════ SLIDE 5 — ALERT IN ACTION ═════ -->
+<div class="slide" id="s5a">
+  <div class="slide-header">
+    <span class="badge">04 — ALERT IN ACTION</span>
+    <h2 class="st">Alert in Action — <span class="a-orange">Real Message Sent to Investigation Officer</span></h2>
+    <span class="snum">5 / 9</span>
+  </div>
+  <div class="body">
+
+    <!-- Left: Designed message card -->
+    <div class="phone-wrap">
+      <div class="msg-card">
+        <div class="msg-header">
+          <span class="msg-icon">🚨</span>
+          <span class="msg-title">INVESTIGATION ALERT</span>
+        </div>
+        <div class="msg-divider"></div>
+        <div class="msg-body">
+          <div class="msg-row"><span class="msg-lbl">Sub Division</span><span class="msg-val">Khamgaon</span></div>
+          <div class="msg-row"><span class="msg-lbl">Police Station</span><span class="msg-val msg-link">S.City</span></div>
+          <div class="msg-row"><span class="msg-lbl">FIR No.</span><span class="msg-val">91</span></div>
+          <div class="msg-row"><span class="msg-lbl">BNS</span><span class="msg-val">75 BNS</span></div>
+          <div class="msg-row"><span class="msg-lbl">FIR Date</span><span class="msg-val">10-02-2026</span></div>
+          <div class="msg-row"><span class="msg-lbl">IO</span><span class="msg-val msg-io">HC 1275 SANJAY SHANKARSA KARUTALE</span></div>
+          <div class="msg-row"><span class="msg-lbl">Mobile</span><span class="msg-val msg-phone">9011555539</span></div>
+        </div>
+        <div class="msg-divider"></div>
+        <div class="msg-status">
+          <span class="msg-days">Days Left: <strong>1</strong></span>
+          <span class="msg-badge-crit">🔴 CRITICAL</span>
+        </div>
+        <div class="msg-divider"></div>
+        <div class="msg-action">
+          <span class="msg-warn">⚠</span>
+          <div class="msg-action-text">
+            <span class="msg-action-en">Submit chargesheet immediately.</span>
+            <span class="msg-action-mr">तात्काळ तपास पूर्ण करून chargesheet CCTNS मध्ये भरा व कोर्ट मधून CC नंबर प्राप्त करून वरिष्ठ कार्याला कढे पाठवा.</span>
+          </div>
+        </div>
+        <div class="msg-divider"></div>
+        <div class="msg-footer">— Buldhana Crime Review System</div>
+      </div>
+    </div>
+
+    <!-- Right: Annotated breakdown -->
+    <div class="annot-wrap">
+      <div class="annot-title">📋 MESSAGE BREAKDOWN</div>
+      <div class="annot">
+        <div class="aleft"><span class="aicon">🏢</span><div class="abar" style="background:var(--blue)"></div></div>
+        <div class="aright">
+          <div class="atitle">Police Station Identified</div>
+          <div class="abody">Sub Division + PS + FIR No. ensures the exact officer is alerted with full case context — no ambiguity about which case needs action.</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="aleft"><span class="aicon">👮</span><div class="abar" style="background:var(--teal)"></div></div>
+        <div class="aright">
+          <div class="atitle">IO Named Directly with Mobile Number</div>
+          <div class="abody">IO name and mobile number are included in every alert — SDPO or senior can call immediately if the chargesheet is not filed in time.</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="aleft"><span class="aicon">🔴</span><div class="abar" style="background:var(--red)"></div></div>
+        <div class="aright">
+          <div class="atitle">Days Left + Risk Level — Unmistakable Urgency</div>
+          <div class="abody">"Days Left: 1 🔴 CRITICAL" — the risk classification and colour make the urgency clear at a glance, even without reading the full message.</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="aleft"><span class="aicon">📋</span><div class="abar" style="background:var(--amber)"></div></div>
+        <div class="aright">
+          <div class="atitle">Bilingual Action Instruction (English + Marathi)</div>
+          <div class="abody">Instructions in both English and Marathi: file chargesheet in CCTNS, obtain CC number from court, and report to senior office immediately.</div>
+        </div>
+      </div>
+      <div class="annot">
+        <div class="aleft"><span class="aicon">🏛️</span><div class="abar" style="background:var(--navy)"></div></div>
+        <div class="aright">
+          <div class="atitle">System Attribution — Institutional Authority</div>
+          <div class="abody">Signed off as "Buldhana Crime Review System" — carries the weight of the institution, not just a personal reminder.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═════ SLIDE 6 — METRICS ═════ -->
+<div class="slide" id="s6">
+  <div class="slide-header">
+    <span class="badge">05 — CURRENT PERFORMANCE</span>
+    <h2 class="st">Q1 2026 — <span class="a-green">Division Metrics</span></h2>
+    <span class="snum">6 / 9</span>
+  </div>
+  <div class="body">
+    <div class="kr">
+      <div class="kc sb"><div class="kv" style="color:var(--blue)">2,659</div><div class="kl">Total FIRs</div><div class="ks">Both Sub-Divisions</div></div>
+      <div class="kc sg"><div class="kv" style="color:var(--green)">52.9%</div><div class="kl">Disposal Rate</div><div class="ks">↑ 1,406 disposed</div></div>
+      <div class="kc sa"><div class="kv" style="color:var(--amber)">98.7d</div><div class="kl">Avg Inv Days</div><div class="ks">Division Average</div></div>
+      <div class="kc sr"><div class="kv" style="color:var(--red)">25</div><div class="kl">High Alert Cases</div><div class="ks">Active monitoring</div></div>
+    </div>
+    <div class="br">
+      <div class="bp">
+        <div class="bpt">⚖️ Sub-Division Disposal Rate</div>
+        <div class="bi"><div class="bm"><span style="color:var(--blue);font-weight:600">Khamgaon</span><span style="color:var(--blue)">62%</span></div><div class="bt"><div class="bf" style="width:62%;background:var(--blue)"></div></div></div>
+        <div class="bi"><div class="bm"><span style="color:var(--amber);font-weight:600">Malkapur</span><span style="color:var(--amber)">45.1%</span></div><div class="bt"><div class="bf" style="width:45.1%;background:var(--amber)"></div></div></div>
+        <div style="border-top:1px solid var(--border);padding-top:8px">
+          <div class="bpt">🏆 Investigation Quality</div>
+          <div class="bi"><div class="bm"><span style="color:var(--green);font-weight:600">Excellent Disposal</span><span style="color:var(--green)">41.3%</span></div><div class="bt"><div class="bf" style="width:41.3%;background:var(--green)"></div></div></div>
+          <div class="bi"><div class="bm"><span style="color:var(--teal);font-weight:600">Good Disposal</span><span style="color:var(--teal)">11.4%</span></div><div class="bt"><div class="bf" style="width:11.4%;background:var(--teal)"></div></div></div>
+        </div>
+      </div>
+      <div class="bp">
+        <div class="bpt">📋 Operational KPIs</div>
+        <div class="bi"><div class="bm"><span>E-Saksha Coverage</span><span style="color:var(--green)">80.3%</span></div><div class="bt"><div class="bf" style="width:80.3%;background:linear-gradient(90deg,var(--green),var(--teal))"></div></div></div>
+        <div class="bi"><div class="bm"><span>Property Recovery</span><span style="color:var(--purple)">29.9%</span></div><div class="bt"><div class="bf" style="width:29.9%;background:var(--purple)"></div></div></div>
+        <div class="bi"><div class="bm"><span>Detection / Prop Offence</span><span style="color:var(--amber)">18.9%</span></div><div class="bt"><div class="bf" style="width:18.9%;background:var(--amber)"></div></div></div>
+        <div class="bi"><div class="bm"><span>FSL Visit</span><span style="color:var(--orange)">3.7%</span></div><div class="bt"><div class="bf" style="width:3.7%;background:var(--orange)"></div></div></div>
+        <div class="mt">
+          <span class="mtg">🔵 Raids <strong>749</strong></span>
+          <span class="mtg">🟢 Preventive <strong>222</strong></span>
+          <span class="mtg">⚠️ Warning <strong>43</strong></span>
+          <span class="mtg">🔴 Default <strong>504</strong></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ SLIDE 6 — YOY ═════ -->
+<div class="slide" id="s7">
+  <div class="slide-header">
+    <span class="badge">06 — YEAR-ON-YEAR IMPACT</span>
+    <h2 class="st">2025 <span class="a-red">vs</span> 2026 — <span class="a-green">The Transformation</span></h2>
+    <span class="snum">7 / 9</span>
+  </div>
+  <div class="body">
+    <div class="left">
+      <div class="yc sb">
+        <div class="yn a-blue">🏙️ Khamgaon Sub-Division</div>
+        <div class="yr"><div class="yl">2025 (Before)</div><div class="yw"><div class="ybt"><div class="ybf yold" style="width:27.4%">27.4%</div></div></div></div>
+        <div class="yr"><div class="yl">2026 (After)</div><div class="yw"><div class="ybt"><div class="ybf ynb" style="width:66.7%">66.7%</div></div></div></div>
+        <div class="mp2"><div class="mv">3.2×</div><div class="md">More FIRs disposed vs 2025<br><span style="color:var(--green);font-weight:600">215 → 678</span> FIRs chargesheeted (Q1)</div></div>
+      </div>
+      <div class="yc sa">
+        <div class="yn a-amber">🏘️ Malkapur Sub-Division</div>
+        <div class="yr"><div class="yl">2025 (Before)</div><div class="yw"><div class="ybt"><div class="ybf yold" style="width:17%">17.0%</div></div></div></div>
+        <div class="yr"><div class="yl">2026 (After)</div><div class="yw"><div class="ybt"><div class="ybf yng" style="width:56.1%">56.1%</div></div></div></div>
+        <div class="mp2" style="background:#fffbee;border-color:rgba(196,125,14,.2)"><div class="mv" style="color:var(--amber)">3.9×</div><div class="md">More FIRs disposed vs 2025<br><span style="color:var(--amber);font-weight:600">140 → 550</span> FIRs chargesheeted (Q1)</div></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="cc sg">
+        <div style="font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:9px">📊 Combined Division</div>
+        <div class="tr"><div class="ty">2025</div><div class="tbg"><div class="tf told" style="width:22.1%">22.1%</div></div></div>
+        <div class="tr"><div class="ty">2026</div><div class="tbg"><div class="tf tnb" style="width:61.5%">61.5%</div></div></div>
+        <div class="hlr">
+          <div class="hlb"><div class="hlv" style="color:var(--green)">+246%</div><div class="hll">FIRs Disposed</div><div class="hls">355 → 1,228</div></div>
+          <div class="hlb"><div class="hlv" style="color:var(--blue)">3.5×</div><div class="hll">More FIRs Disposed</div><div class="hls">355 → 1,228 chargesheeted</div></div>
+        </div>
+      </div>
+      <div class="wc">
+        <div class="wct">📌 What Changed?</div>
+        <div class="wci">
+          ✅ &nbsp;IOs now receive automated deadline reminders before the chargesheet is due<br>
+          ✅ &nbsp;SDPO gets escalation alerts — no chargesheet delay goes unnoticed<br>
+          ✅ &nbsp;Performance visible across all 15 PS simultaneously<br>
+          ✅ &nbsp;Crime hotspots identified via geo-mapped crime data<br>
+          ✅ &nbsp;No additional manpower or budget was required
+        </div>
+      </div>
+      <div style="background:var(--sf2);border:1px solid var(--border);border-radius:7px;padding:7px 12px;font-size:11px;color:var(--muted)">
+        📅 Comparison period: <strong style="color:var(--navy)">Jan 1 – Mar 31</strong> for both years &nbsp;·&nbsp; Source: Khamgaon Case Review System
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═════ SLIDE 7 — DASHBOARD TABS ═════ -->
+<div class="slide" id="s8">
+  <div class="slide-header">
+    <span class="badge">07 — DASHBOARD TABS</span>
+    <h2 class="st">What <span class="a-blue">SDPO Can See</span> — 9 Views at a Glance</h2>
+    <span class="snum">8 / 9</span>
+  </div>
+  <div class="body">
+    <div class="tc sb"><div class="tic">📊</div><div class="tti">Overview</div><div class="tde">Division-wide KPI cards: disposal rate, excellent/good disposal, E-Saksha, FSL, preventive action, recovery %, raids, and alert counts.</div><div class="tch"><span class="chip">KPI CARDS</span><span class="chip">REAL-TIME</span></div></div>
+    <div class="tc sp"><div class="tic">⚔️</div><div class="tti">SDPO View</div><div class="tde">Side-by-side Khamgaon vs Malkapur comparison across all metrics — raids, recovery, avg inv days, quality scores.</div><div class="tch"><span class="chip">SUB-DIV</span><span class="chip">COMPARISON</span></div></div>
+    <div class="tc st2"><div class="tic">🏢</div><div class="tti">Police Station</div><div class="tde">Individual PS drill-down with full FIR list. Search and filter by follow-up, performance, crime type. Clickable case rows.</div><div class="tch"><span class="chip">DRILL-DOWN</span><span class="chip">FIR LIST</span></div></div>
+    <div class="tc sa"><div class="tic">🕵️</div><div class="tti">IO Level</div><div class="tde">Per-IO performance analytics. Every IO's cases, disposal count, quality score, pending count, and FSL/E-Saksha compliance.</div><div class="tch"><span class="chip">IO PROFILE</span><span class="chip">CASE LIST</span></div></div>
+    <div class="tc sr"><div class="tic">🚨</div><div class="tti">Alert Cases</div><div class="tde">High Alert and Warning summaries by PS. Bar chart distribution across all stations. Donut chart of escalation breakdown.</div><div class="tch"><span class="chip">HIGH ALERT</span><span class="chip">WARNING</span></div></div>
+    <div class="tc sb"><div class="tic">📈</div><div class="tti">Crime Pattern</div><div class="tde">Crime distribution by category. Disposal rate per crime type — identifies weak areas like Theft, Sexual, Electricity offences.</div><div class="tch"><span class="chip">CHART</span><span class="chip">BY CATEGORY</span></div></div>
+    <div class="tc st2"><div class="tic">🗺️</div><div class="tti">Crime Map</div><div class="tde">Interactive map with crime markers and heatmap mode. Markers colored by alert status. Filter by crime category.</div><div class="tch"><span class="chip">GEO-MAP</span><span class="chip">HEATMAP</span></div></div>
+    <div class="tc sp"><div class="tic">🧠</div><div class="tti">Behaviour Analysis</div><div class="tde">PS performance matrix across all crime categories. Scored 0–5. Instantly spots weak areas per PS per crime type.</div><div class="tch"><span class="chip">MATRIX</span><span class="chip">SCORING</span></div></div>
+    <div class="tc sg"><div class="tic">🏺</div><div class="tti">Muddemal</div><div class="tde">Seized vs recovered property tracking per PS. Lost and recovered ₹ amounts and detection rates for property offences.</div><div class="tch"><span class="chip">PROPERTY</span><span class="chip">RECOVERY ₹</span></div></div>
+  </div>
+</div>
+
+<!-- ═════ SLIDE 8 — IMPACT ═════ -->
+<div class="slide" id="s9">
+  <div class="slide-header">
+    <span class="badge">08 — IMPACT SUMMARY</span>
+    <h2 class="st">Sadrakshan.AI — <span class="a-green">Proven Results</span></h2>
+    <span class="snum">9 / 9</span>
+  </div>
+  <div class="body">
+    <div class="k4">
+      <div class="icard sg"><div class="iv2" style="color:var(--green)">+246%</div><div class="il2">FIRs Disposed</div><div class="is2">355 → 1,228</div></div>
+      <div class="icard sb"><div class="iv2" style="color:var(--blue)">3.5×</div><div class="il2">More FIRs Disposed</div><div class="is2">355 → 1,228 chargesheeted</div></div>
+      <div class="icard sa"><div class="iv2" style="color:var(--amber)">3.2×</div><div class="il2">Khamgaon Disposed</div><div class="is2">215 → 678 FIRs (Q1)</div></div>
+      <div class="icard st2"><div class="iv2" style="color:var(--teal)">₹0</div><div class="il2">Project Cost</div><div class="is2">100% In-House</div></div>
+    </div>
+    <div class="bot">
+      <div class="rcard sb">
+        <div class="rt">🚀 Replicability — Any District Can Do This</div>
+        <ul class="rblist">
+          <li>Built on standard departmental tools — spreadsheets, automation scripts, and an HTML dashboard</li>
+          <li>No new servers, no IT procurement, no vendor dependency whatsoever</li>
+          <li>Any district with a computer and internet access can adopt this system immediately</li>
+          <li>Fully replicable across any district in Maharashtra or India</li>
+          <li>Zero financial investment required at any stage</li>
+        </ul>
+      </div>
+      <div class="cb2">
+        <div class="cbi">🛡️</div>
+        <div>
+          <div class="cbt">"From <span>355</span> to <span>1,228</span> chargesheeted FIRs — a <span>3.5x</span> jump.<br>Disposal rate from <span>22.1%</span> to <span>61.5%</span> in one quarter.<br>Achieved with <span>zero cost</span> and zero external support."</div>
+          <span class="cbs">— Sadrakshan.AI Impact Report, Buldhana District Police</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<div id="nav">
+  <button id="prev">← Prev</button>
+  <div class="dot-row" id="dots"></div>
+  <span id="slide-counter">1 / 8</span>
+  <button id="next">Next →</button>
+</div>
+
+<script>
+  const slides=document.querySelectorAll('.slide'),total=slides.length;
+  let cur=0;
+  const dotsEl=document.getElementById('dots'),ctrEl=document.getElementById('slide-counter');
+  slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' on':'');d.onclick=()=>goTo(i);dotsEl.appendChild(d);});
+  function goTo(n){
+    slides[cur].classList.remove('active');dotsEl.children[cur].classList.remove('on');
+    cur=(n+total)%total;
+    slides[cur].classList.add('active');dotsEl.children[cur].classList.add('on');
+    ctrEl.textContent=(cur+1)+' / '+total;
+    if(cur===5)anim('#s6 .bf');
+    if(cur===6)anim('#s7 .ybf,#s7 .tf');
+  }
+  document.getElementById('prev').onclick=()=>goTo(cur-1);
+  document.getElementById('next').onclick=()=>goTo(cur+1);
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')goTo(cur+1);if(e.key==='ArrowLeft'||e.key==='ArrowUp')goTo(cur-1);});
+  function anim(sel){document.querySelectorAll(sel).forEach(el=>{const w=el.style.width;el.style.width='0';setTimeout(()=>{el.style.width=w;},80);});}
+</script>
+</body>
+</html>

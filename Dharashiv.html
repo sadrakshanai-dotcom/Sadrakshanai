@@ -1,0 +1,1899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dharashiv District | Live Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=DM+Sans:wght@300;400;500;600&display=swap');
+:root{
+  --bg:#06090f;--s1:#0b1018;--s2:#101820;--s3:#162230;
+  --border:#1a2d45;--border2:#213650;
+  --gold:#f59e0b;--blue:#3b82f6;--green:#10b981;
+  --red:#ef4444;--orange:#f97316;--purple:#8b5cf6;--cyan:#06b6d4;
+  --pink:#ec4899;--k:#6366f1;--m:#ec4899;
+  --text:#f0f4f8;--text2:#c8d8e8;--text3:#a0b8cc;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--s1)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* HEADER */
+.hdr{background:linear-gradient(90deg,#04080f,#0b1520,#04080f);border-bottom:1px solid var(--border);
+  padding:8px 18px;display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:300}
+.h-brand{display:flex;align-items:center;gap:10px}
+.h-badge{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),#92400e);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+  box-shadow:0 0 14px rgba(245,158,11,.3)}
+.h-title{font-family:'Rajdhani',sans-serif;font-size:17px;font-weight:700;letter-spacing:2px;
+  color:#fff;text-transform:uppercase;line-height:1.1}
+.h-sub{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:1.5px;margin-top:2px}
+.h-right{display:flex;align-items:center;gap:8px}
+.live-dot{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;
+  background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);
+  font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green)}
+.live-dot::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.sync-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:6px;
+  background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);
+  color:#dbeafe;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:11px;
+  letter-spacing:.5px;cursor:pointer;transition:all .2s}
+.sync-btn:hover{background:rgba(59,130,246,.22)}
+.sync-btn.busy svg{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#lastSync{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3)}
+
+/* PARAM PANEL */
+.param-band{background:var(--s1);border-bottom:2px solid var(--border);padding:8px 18px;
+  display:flex;gap:5px;overflow-x:auto;align-items:stretch}
+.pbtn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 10px;
+  min-width:82px;border-radius:7px;background:var(--s2);border:1px solid var(--border);
+  cursor:pointer;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.pbtn:hover{border-color:var(--gold);transform:translateY(-1px)}
+.pbtn.active{background:rgba(245,158,11,.1);border-color:var(--gold);
+  box-shadow:0 0 10px rgba(245,158,11,.12)}
+.p-ico{font-size:16px;line-height:1}
+.p-val{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:15px;color:var(--gold)}
+.p-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:#7fb3d3;
+  letter-spacing:.7px;text-transform:uppercase;text-align:center;
+  max-width:80px;white-space:normal;line-height:1.2}
+
+/* PARAM RESULT */
+.param-result{padding:10px 18px}
+.pr-inner{background:var(--s2);border:1px solid var(--border2);border-radius:10px;padding:14px}
+.pr-title{font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;
+  color:var(--gold);margin-bottom:12px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.pr-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:800px){.pr-grid{grid-template-columns:1fr}}
+
+/* SUBDIV COMPARE */
+.sd-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 18px 10px}
+.sd-card{border-radius:9px;padding:16px;position:relative}
+.sd-k{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.25);border-top:3px solid var(--k)}
+.sd-m{background:rgba(236,72,153,.08);border:1px solid rgba(236,72,153,.25);border-top:3px solid var(--m)}
+.sd-name{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;text-align:center}
+.sd-big{font-family:'Rajdhani',sans-serif;font-size:36px;font-weight:700;text-align:center;margin:4px 0}
+.sd-lbl{font-family:'Share Tech Mono',monospace;font-size:9px;color:#7fb3d3;letter-spacing:.8px;text-align:center;text-transform:uppercase}
+.sd-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.sd-kpi{background:rgba(0,0,0,.28);border-radius:6px;padding:8px 6px;text-align:center}
+.sd-kv{font-family:'Rajdhani',sans-serif;font-size:22px;font-weight:700}
+.sd-kl{font-family:'Share Tech Mono',monospace;font-size:8px;color:#7fb3d3;letter-spacing:.7px;text-transform:uppercase;margin-top:2px}
+
+/* TABS */
+.tabs{background:var(--s1);border-bottom:1px solid var(--border);padding:0 18px;display:flex;gap:2px;overflow-x:auto}
+.tab{padding:9px 16px;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:11px;
+  letter-spacing:1px;text-transform:uppercase;color:var(--text3);cursor:pointer;
+  border-bottom:2px solid transparent;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* CONTENT */
+.content{padding:14px 18px}
+.pane{display:none}
+.pane.active{display:block}
+
+/* GRID */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:12px}
+.g12{display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:12px}
+@media(max-width:860px){.g2,.g3,.g12{grid-template-columns:1fr}}
+
+/* KPI ROW */
+.krow{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:9px;margin-bottom:12px}
+.kcard{background:var(--s1);border:1px solid var(--border);border-radius:8px;padding:11px;
+  position:relative;overflow:hidden}
+.kcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--kc,var(--blue))}
+.k-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:#7fb3d3;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.k-val{font-family:'Rajdhani',sans-serif;font-size:24px;font-weight:700;color:var(--kc,var(--text));line-height:1}
+.k-sub{font-size:11px;color:#d4e8f5;margin-top:2px}
+.k-bar{height:3px;background:var(--border);border-radius:2px;margin-top:7px;overflow:hidden}
+.k-bar-f{height:100%;border-radius:2px;background:var(--kc,var(--blue));transition:width 1.2s}
+
+/* CARD */
+.card{background:var(--s1);border:1px solid var(--border);border-radius:9px;padding:13px}
+.ct{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:11px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--text2);margin-bottom:11px;display:flex;align-items:center;gap:6px}
+.ct::before{content:'';width:3px;height:12px;background:var(--gold);border-radius:2px;flex-shrink:0}
+.mb12{margin-bottom:12px}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-family:'Share Tech Mono',monospace;font-size:7px;font-weight:400;letter-spacing:.7px;
+  text-transform:uppercase;color:var(--text3);padding:5px 7px;text-align:left;
+  border-bottom:1px solid var(--border);white-space:nowrap;position:sticky;top:0;background:var(--s1)}
+.tbl td{padding:6px 7px;border-bottom:1px solid rgba(26,45,69,.35);font-size:11px;vertical-align:middle}
+.tbl tr:hover td{background:rgba(59,130,246,.04)}
+.tbl tr:last-child td{border-bottom:none}
+.scroll-t{overflow-y:auto}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;padding:1px 6px;border-radius:9px;font-size:9px;font-weight:600;font-family:'Rajdhani',sans-serif;letter-spacing:.3px}
+.px{background:rgba(16,185,129,.14);color:#34d399;border:1px solid rgba(16,185,129,.28)}
+.pg{background:rgba(59,130,246,.14);color:#dbeafe;border:1px solid rgba(59,130,246,.28)}
+.pp{background:rgba(245,158,11,.14);color:#fcd34d;border:1px solid rgba(245,158,11,.28)}
+.pf{background:rgba(239,68,68,.14);color:#f87171;border:1px solid rgba(239,68,68,.28)}
+.pha{background:rgba(239,68,68,.2);color:#ff5555;border:1px solid rgba(239,68,68,.4)}
+.pwr{background:rgba(249,115,22,.15);color:#fb923c;border:1px solid rgba(249,115,22,.3)}
+.pk{background:rgba(99,102,241,.13);color:#a5b4fc;border:1px solid rgba(99,102,241,.28)}
+.pm{background:rgba(236,72,153,.13);color:#f9a8d4;border:1px solid rgba(236,72,153,.28)}
+.pcyan{background:rgba(6,182,212,.13);color:#67e8f9;border:1px solid rgba(6,182,212,.28)}
+
+/* RANK BADGE */
+.rbadge{width:20px;height:20px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:10px;flex-shrink:0}
+.r1{background:rgba(245,158,11,.28);color:var(--gold);border:1px solid rgba(245,158,11,.45)}
+.r2{background:rgba(148,163,184,.14);color:#cbd5e1;border:1px solid rgba(148,163,184,.28)}
+.r3{background:rgba(180,83,9,.18);color:#fb923c;border:1px solid rgba(180,83,9,.28)}
+.rn{background:rgba(26,45,69,.7);color:var(--text3);border:1px solid var(--border)}
+
+/* MINI BAR */
+.mbar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;min-width:50px}
+.mbar-f{height:100%;border-radius:2px;transition:width .8s}
+
+/* SCORE BAR */
+.sbar{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.sbar-f{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--gold));transition:width 1s}
+
+/* STACK BAR INLINE */
+.stk{display:flex;height:6px;border-radius:3px;overflow:hidden;gap:1px}
+.stk-s{height:100%}
+
+/* FILTERS */
+.filters{display:flex;gap:7px;margin-bottom:11px;flex-wrap:wrap;align-items:center}
+.fbtn{padding:4px 10px;border-radius:5px;background:var(--s2);border:1px solid var(--border);
+  color:var(--text2);font-size:10px;font-family:'Rajdhani',sans-serif;font-weight:600;
+  letter-spacing:.3px;cursor:pointer;transition:all .15s}
+.fbtn:hover{border-color:var(--blue)}
+.fbtn.active{background:rgba(59,130,246,.15);border-color:var(--blue);color:#93c5fd}
+.fsearch{background:var(--s2);border:1px solid var(--border);border-radius:5px;
+  padding:5px 10px;color:var(--text);font-size:11px;width:180px;outline:none}
+.fsearch:focus{border-color:var(--blue)}
+.fsearch::placeholder{color:var(--text3)}
+select.fbtn{appearance:none;padding-right:20px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23334f6b'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 6px center;background-size:8px}
+
+/* MAP */
+#crimeMap{height:460px;border-radius:9px;border:1px solid var(--border)}
+.map-legend{background:rgba(6,9,15,.92);border:1px solid var(--border2);border-radius:7px;padding:9px 12px}
+.map-legend h4{font-family:'Rajdhani',sans-serif;font-size:10px;letter-spacing:1px;color:var(--text2);margin-bottom:6px;text-transform:uppercase}
+.ml-item{font-size:10px;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:5px}
+
+/* ALERT BADGE */
+.alert-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:12px;font-size:9px;font-weight:700;font-family:'Rajdhani',sans-serif}
+.ab-ha{background:rgba(239,68,68,.22);color:#ff5555;border:1px solid rgba(239,68,68,.45)}
+.ab-wr{background:rgba(249,115,22,.18);color:#fb923c;border:1px solid rgba(249,115,22,.35)}
+
+/* BEHAVIOUR BADGE */
+.beh-ex{color:#34d399;font-weight:700}
+.beh-gd{color:#dbeafe;font-weight:700}
+.beh-df{color:#fcd34d;font-weight:700}
+.beh-po{color:#f87171;font-weight:700}
+.beh-fk{color:#c084fc;font-weight:700}
+
+/* HEATMAP */
+.hmtbl{border-collapse:collapse;font-size:8px}
+.hmtbl th{padding:3px 5px;color:var(--text3);font-size:7px;white-space:nowrap;
+  font-family:'Share Tech Mono',monospace;letter-spacing:.4px}
+.hm-rh{text-align:left;color:var(--text2);font-size:9px;white-space:nowrap;padding-right:8px;
+  position:sticky;left:0;background:var(--s1)}
+.hm-cell{border-radius:3px;font-weight:700;text-align:center;padding:3px 5px}
+
+/* PHONE LINK */
+.ph-link{color:#dbeafe;font-family:'Share Tech Mono',monospace;font-size:10px;text-decoration:none}
+.ph-link:hover{color:var(--gold)}
+
+canvas{max-height:240px}
+.note{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);padding:5px 0}
+.section-label{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;
+  color:var(--text2);text-transform:uppercase;margin:12px 0 8px;border-left:3px solid var(--gold);padding-left:8px}
+
+/* ── DHARASHIV EXTRAS ── */
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:9999;gap:16px}
+.loading-spinner{width:44px;height:44px;border:3px solid var(--border2);border-top-color:var(--gold);
+  border-radius:50%;animation:spin .8s linear infinite}
+.loading-text{font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:3px;color:var(--text3);text-transform:uppercase}
+.error-banner{background:rgba(239,68,68,.08);border-bottom:1px solid rgba(239,68,68,.25);
+  color:#fca5a5;padding:10px 18px;font-size:11px;display:none;line-height:1.6;
+  font-family:'Share Tech Mono',monospace}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:2000;
+  align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--s2);border:1px solid var(--border2);border-radius:10px;
+  width:92vw;max-width:1020px;max-height:86vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-header{display:flex;justify-content:space-between;align-items:center;
+  padding:13px 18px;border-bottom:1px solid var(--border)}
+.modal-title{font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--gold)}
+.modal-close{background:var(--s3);border:1px solid var(--border2);color:var(--text3);
+  padding:4px 11px;border-radius:5px;cursor:pointer;font-size:10px;font-weight:700;
+  font-family:'Rajdhani',sans-serif;letter-spacing:.5px}
+.modal-close:hover{color:var(--text)}
+.modal-kpis{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;
+  border-bottom:1px solid var(--border);background:var(--s1)}
+.modal-kpi{text-align:center;min-width:80px}
+.modal-kpi-val{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700}
+.modal-kpi-label{font-size:8px;letter-spacing:.6px;text-transform:uppercase;
+  color:var(--text3);margin-top:2px;font-family:'Share Tech Mono',monospace}
+.modal-body{overflow-y:auto;padding:14px 18px;flex:1}
+.ha-row td:first-child{border-left:3px solid var(--red)!important}
+.warn-row td:first-child{border-left:3px solid var(--orange)!important}
+#psSubDivFilters{display:inline-flex;gap:4px;flex-wrap:wrap}
+select{background:var(--s2);border:1px solid var(--border);border-radius:5px;
+  padding:4px 8px;color:var(--text2);font-size:10px;font-family:'Rajdhani',sans-serif;
+  cursor:pointer;outline:none}
+canvas{max-height:240px}
+</style>
+</head>
+<body>
+<div class="loading-overlay" id="loadingOverlay">
+  <div style="width:44px;height:44px;background:linear-gradient(135deg,var(--gold),#92400e);
+    border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;
+    box-shadow:0 0 18px rgba(245,158,11,.3);margin-bottom:6px">🛡️</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Loading Dharashiv District Data...</div>
+</div>
+<div class="hdr">
+  <div class="h-brand">
+    <div class="h-badge">🛡️</div>
+    <div>
+      <div class="h-title">Dharashiv District — Live Dashboard</div>
+      <div class="h-sub">Police Performance Analysis &nbsp;|&nbsp; Real-Time Sync</div>
+    </div>
+  </div>
+  <div class="h-right">
+    <div class="live-dot" id="liveStatus">LIVE ✓</div>
+    <button class="sync-btn" onclick="loadData()" id="syncBtn">
+      <svg id="syncIco" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+      </svg> Sync Sheet
+    </button>
+    <div id="lastSync" style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3)">—</div>
+  </div>
+</div>
+<div class="param-band" id="paramBand">
+  <div class="pbtn active" id="pb-disposal">
+    <div class="p-ico">📋</div>
+    <div class="p-val" id="pb-v-disposal">—</div>
+    <div class="p-lbl">DISPOSAL RATE</div>
+  </div>
+  <div class="pbtn" id="pb-excellent">
+    <div class="p-ico">🏆</div>
+    <div class="p-val" id="pb-v-excellent">—</div>
+    <div class="p-lbl">EXCELLENT DISPOSAL</div>
+  </div>
+  <div class="pbtn" id="pb-good">
+    <div class="p-ico">👍</div>
+    <div class="p-val" id="pb-v-good">—</div>
+    <div class="p-lbl">GOOD DISPOSAL</div>
+  </div>
+  <div class="pbtn" id="pb-avgdays">
+    <div class="p-ico">📅</div>
+    <div class="p-val" id="pb-v-avgdays" style="color:var(--purple)">—</div>
+    <div class="p-lbl">AVG INV DAYS</div>
+  </div>
+  <div class="pbtn" id="pb-esaksha">
+    <div class="p-ico">🖥️</div>
+    <div class="p-val" id="pb-v-esaksha">—</div>
+    <div class="p-lbl">E-SAKSHA / CASES</div>
+  </div>
+  <div class="pbtn" id="pb-fsl">
+    <div class="p-ico">🔬</div>
+    <div class="p-val" id="pb-v-fsl">—</div>
+    <div class="p-lbl">FSL VISIT / CASES</div>
+  </div>
+  <div class="pbtn" id="pb-preventive">
+    <div class="p-ico">🛡️</div>
+    <div class="p-val" id="pb-v-preventive" style="color:var(--blue)">—</div>
+    <div class="p-lbl">PREVENTIVE ACTION</div>
+  </div>
+  <div class="pbtn" id="pb-detection">
+    <div class="p-ico">🔍</div>
+    <div class="p-val" id="pb-v-detection" style="color:var(--cyan)">—</div>
+    <div class="p-lbl">DETECTED / PROP OFFENCE</div>
+  </div>
+  <div class="pbtn" id="pb-recovery">
+    <div class="p-ico">💰</div>
+    <div class="p-val" id="pb-v-recovery" style="color:var(--green)">—</div>
+    <div class="p-lbl">RECOVERY %</div>
+  </div>
+  <div class="pbtn" id="pb-raids">
+    <div class="p-ico">⚔️</div>
+    <div class="p-val" id="pb-v-raids" style="color:var(--pink)">—</div>
+    <div class="p-lbl">RAIDS (ILLEGAL)</div>
+  </div>
+  <div class="pbtn" id="pb-ha" style="cursor:pointer" onclick="openAlertModal('high')">
+    <div class="p-ico">🚨</div>
+    <div class="p-val" id="pb-v-ha" style="color:var(--red)">—</div>
+    <div class="p-lbl">HIGH ALERT CASES</div>
+  </div>
+  <div class="pbtn" id="pb-warn" style="cursor:pointer" onclick="openAlertModal('warning')">
+    <div class="p-ico">⚠️</div>
+    <div class="p-val" id="pb-v-warn" style="color:var(--orange)">—</div>
+    <div class="p-lbl">WARNING CASES</div>
+  </div>
+  <div class="pbtn" id="pb-def" style="cursor:pointer" onclick="openAlertModal('default')">
+    <div class="p-ico">❌</div>
+    <div class="p-val" id="pb-v-def" style="color:var(--red)">—</div>
+    <div class="p-lbl">DEFAULT CASES</div>
+  </div>
+</div>
+<div class="error-banner" id="errorBanner"></div>
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('overview',this)">📊 Overview</div>
+  <div class="tab" onclick="switchTab('sdpo',this)">🏛 SDPO</div>
+  <div class="tab" onclick="switchTab('policestation',this)">🚔 Police Station</div>
+  <div class="tab" onclick="switchTab('iolevel',this)">👮 IO Level</div>
+  <div class="tab" onclick="switchTab('alertcases',this)">🚨 Alert Cases</div>
+  <div class="tab" onclick="switchTab('crimepattern',this)">📊 Crime Pattern</div>
+  <div class="tab" onclick="switchTab('behaviour',this)">🧠 Behaviour Analysis</div>
+</div>
+<div class="content">
+
+<!-- ===== OVERVIEW ===== -->
+<div id="pane-overview" class="pane active">
+  <div class="sd-row" id="sdRow" style="padding:0 0 10px 0"></div>
+  <div style="margin-bottom:12px">
+    <div class="card">
+      <div class="ct">📋 Disposal Rate — PS-wise Performance</div>
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px">
+        <div class="scroll-t" style="max-height:280px">
+          <table class="tbl"><thead><tr><th>#</th><th>Police Station</th><th>SDPO</th><th>Disp%</th><th>Bar</th></tr></thead>
+          <tbody id="prPS"></tbody></table>
+        </div>
+        <canvas id="prChart" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="krow" id="distKPIs"></div>
+  <div class="g2">
+    <div class="card"><div class="ct">Performance Index Distribution</div><canvas id="perfDonutChart"></canvas></div>
+    <div class="card"><div class="ct">Follow-Up Index Distribution</div><canvas id="fuChart"></canvas></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">PS-wise Quality Stacked</div><canvas id="qualityStackedChart"></canvas></div>
+    <div class="card"><div class="ct">Sub-Division Comparison</div><canvas id="subdivisionChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ===== SDPO ===== -->
+<div id="pane-sdpo" class="pane">
+  <div class="sd-row" id="sdpoSubdivRow" style="padding:0 0 12px 0"></div>
+  <div class="card mb12">
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:11px">
+      <div class="ct" style="margin-bottom:0;flex-shrink:0">PS Performance Under Each SDPO</div>
+      <div style="display:flex;gap:5px;align-items:center">
+        <button class="fbtn active" id="sdpo-filter-all" onclick="filterSDPOTable('All',this)">All</button>
+        <span id="sdpoSDFilterBtns"></span>
+      </div>
+    </div>
+    <div class="scroll-t" style="max-height:380px">
+      <table class="tbl"><thead><tr>
+        <th>PS</th><th>SDPO</th><th>FIRs</th><th>Disposed</th><th>Disp%</th><th>Good</th>
+        <th>Quality%</th><th>E-Saksha</th><th>FSL%</th><th>Det%</th><th>🚨HA</th><th>⚠Warn</th>
+      </tr></thead><tbody id="sdpoPsTable"></tbody></table>
+    </div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);margin-top:7px;padding-top:7px;border-top:1px solid var(--border)">
+      💡 Click any row to drill down into individual FIR cases for that Police Station
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Disposal Quality by SDPO</div><canvas id="sdpoQualityChart"></canvas></div>
+    <div class="card"><div class="ct">SDPO Radar Comparison</div><canvas id="sdpoRadarChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ===== POLICE STATION ===== -->
+<div id="pane-policestation" class="pane">
+  <div class="krow" id="psKPIRow" style="margin-bottom:10px"></div>
+  <div class="filters">
+    <input class="fsearch" id="psSearchFilter" placeholder="🔍 Search PS..." oninput="renderPsTable()">
+    <button class="fbtn active" onclick="filterPS('All',this)" id="psFilterAll">All</button>
+    <div id="psSubDivFilters" style="display:inline-flex;gap:4px;flex-wrap:wrap"></div>
+  </div>
+  <div class="card mb12">
+    <div class="ct">Full PS Performance Detail</div>
+    <div class="scroll-t" style="max-height:420px">
+      <table class="tbl"><thead><tr>
+        <th>PS Name</th><th>SDPO</th><th>FIRs</th><th>Disp</th><th>Pend</th><th>Disp%</th>
+        <th>Exc</th><th>Good</th><th>Def</th><th>Quality%</th>
+        <th>E-Saksha</th><th>FSL%</th><th>Prev</th><th>Det%</th><th>Rec%</th>
+        <th>Raids</th><th>🚨</th><th>⚠</th>
+      </tr></thead><tbody id="psFullTable"></tbody></table>
+    </div>
+  </div>
+  <div class="g2 mb12">
+    <div class="card"><div class="ct">Composite Ranking (out of 100)</div>
+      <div class="scroll-t" style="max-height:360px">
+        <table class="tbl"><thead><tr><th>Rank</th><th>PS</th><th>SDPO</th><th>Score</th><th>Bar</th><th>FIRs</th><th>Disp</th></tr></thead>
+        <tbody id="psRankTable"></tbody></table>
+      </div>
+    </div>
+    <div class="card"><div class="ct">Score Breakdown</div><canvas id="psScoreChart"></canvas></div>
+  </div>
+</div>
+
+<!-- ===== IO LEVEL ===== -->
+<div id="pane-iolevel" class="pane">
+  <div class="filters">
+    <input class="fsearch" id="ioSearchInput" placeholder="🔍 Search IO..." oninput="renderIoTable()">
+    <select class="fbtn" id="ioFilterPS" onchange="renderIoTable()"><option value="">All PS</option></select>
+    <select class="fbtn" id="ioFilterSDPO" onchange="renderIoTable()"><option value="">All SDPO</option></select>
+    <select class="fbtn" id="ioSortBy" onchange="renderIoTable()">
+      <option value="cases">Sort: Total Cases</option>
+      <option value="disp">Sort: Disposal %</option>
+      <option value="ha">Sort: High Alert</option>
+    </select>
+  </div>
+  <div class="card mb12">
+    <div class="ct">IO Performance with Behaviour Analysis</div>
+    <div class="scroll-t" style="max-height:480px">
+      <table class="tbl"><thead><tr>
+        <th>IO Name</th><th>PS</th><th>SDPO</th><th>Cases</th><th>Disp</th><th>Disp%</th>
+        <th>Exc</th><th>Exc%</th><th>🚨HA</th><th>⚠Warn</th><th>Prop Cases</th><th>Det%</th><th>Behav</th>
+      </tr></thead><tbody id="ioTable"></tbody></table>
+    </div>
+  </div>
+  <div class="g2 mb12">
+    <div class="card"><div class="ct">Bottom PS — Disposal %</div>
+      <div id="ioTopDisposalChart"></div>
+    </div>
+    <div class="card"><div class="ct">IO Quality Distribution</div>
+      <div id="ioQualityChart"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ALERT CASES ===== -->
+<div id="pane-alertcases" class="pane">
+  <div class="g2 mb12">
+    <div class="card">
+      <div class="ct">🚨 High Alert Summary by PS</div>
+      <div class="scroll-t" style="max-height:200px">
+        <table class="tbl"><thead><tr><th>PS</th><th>SDPO</th><th>High Alert</th><th>Bar</th></tr></thead>
+        <tbody id="highAlertByPS"></tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct">⚠️ Warning Summary by PS</div>
+      <div class="scroll-t" style="max-height:200px">
+        <table class="tbl"><thead><tr><th>PS</th><th>SDPO</th><th>Warning</th><th>Bar</th></tr></thead>
+        <tbody id="warningByPS"></tbody></table>
+      </div>
+    </div>
+  </div>
+  <div class="g2 mb12">
+    <div class="card"><div class="ct">Alert Distribution</div><canvas id="alertDistChart"></canvas></div>
+    <div class="card"><div class="ct">Alert Level Escalation</div><canvas id="alertEscChart"></canvas></div>
+  </div>
+  <div class="card mb12">
+    <div class="ct">🚨 High Alert Cases — Full Detail</div>
+    <div class="filters">
+      <input class="fsearch" id="haSearch" placeholder="🔍 Search..." oninput="renderAlertTables()">
+      <select class="fbtn" id="haPS" onchange="renderAlertTables()"><option value="">All PS</option></select>
+      <select class="fbtn" id="haSDPO" onchange="renderAlertTables()"><option value="">All SDPO</option></select>
+    </div>
+    <div class="scroll-t" style="max-height:360px">
+      <table class="tbl"><thead><tr>
+        <th>FIR No.</th><th>Date</th><th>PS Name</th><th>SDPO</th><th>IO Name</th>
+        <th>Crime</th><th>BNS Section</th><th>Inv Days</th><th>Days Left</th>
+        <th>Status</th><th>Alert Level</th><th>📞 IO Phone</th>
+      </tr></thead><tbody id="highAlertTable"></tbody></table>
+    </div>
+  </div>
+  <div class="card mb12">
+    <div class="ct">⚠️ Warning Cases — Full Detail</div>
+    <div class="filters">
+      <input class="fsearch" id="warnSearch" placeholder="🔍 Search..." oninput="renderAlertTables()">
+      <select class="fbtn" id="warnPS" onchange="renderAlertTables()"><option value="">All PS</option></select>
+    </div>
+    <div class="scroll-t" style="max-height:360px">
+      <table class="tbl"><thead><tr>
+        <th>FIR No.</th><th>Date</th><th>PS Name</th><th>SDPO</th><th>IO Name</th>
+        <th>Crime</th><th>Section</th><th>Inv Days</th><th>Days Left</th>
+        <th>Status</th><th>📞 IO Phone</th>
+      </tr></thead><tbody id="warningTable"></tbody></table>
+    </div>
+  </div>
+  <div class="card">
+    <div class="ct">❌ Default Cases — Full Detail</div>
+    <div class="scroll-t" style="max-height:360px">
+      <table class="tbl"><thead><tr>
+        <th>FIR No.</th><th>Date</th><th>PS Name</th><th>SDPO</th><th>IO Name</th>
+        <th>Crime</th><th>Section</th><th>Inv Days</th><th>Status</th><th>📞 IO Phone</th>
+      </tr></thead><tbody id="defaultTable"></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CRIME PATTERN ===== -->
+<div id="pane-crimepattern" class="pane">
+  <div class="g2">
+    <div class="card"><div class="ct">Crime Distribution</div><canvas id="crimeDistChart"></canvas></div>
+    <div class="card"><div class="ct">Disposal Rate by Crime</div><canvas id="crimeDisposalChart"></canvas></div>
+  </div>
+  <div class="card mb12">
+    <div class="ct">Crime Category Analysis</div>
+    <table class="tbl"><thead><tr>
+      <th>Crime</th><th>Cases</th><th>Disposed</th><th>Pending</th><th>Disp%</th>
+      <th>Excellent</th><th>Exc%</th><th>High Alert</th>
+    </tr></thead><tbody id="crimeTable"></tbody></table>
+  </div>
+</div>
+
+<!-- ===== BEHAVIOUR ===== -->
+<div id="pane-behaviour" class="pane">
+  <div class="card">
+    <div class="ct">PS Performance by Crime Category
+      <span style="font-size:8px;color:var(--text3);font-family:'Share Tech Mono',monospace;margin-left:8px">(Avg Score: Excellent=5, Good=4, Poor=3, Default=0)</span>
+    </div>
+    <div class="scroll-t" style="max-height:460px;overflow:auto">
+      <div id="behaviourTable"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="mainModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Cases</div>
+      <button class="modal-close" onclick="closeModal()">✕ CLOSE</button>
+    </div>
+    <div class="modal-kpis" id="modalKpis"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+
+    const SHEET_URL = 'https://script.google.com/macros/s/AKfycbx1oquutZFoMV80b2mtSEHXQ1T8LcOLro9MopvTN0YwG-XWKOAnfjHwvqep6M-iVGNQwA/exec';
+
+    let rawData = [];
+    let headers = [];
+    let chartInstances = {};
+
+    // Column mapping (will be set after headers are read)
+    let C = {};
+
+    function mapHeaders(hdrs) {
+      // Step 1: map every actual header string → its column index
+      C = {}; // reset
+      hdrs.forEach((h, i) => {
+        if (h !== null && h !== undefined && String(h).trim() !== '') {
+          C[String(h).trim().toUpperCase()] = i;
+        }
+      });
+
+      // Step 2: Hard-wire the EXACT column positions from your sheet
+      // Row 8 headers: A=FIR No. B=BNS Sec. C=FIR Date D=PS Name E=IO Name
+      //   F=Sub Division G=60/90 Days H=CCTNS Feed Date I=CC No. J=CC No. Date
+      //   K=Investigation Days L=Inv Days Left M=Follow Up Index N=Performance Index
+      //   O=E-Saksha ID Count P=FSL Visit Count Q=E-Saksha Status R=FSL Visit Status
+      //   S=Preventive action T=Date of Bond U=Ph No. I/O V=Message to I/O
+      //   W=Whats App link X=FIR Month Y=CC Month Z=Lat AA=Long AB=Lost Amount
+      //   AC=Detection AD=Recovered Amount AE=Recovery % AF=Raids AG=Crime Category
+      //   AH=Telegram Alert AI=Alert Level AJ=Last Alert Date AK=Behaviour Status
+      //   AL=Behaviour Score AM=Property Offence AN=Offence Behaviour AO=Effective Behaviour Status
+      const FIXED = {
+        'FIR NO': 0,   // A
+        'BNS SEC': 1,   // B
+        'FIR DATE': 2,   // C
+        'PS NAME': 3,   // D
+        'IO NAME': 4,   // E
+        'SUB DIVISION': 5,   // F
+        '60/90 DAYS': 6,   // G
+        'CCTNS FEED DATE': 7,   // H
+        'CC NO.': 8,   // I
+        'CC NO. DATE': 9,   // J
+        'INVESTIGATION DAYS': 10,  // K
+        'INV DAYS LEFT': 11,  // L
+        'FOLLOW UP INDEX': 12,  // M  ← Warning/High Alert status
+        'PERFORMANCE INDEX': 13,  // N  ← Excellent/Good/Default/Pending
+        'E-SAKSHA ID': 14,  // O
+        'FSL VISIT ID': 15,  // P
+        'E-SAKSHA STATUS': 16,  // Q
+        'FSL VISIT STATUS': 17,  // R
+        'PREVENTIVE ACTION': 18,  // S
+        'DATE OF BOND': 19,  // T
+        'PH NO. I/O': 20,  // U
+        'MESSAGE TO I/O': 21,  // V
+        'WHATS APP LINK': 22,  // W
+        'FIR MONTH': 23,  // X
+        'CC MONTH': 24,  // Y
+        'LAT': 25,  // Z
+        'LONG': 26,  // AA
+        'LOST AMOUNT': 27,  // AB
+        'DETECTION': 28,  // AC
+        'RECOVERED AMOUNT': 29,  // AD
+        'RECOVERY %': 30,  // AE
+        'RAIDS': 31,  // AF
+        'CRIME CATEGORY': 32,  // AG
+        'TELEGRAM ALERT': 33,  // AH
+        'ALERT LEVEL': 34,  // AI
+        'LAST ALERT DATE': 35,  // AJ
+        'BEHAVIOUR STATUS': 36,  // AK
+        'BEHAVIOUR SCORE': 37,  // AL
+        'PROPERTY OFFENCE': 38,  // AM
+        'OFFENCE BEHAVIOUR': 39,  // AN
+        'EFFECTIVE BEHAVIOUR': 40   // AO
+      };
+
+      // Apply fixed positions — these override anything from Step 1
+      Object.entries(FIXED).forEach(([key, idx]) => {
+        C[key] = idx;
+      });
+
+      // Step 3: also try to auto-detect from actual headers as fallback
+      // (handles if sheet column order ever changes)
+      const autoAliases = {
+        'FIR NO': ['FIR NO.', 'FIR NO', 'FIRNO', 'FIR NUMBER'],
+        'BNS SEC': ['BNS SEC.', 'BNS SECTION', 'BNS SEC'],
+        'FIR DATE': ['FIR DATE', 'FIRDATE'],
+        'PS NAME': ['PS NAME', 'PSNAME', 'POLICE STATION'],
+        'IO NAME': ['IO NAME', 'IO_NAME', 'INVESTIGATING OFFICER'],
+        'SUB DIVISION': ['SUB DIVISION', 'SUBDIVISION', 'SUB_DIVISION'],
+        'INVESTIGATION DAYS': ['INVESTIGATION DAYS', 'INV DAYS TAKEN', 'INV DAYS'],
+        'INV DAYS LEFT': ['INV DAYS LEFT', 'DAYS LEFT', 'DAYS REMAINING'],
+        'FOLLOW UP INDEX': ['FOLLOW UP INDEX', 'FOLLOW-UP INDEX', 'FOLLOWUP'],
+        'PERFORMANCE INDEX': ['PERFORMANCE INDEX', 'DISPOSAL QUALITY'],
+        'E-SAKSHA ID': ['E-SAKSHA ID COUNT', 'E-SAKSHA ID', 'E-SAKSHA', 'ESAKSHA'],
+        'FSL VISIT ID': ['FSL VISIT COUNT', 'FSL VISIT ID', 'FSL VISIT', 'FSL'],
+        'E-SAKSHA STATUS': ['E-SAKSHA STATUS', 'E-SAKSHA STATU'],
+        'FSL VISIT STATUS': ['FSL VISIT STATUS'],
+        'PREVENTIVE ACTION': ['PREVENTIVE ACTION', 'PREVENTIVE'],
+        'PH NO. I/O': ['PH NO. I/O', 'IO PHONE', 'MOBILE', 'CONTACT'],
+        'LOST AMOUNT': ['LOST AMOUNT', 'LOST'],
+        'RECOVERED AMOUNT': ['RECOVERED AMOUNT', 'RECOVERED'],
+        'RECOVERY %': ['RECOVERY %', 'RECOVERY%'],
+        'CRIME CATEGORY': ['CRIME CATEGORY', 'CRIME TYPE'],
+        'ALERT LEVEL': ['ALERT LEVEL', 'ALERTLEVEL'],
+        'BEHAVIOUR STATUS': ['BEHAVIOUR STATUS', 'BEHAVIOR STATUS'],
+        'BEHAVIOUR SCORE': ['BEHAVIOUR SCORE', 'BEHAVIOR SCORE'],
+        'PROPERTY OFFENCE': ['PROPERTY OFFENCE', 'PROPERTY OFFENBE'],
+      };
+
+      Object.entries(autoAliases).forEach(([canonical, variants]) => {
+        if (C[canonical] !== undefined) return; // already set by FIXED, skip
+        variants.forEach(v => {
+          if (C[canonical] !== undefined) return;
+          const idx = C[v.toUpperCase()];
+          if (idx !== undefined) C[canonical] = idx;
+        });
+      });
+
+      // Debug: log final column map
+      console.log('📋 Column Map (key → col index):');
+      ['FIR NO', 'PS NAME', 'IO NAME', 'SUB DIVISION', 'FOLLOW UP INDEX',
+        'PERFORMANCE INDEX', 'ALERT LEVEL', 'CRIME CATEGORY', 'PH NO. I/O',
+        'INVESTIGATION DAYS', 'INV DAYS LEFT'].forEach(k => {
+          console.log('  ', k, '→ col', C[k], '| sample:', rawData[0] ? rawData[0][C[k]] : 'no data');
+        });
+    }
+
+    // Get cell value using canonical name
+    function col(row, ...names) {
+      for (const name of names) {
+        const idx = C[name.toUpperCase()];
+        if (idx !== undefined && row[idx] !== undefined && row[idx] !== null && row[idx] !== '') {
+          return String(row[idx]);
+        }
+      }
+      return '';
+    }
+
+    // Shorthand: get using pre-known canonical names
+    function getField(row, ...names) { return col(row, ...names); }
+
+    function num(v) { return parseFloat(String(v).replace(/[^0-9.\-]/g, '')) || 0; }
+    function pct(v) { const n = parseFloat(v); return isNaN(n) ? '—' : n.toFixed(1) + '%'; }
+    function fmt(v) { const n = num(v); return n > 0 ? n.toLocaleString('en-IN') : '—'; }
+    function rupees(v) {
+      const n = num(v);
+      if (!n) return '—';
+      if (n >= 10000000) return '₹' + (n / 10000000).toFixed(2) + 'Cr';
+      if (n >= 100000) return '₹' + (n / 100000).toFixed(1) + 'L';
+      if (n >= 1000) return '₹' + (n / 1000).toFixed(0) + 'K';
+      return '₹' + n;
+    }
+
+    async function loadData() {
+      document.getElementById('loadingOverlay').style.display = 'flex';
+      document.getElementById('errorBanner').style.display = 'none';
+
+      try {
+        // Fetch with no-cache to always get fresh data
+        const resp = await fetch(SHEET_URL + '?nocache=' + Date.now(), {
+          method: 'GET',
+          cache: 'no-store',
+        });
+
+        if (!resp.ok) throw new Error('HTTP error: ' + resp.status + ' ' + resp.statusText);
+
+        const rawText = await resp.text();
+        if (!rawText || rawText.trim() === '') throw new Error('Empty response from Apps Script');
+
+        // ── Parse: handle plain JSON, JSONP wrapper, and Google's redirect HTML
+        let json = null;
+        let cleanText = rawText.trim();
+
+        // Remove JSONP wrapper: someFunction({...}) or undefined({...})
+        const jsonpMatch = cleanText.match(/^[a-zA-Z_$][a-zA-Z0-9_$.]*\s*\(([\s\S]+)\)\s*;?\s*$/);
+        if (jsonpMatch) {
+          cleanText = jsonpMatch[1].trim();
+        }
+
+        // If it looks like HTML (Google login redirect), that's an auth error
+        if (cleanText.startsWith('<!') || cleanText.startsWith('<html')) {
+          throw new Error('Got HTML instead of JSON — make sure the Web App is deployed with "Anyone" access (not "Anyone with Google Account")');
+        }
+
+        try {
+          json = JSON.parse(cleanText);
+        } catch (parseErr) {
+          const preview = rawText.substring(0, 400);
+          throw new Error('JSON parse failed. Raw response: ' + preview);
+        }
+
+        // ── Detect response shape and extract headers + rows
+        let hdrs = [], rows = [];
+
+        if (json && Array.isArray(json.headers) && Array.isArray(json.data)) {
+          // ✅ Expected shape: { headers: [...], data: [[...], ...] }
+          hdrs = json.headers;
+          rows = json.data;
+
+        } else if (Array.isArray(json) && json.length > 0) {
+          // Flat 2D array — row 0 = headers
+          hdrs = json[0];
+          rows = json.slice(1);
+
+        } else if (json && Array.isArray(json.values) && json.values.length > 0) {
+          // Google Sheets API style
+          hdrs = json.values[0];
+          rows = json.values.slice(1);
+
+        } else if (json && json.status === 'success' && Array.isArray(json.data)) {
+          if (Array.isArray(json.data[0])) {
+            hdrs = json.data[0];
+            rows = json.data.slice(1);
+          } else {
+            hdrs = json.headers || [];
+            rows = json.data;
+          }
+
+        } else if (json && json.error) {
+          throw new Error('Apps Script error: ' + json.error + (json.stack ? '\n' + json.stack : ''));
+
+        } else {
+          throw new Error('Unrecognised JSON shape. Keys found: ' + Object.keys(json || {}).join(', ') +
+            '\nFirst 300 chars: ' + JSON.stringify(json).substring(0, 300));
+        }
+
+        if (!hdrs || hdrs.length === 0) throw new Error('Headers array is empty — check row 8 of your sheet');
+        if (rows.length === 0) throw new Error('Data array is empty — check data starts at row 9');
+
+        // ── Clean: skip fully-empty rows
+        rows = rows.filter(r => Array.isArray(r) && r.some(v => v !== '' && v !== null && v !== undefined));
+
+        headers = hdrs;
+        rawData = rows;
+        mapHeaders(headers);
+
+        // Show debug info in console
+        console.log('✅ Data loaded:', rawData.length, 'rows,', headers.length, 'columns');
+        console.log('Headers detected:', headers.slice(0, 10).join(' | '));
+        console.log('Column map C:', C);
+
+        const now = new Date();
+        document.getElementById('lastSync').textContent = 'Synced: ' + now.toLocaleTimeString('en-IN') + ' (' + rawData.length + ' rows)';
+
+        renderAll();
+
+      } catch (e) {
+        console.error('loadData error:', e);
+        showDebugError(e.message);
+        // Still try to render with whatever data we have
+        if (rawData.length > 0) renderAll();
+      } finally {
+        document.getElementById('loadingOverlay').style.display = 'none';
+      }
+    }
+
+    function showDebugError(detail) {
+      const banner = document.getElementById('errorBanner');
+      banner.style.display = 'block';
+      // Escape HTML in detail string
+      const safeDetail = String(detail)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+      banner.innerHTML = `
+<div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap">
+  <div style="flex:1;min-width:300px">
+    <div style="font-weight:700;font-size:14px;margin-bottom:6px;color:#f87171">
+      ⚠️ Data fetch error
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#fbbf24;
+      background:rgba(0,0,0,0.5);padding:10px;border-radius:6px;overflow-x:auto;
+      white-space:pre-wrap;max-height:120px;overflow-y:auto">${safeDetail}</div>
+  </div>
+  <div style="flex:1;min-width:280px">
+    <div style="font-weight:600;font-size:12px;margin-bottom:6px;color:#94a3b8">
+      ✅ Your Apps Script must return exactly this:
+    </div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#22d3ee;
+      background:rgba(0,0,0,0.5);padding:10px;border-radius:6px;line-height:1.8">
+function doGet(e) {<br>
+&nbsp; var ss = SpreadsheetApp.getActiveSpreadsheet();<br>
+&nbsp; var sheet = ss.getSheetByName("Dharashiv Case Review System");<br>
+&nbsp; if (!sheet) sheet = ss.getActiveSheet();<br>
+&nbsp; var lastRow = sheet.getLastRow();<br>
+&nbsp; var hdrs = sheet.getRange(8,1,1,41).getValues()[0];<br>
+&nbsp; var data = [];<br>
+&nbsp; if (lastRow >= 9) {<br>
+&nbsp;&nbsp;&nbsp; data = sheet.getRange(9,1,lastRow-8,41).getValues();<br>
+&nbsp; }<br>
+&nbsp; var out = JSON.stringify({headers:hdrs, data:data});<br>
+&nbsp; return ContentService.createTextOutput(out)<br>
+&nbsp;&nbsp;&nbsp; .setMimeType(ContentService.MimeType.JSON);<br>
+}
+    </div>
+    <div style="margin-top:6px;font-size:10px;color:#64748b">
+      Deploy → New deployment → Web app → Execute as: <b style="color:#fff">Me</b> → Who has access: <b style="color:#fff">Anyone</b>
+    </div>
+  </div>
+</div>`;
+    }
+
+    function aggregateByPS() {
+      const map = {};
+      rawData.forEach(row => {
+        const ps = (row[C['PS NAME']] || '').toString().trim();
+        if (!ps) return; // ← skip blank rows — this is the key fix
+
+        const sdpo = (row[C['SUB DIVISION']] || '').toString().trim() || '—';
+
+        if (!map[ps]) map[ps] = {
+          ps, sdpo,
+          firs: 0, disposed: 0, excellent: 0, good: 0, pending: 0, def: 0,
+          highAlert: 0, warning: 0, defaultCase: 0,
+          invDaysSum: 0, eSaksha: 0, eSakshaTotal: 0,
+          fslCount: 0, preventive: 0, raids: 0, lost: 0, recovered: 0
+        };
+        const m = map[ps];
+        m.firs++;
+
+        // Column N (index 13) = Performance Index: Excellent / Good / Default / Pending
+        const perf = (row[C['PERFORMANCE INDEX']] || '').toString().toUpperCase();
+        if (perf.includes('EXCELL')) { m.disposed++; m.excellent++; }
+        else if (perf.includes('GOOD')) { m.disposed++; m.good++; }
+        else if (perf.includes('DEFAULT')) { m.disposed++; m.def++; }
+        else { m.pending++; }
+
+        // Column M (index 12) = Follow Up Index: High Alert / Warning / On Track etc
+        const followup = (row[C['FOLLOW UP INDEX']] || '').toString().toUpperCase();
+        // Column AI (index 34) = Alert Level: High Alert / Warning / Default
+        const alert = (row[C['ALERT LEVEL']] || '').toString().toUpperCase();
+
+        if (followup.includes('HIGH') || alert.includes('HIGH')) m.highAlert++;
+        else if (followup.includes('WARN') || alert.includes('WARN')) m.warning++;
+        else if (alert.includes('DEFAULT')) m.defaultCase++;
+
+        m.invDaysSum += num(row[C['INVESTIGATION DAYS']]);
+
+        const esaksha = (row[C['E-SAKSHA ID']] || '').toString().trim();
+        if (esaksha && esaksha !== '—' && esaksha !== '0') m.eSaksha++;
+        m.eSakshaTotal++;
+
+        const fsl = (row[C['FSL VISIT ID']] || '').toString().trim();
+        if (fsl && fsl !== '—' && fsl !== '0') m.fslCount++;
+
+        m.raids += num(row[C['RAIDS']]);
+        m.lost += num(row[C['LOST AMOUNT']]);
+        m.recovered += num(row[C['RECOVERED AMOUNT']]);
+
+        const prev = (row[C['PREVENTIVE ACTION']] || '').toString().toUpperCase();
+        if (prev && prev !== 'PENDING' && prev !== '') m.preventive++;
+      });
+
+      return Object.values(map).map(m => {
+        m.disposalRate = m.firs > 0 ? (m.disposed / m.firs * 100) : 0;
+        m.qualityPct = m.firs > 0 ? ((m.excellent + m.good) / m.firs * 100) : 0;
+        m.avgDays = m.firs > 0 ? (m.invDaysSum / m.firs) : 0;
+        m.eSakshaPct = m.eSakshaTotal > 0 ? (m.eSaksha / m.eSakshaTotal * 100) : 0;
+        return m;
+      });
+    }
+
+    function aggregateBySDPO() {
+      const map = {};
+      rawData.forEach(row => {
+        const sdpo = (row[C['SUB DIVISION']] || '').toString().trim();
+        if (!sdpo) return; // skip blank rows — no Unknown bucket
+
+        if (!map[sdpo]) map[sdpo] = {
+          sdpo, firs: 0, disposed: 0, excellent: 0, good: 0, pending: 0, def: 0,
+          highAlert: 0, warning: 0, invDaysSum: 0, lost: 0, recovered: 0, eSaksha: 0, fslCount: 0
+        };
+        const m = map[sdpo];
+        m.firs++;
+
+        const perf = (row[C['PERFORMANCE INDEX']] || '').toString().toUpperCase();
+        if (perf.includes('EXCELL')) { m.disposed++; m.excellent++; }
+        else if (perf.includes('GOOD')) { m.disposed++; m.good++; }
+        else if (perf.includes('DEFAULT')) { m.disposed++; m.def++; }
+        else { m.pending++; }
+
+        const followup = (row[C['FOLLOW UP INDEX']] || '').toString().toUpperCase();
+        const alert = (row[C['ALERT LEVEL']] || '').toString().toUpperCase();
+        if (followup.includes('HIGH') || alert.includes('HIGH')) m.highAlert++;
+        else if (followup.includes('WARN') || alert.includes('WARN')) m.warning++;
+
+        m.invDaysSum += num(row[C['INVESTIGATION DAYS']]);
+        m.lost += num(row[C['LOST AMOUNT']]);
+        m.recovered += num(row[C['RECOVERED AMOUNT']]);
+        const esaksha = (row[C['E-SAKSHA ID']] || '').toString().trim();
+        if (esaksha && esaksha !== '—' && esaksha !== '0') m.eSaksha++;
+        const fsl = (row[C['FSL VISIT ID']] || '').toString().trim();
+        if (fsl && fsl !== '—' && fsl !== '0') m.fslCount++;
+      });
+      return Object.values(map).map(m => {
+        m.disposalRate = m.firs > 0 ? (m.disposed / m.firs * 100) : 0;
+        m.avgDays = m.firs > 0 ? (m.invDaysSum / m.firs) : 0;
+        m.qualityPct = m.firs > 0 ? ((m.excellent + m.good) / m.firs * 100) : 0;
+        m.eSakshaPct = m.firs > 0 ? (m.eSaksha / m.firs * 100) : 0;
+        m.fslPct = m.firs > 0 ? (m.fslCount / m.firs * 100) : 0;
+        return m;
+      });
+    }
+
+    function aggregateByIO() {
+      const map = {};
+      rawData.forEach(row => {
+        const ps = (row[C['PS NAME']] || '').toString().trim();
+        if (!ps) return; // skip blank rows
+        const io = (row[C['IO NAME']] || '').toString().trim() || 'Unknown IO';
+        const sdpo = (row[C['SUB DIVISION']] || '').toString().trim() || '—';
+        const key = io + '|' + ps;
+        if (!map[key]) map[key] = { io, ps, sdpo, cases: 0, disposed: 0, excellent: 0, highAlert: 0, warning: 0, phone: '' };
+        const m = map[key];
+        m.cases++;
+        const perf = (row[C['PERFORMANCE INDEX']] || '').toString().toUpperCase();
+        if (perf.includes('EXCELL') || perf.includes('GOOD')) m.disposed++;
+        if (perf.includes('EXCELL')) m.excellent++;
+        const followup = (row[C['FOLLOW UP INDEX']] || '').toString().toUpperCase();
+        const alert = (row[C['ALERT LEVEL']] || '').toString().toUpperCase();
+        if (followup.includes('HIGH') || alert.includes('HIGH')) m.highAlert++;
+        else if (followup.includes('WARN') || alert.includes('WARN')) m.warning++;
+        const ph = (row[C['PH NO. I/O']] || '').toString().trim();
+        if (ph) m.phone = ph;
+      });
+      return Object.values(map).map(m => {
+        m.dispPct = m.cases > 0 ? (m.disposed / m.cases * 100) : 0;
+        m.excPct = m.cases > 0 ? (m.excellent / m.cases * 100) : 0;
+        return m;
+      });
+    }
+
+    function aggregateByCrime() {
+      const map = {};
+      rawData.forEach(row => {
+        const ps = (row[C['PS NAME']] || '').toString().trim();
+        if (!ps) return; // skip blank rows
+        const crime = (row[C['CRIME CATEGORY']] || '').toString().trim() || 'Other';
+        if (!map[crime]) map[crime] = { crime, cases: 0, disposed: 0, excellent: 0, highAlert: 0, pending: 0 };
+        const m = map[crime];
+        m.cases++;
+        const perf = (row[C['PERFORMANCE INDEX']] || '').toString().toUpperCase();
+        if (perf.includes('EXCELL')) { m.disposed++; m.excellent++; }
+        else if (perf.includes('GOOD')) { m.disposed++; }
+        else { m.pending++; }
+        const followup = (row[C['FOLLOW UP INDEX']] || '').toString().toUpperCase();
+        const alert = (row[C['ALERT LEVEL']] || '').toString().toUpperCase();
+        if (followup.includes('HIGH') || alert.includes('HIGH')) m.highAlert++;
+      });
+      return Object.values(map).map(m => {
+        m.dispPct = m.cases > 0 ? (m.disposed / m.cases * 100) : 0;
+        m.excPct = m.cases > 0 ? (m.excellent / m.cases * 100) : 0;
+        return m;
+      }).sort((a, b) => b.cases - a.cases);
+    }
+
+    function getAlertRows(type) {
+      // Check BOTH Follow Up Index (col M) and Alert Level (col AI)
+      return rawData.filter(row => {
+        const ps = (row[C['PS NAME']] || '').toString().trim();
+        if (!ps) return false; // skip blank rows
+        const followup = (row[C['FOLLOW UP INDEX']] || '').toString().toUpperCase();
+        const alert = (row[C['ALERT LEVEL']] || '').toString().toUpperCase();
+        if (type === 'high') return followup.includes('HIGH') || alert.includes('HIGH');
+        if (type === 'warning') return followup.includes('WARN') || alert.includes('WARN');
+        if (type === 'default') return alert.includes('DEFAULT');
+        return false;
+      });
+    }
+
+    function getTotals() {
+      const psa = aggregateByPS();
+      const totalFirs = psa.reduce((s, p) => s + p.firs, 0);
+      const totalDisposed = psa.reduce((s, p) => s + p.disposed, 0);
+      const totalExc = psa.reduce((s, p) => s + p.excellent, 0);
+      const totalGood = psa.reduce((s, p) => s + p.good, 0);
+      const totalPend = psa.reduce((s, p) => s + p.pending, 0);
+      const totalHA = psa.reduce((s, p) => s + p.highAlert, 0);
+      const totalWarn = psa.reduce((s, p) => s + p.warning, 0);
+      const totalDef = psa.reduce((s, p) => s + p.defaultCase, 0);
+      const totalLost = psa.reduce((s, p) => s + p.lost, 0);
+      const totalRec = psa.reduce((s, p) => s + p.recovered, 0);
+      const totalESaksha = psa.reduce((s, p) => s + p.eSaksha, 0);
+      const totalFSL = psa.reduce((s, p) => s + p.fslCount, 0);
+      const totalRaids = psa.reduce((s, p) => s + p.raids, 0);
+      const totalPreventive = psa.reduce((s, p) => s + p.preventive, 0);
+      const avgDays = totalFirs > 0 ? psa.reduce((s, p) => s + p.invDaysSum, 0) / totalFirs : 0;
+      // Detection from raw data
+      let totalDetected = 0, totalPropCases = 0;
+      rawData.forEach(row => {
+        const ps = (row[C['PS NAME']] || '').toString().trim();
+        if (!ps) return;
+        const det = (row[C['DETECTION']] || '').toString().trim();
+        if (det) { totalPropCases++; if (det.toUpperCase() === 'YES' || det === '1') totalDetected++; }
+      });
+      return {
+        totalFirs, totalDisposed, totalExc, totalGood, totalPend, totalHA, totalWarn, totalDef,
+        totalLost, totalRec, totalESaksha, totalFSL, totalRaids, totalPreventive,
+        totalDetected, totalPropCases, avgDays,
+        disposalRate: totalFirs > 0 ? totalDisposed / totalFirs * 100 : 0
+      };
+    }
+
+    function destroyChart(id) {
+      if (chartInstances[id]) { chartInstances[id].destroy(); delete chartInstances[id]; }
+    }
+
+    function createChart(id, config) {
+      destroyChart(id);
+      const ctx = document.getElementById(id);
+      if (!ctx) return;
+      chartInstances[id] = new Chart(ctx, config);
+    }
+
+    const CHART_DEFAULTS = {
+      color: '#8899bb',
+      borderColor: '#1e2a40',
+    };
+
+    Chart.defaults.color = '#8899bb';
+
+    // ====== OVERVIEW ======
+
+
+// ── CHART.JS DEFAULTS ─────────────────────────────────────────────────────
+Chart.defaults.color = '#c8d8e8';
+Chart.defaults.borderColor = '#1a2d45';
+Chart.defaults.font.family = "'DM Sans', sans-serif";
+Chart.defaults.font.size = 11;
+
+// ── CHART HELPERS ──────────────────────────────────────────────────────────
+function darkAxis() { return { grid:{color:'#1a2d45'}, border:{color:'#1a2d45'} }; }
+function darkTicks(rot) {
+  const t = { color:'#a0b8cc', font:{size:10,family:"'DM Sans',sans-serif"} };
+  if (rot !== undefined) t.maxRotation = rot;
+  return t;
+}
+function barOpts(extra) {
+  const o = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{ labels:{ color:'#c8d8e8', boxWidth:10, font:{size:10} } } },
+    scales:{ x:{...darkAxis(), ticks:darkTicks()}, y:{...darkAxis(), ticks:darkTicks()} }
+  };
+  return Object.assign(o, extra||{});
+}
+function donutOpts() {
+  return {
+    responsive:true, maintainAspectRatio:false, cutout:'62%',
+    plugins:{ legend:{ position:'bottom', labels:{ color:'#c8d8e8', boxWidth:10, font:{size:10}, padding:10 } } }
+  };
+}
+let _charts = {};
+function makeChart(id, cfg) {
+  if (_charts[id]) { try { _charts[id].destroy(); } catch(e){} }
+  const el = document.getElementById(id); if (!el) return;
+  cfg.options = cfg.options || {};
+  cfg.options.responsive = true; cfg.options.maintainAspectRatio = false;
+  _charts[id] = new Chart(el, cfg);
+}
+
+// ── UTILITIES ──────────────────────────────────────────────────────────────
+function fmtDate(v) {
+  if (v === null || v === undefined || v === '' || v === '—') return '—';
+  const s = String(v).trim();
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(s)) return s;
+  const d = new Date(s);
+  if (!isNaN(d.getTime())) {
+    return String(d.getUTCDate()).padStart(2,'0') + '/' +
+           String(d.getUTCMonth()+1).padStart(2,'0') + '/' + d.getUTCFullYear();
+  }
+  return s;
+}
+function safeNum(v) { return parseFloat(String(v===null||v===undefined?0:v).replace(/[^0-9.\-]/g,''))||0; }
+function rupees(v) {
+  const n = safeNum(v); if (!n) return '—';
+  if (n>=10000000) return '₹'+(n/10000000).toFixed(2)+'Cr';
+  if (n>=100000)   return '₹'+(n/100000).toFixed(1)+'L';
+  if (n>=1000)     return '₹'+(n/1000).toFixed(0)+'K';
+  return '₹'+n;
+}
+function dispColor(v) { return v>=65?'var(--green)':v>=50?'var(--gold)':'var(--red)'; }
+function esc(s) { return (s||'').toString().replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function sdpoPill(s) {
+  const list=[...new Set(rawData.map(r=>(r[C['SUB DIVISION']]||'').trim()).filter(Boolean))];
+  const pills=['pk','pm','pcyan','pp'];
+  const i=list.indexOf(s); return pills[i>=0?i%pills.length:0];
+}
+function sdpoColors() { return ['#6366f1','#ec4899','#06b6d4','#f59e0b']; }
+
+// ── TAB SWITCHING ──────────────────────────────────────────────────────────
+function switchTab(id, el) {
+  document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const pane = document.getElementById('pane-'+id);
+  if (pane) pane.classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ── PARAM BAND ─────────────────────────────────────────────────────────────
+function updateParamBand() {
+  const psa = aggregateByPS();
+  const tf  = psa.reduce((s,p)=>s+p.firs,0);
+  const td  = psa.reduce((s,p)=>s+p.disposed,0);
+  const te  = psa.reduce((s,p)=>s+p.excellent,0);
+  const tg  = psa.reduce((s,p)=>s+p.good,0);
+  const tha = psa.reduce((s,p)=>s+p.highAlert,0);
+  const tw  = psa.reduce((s,p)=>s+p.warning,0);
+  const tdf = psa.reduce((s,p)=>s+(p.defaultCase||0),0);
+  const tes = psa.reduce((s,p)=>s+p.eSaksha,0);
+  const tfs = psa.reduce((s,p)=>s+p.fslCount,0);
+  const tr  = psa.reduce((s,p)=>s+(p.raids||0),0);
+  const tp  = psa.reduce((s,p)=>s+(p.preventive||0),0);
+  const ad  = tf>0?(psa.reduce((s,p)=>s+p.invDaysSum,0)/tf).toFixed(1):'—';
+  const tlo = psa.reduce((s,p)=>s+(p.lost||0),0);
+  const tre = psa.reduce((s,p)=>s+(p.recovered||0),0);
+  const recPct = tlo>0?(tre/tlo*100).toFixed(1)+'%':'—';
+  let tdet=0,tprop=0;
+  rawData.forEach(r=>{
+    if(C['PS NAME']===undefined||!(r[C['PS NAME']]||'').toString().trim()) return;
+    if(C['DETECTION']===undefined) return;
+    const det=(r[C['DETECTION']]||'').toString().trim();
+    if(det){tprop++;if(det.toUpperCase()==='YES'||det==='1')tdet++;}
+  });
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  s('pb-v-disposal', td+'/'+tf);
+  const pd=document.getElementById('pb-disposal');
+  if(pd) pd.querySelector('.p-lbl').textContent=(tf>0?(td/tf*100).toFixed(1):0)+'% DISPOSAL RATE';
+  s('pb-v-excellent', te+'/'+tf);
+  const pe=document.getElementById('pb-excellent');
+  if(pe) pe.querySelector('.p-lbl').textContent=(tf>0?(te/tf*100).toFixed(1):0)+'% EXCELLENT DISPOSAL';
+  s('pb-v-good', tg+'/'+tf);
+  const pg=document.getElementById('pb-good');
+  if(pg) pg.querySelector('.p-lbl').textContent=(tf>0?(tg/tf*100).toFixed(1):0)+'% GOOD DISPOSAL';
+  s('pb-v-avgdays',    ad+'d');
+  s('pb-v-esaksha',    tes+'/'+tf);
+  s('pb-v-fsl',        tfs+'/'+tf);
+  s('pb-v-preventive', tp);
+  s('pb-v-detection',  tprop>0?tdet+'/'+tprop+' ('+Math.round(tdet/tprop*100)+'%)':'—');
+  s('pb-v-recovery',   recPct);
+  s('pb-v-raids',      tr);
+  s('pb-v-ha',         tha);
+  s('pb-v-warn',       tw);
+  s('pb-v-def',        tdf);
+}
+
+// ── SDPO PANELS ────────────────────────────────────────────────────────────
+function buildSDRow(containerId) {
+  const sdpos = aggregateBySDPO();
+  const cols  = [
+    {bg:'rgba(99,102,241,.08)',  bdr:'rgba(99,102,241,.25)',  top:'#6366f1', val:'#a5b4fc'},
+    {bg:'rgba(236,72,153,.08)',  bdr:'rgba(236,72,153,.25)',  top:'#ec4899', val:'#f9a8d4'},
+    {bg:'rgba(6,182,212,.08)',   bdr:'rgba(6,182,212,.25)',   top:'#06b6d4', val:'#67e8f9'},
+    {bg:'rgba(245,158,11,.08)',  bdr:'rgba(245,158,11,.25)',  top:'#f59e0b', val:'#fcd34d'},
+  ];
+  const el=document.getElementById(containerId); if(!el) return;
+  el.innerHTML=sdpos.map((s,i)=>{
+    const cc=cols[i%cols.length]; const dr=s.disposalRate.toFixed(1)+'%';
+    return `<div class="sd-card" style="background:${cc.bg};border:1px solid ${cc.bdr};border-top:3px solid ${cc.top}">
+      <div class="sd-name" style="color:${cc.val}">⚔ ${s.sdpo}</div>
+      <div class="sd-big" style="color:${cc.val}">${dr}</div>
+      <div class="sd-lbl">DISPOSAL RATE</div>
+      <div class="sd-kpis">
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--gold)">${s.firs}</div><div class="sd-kl">FIRS</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--green)">${s.disposed}</div><div class="sd-kl">DISPOSED</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:${cc.val}">${dr}</div><div class="sd-kl">DISP%</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--green)">${s.excellent}</div><div class="sd-kl">EXCELLENT</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--blue)">${s.good}</div><div class="sd-kl">GOOD</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:${cc.val}">${s.qualityPct.toFixed(1)}%</div><div class="sd-kl">QUALITY%</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--red);cursor:pointer" onclick="openAlertModal('high')">${s.highAlert}</div><div class="sd-kl">HIGH ALERT</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--orange);cursor:pointer" onclick="openAlertModal('warning')">${s.warning}</div><div class="sd-kl">WARNING</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--purple)">${s.avgDays.toFixed(1)}d</div><div class="sd-kl">AVG DAYS</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--gold)">${rupees(s.lost)}</div><div class="sd-kl">LOST</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--green)">${rupees(s.recovered)}</div><div class="sd-kl">RECOVERED</div></div>
+        <div class="sd-kpi"><div class="sd-kv" style="color:var(--text2)">${s.eSaksha||0}/${s.firs}</div><div class="sd-kl">E-SAKSHA</div></div>
+      </div>
+      <div class="mbar" style="margin-top:12px">
+        <div class="mbar-f" style="width:${Math.min(s.disposalRate,100)}%;background:${cc.val}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── OVERVIEW ───────────────────────────────────────────────────────────────
+function renderOverview() {
+  buildSDRow('sdRow');
+  updateParamBand();
+  const t   = getTotals();
+  const psa = aggregateByPS().sort((a,b)=>b.disposalRate-a.disposalRate);
+  const maxR= Math.max(...psa.map(p=>p.disposalRate),1);
+
+  // PS bar list
+  document.getElementById('prPS').innerHTML=psa.map((p,i)=>`
+    <tr data-drill-ps="${p.ps||''}" style="cursor:pointer">
+      <td style="color:var(--text3)">${i+1}</td>
+      <td style="color:var(--gold)">${p.ps}</td>
+      <td><span class="pill ${sdpoPill(p.sdpo)}">${p.sdpo}</span></td>
+      <td style="color:${dispColor(p.disposalRate)};font-weight:700">${p.disposalRate.toFixed(1)}%</td>
+      <td><div class="mbar" style="min-width:60px"><div class="mbar-f" style="width:${p.disposalRate/maxR*100}%;background:${p.disposalRate>=65?'var(--green)':'var(--gold)'}"></div></div></td>
+    </tr>`).join('');
+
+  makeChart('prChart',{type:'bar',data:{
+    labels:psa.map(p=>p.ps),
+    datasets:[{data:psa.map(p=>p.disposalRate),backgroundColor:psa.map(p=>p.disposalRate>=65?'#10b981':'#f59e0b'),borderRadius:3}]
+  },options:barOpts({plugins:{legend:{display:false}}})});
+
+  // KPI row
+  const tf=t.totalFirs,td=t.totalDisposed;
+  document.getElementById('distKPIs').innerHTML=[
+    {lbl:'TOTAL FIRS',   val:tf,                 sub:'Dharashiv District',                              c:'--gold'},
+    {lbl:'DISPOSED',     val:td,                 sub:(tf>0?(td/tf*100).toFixed(1):0)+'% rate',          c:'--green',  bar:tf>0?td/tf*100:0},
+    {lbl:'AVG INV DAYS', val:t.avgDays.toFixed(1)+'d', sub:'District average',                          c:'--purple'},
+    {lbl:'PENDING',      val:t.totalPend,        sub:(tf>0?(t.totalPend/tf*100).toFixed(1):0)+'% pending', c:'--gold', bar:tf>0?t.totalPend/tf*100:0},
+    {lbl:'EXCELLENT',    val:t.totalExc,         sub:(tf>0?(t.totalExc/tf*100).toFixed(1):0)+'% of FIRs', c:'--green'},
+    {lbl:'GOOD',         val:t.totalGood,        sub:(tf>0?(t.totalGood/tf*100).toFixed(1):0)+'% of FIRs',c:'--blue'},
+    {lbl:'HIGH ALERT',   val:t.totalHA,          sub:'Need urgent action',                              c:'--red'},
+    {lbl:'WARNING',      val:t.totalWarn,        sub:'Near deadline',                                   c:'--orange'},
+  ].map(k=>`<div class="kcard" style="--kc:var(${k.c})">
+    <div class="k-lbl">${k.lbl}</div><div class="k-val">${k.val}</div>
+    <div class="k-sub">${k.sub}</div>
+    ${k.bar!=null?`<div class="k-bar"><div class="k-bar-f" style="width:${k.bar}%"></div></div>`:''}
+  </div>`).join('');
+
+  makeChart('perfDonutChart',{type:'doughnut',data:{
+    labels:['Excellent','Good','Pending','Default'],
+    datasets:[{data:[t.totalExc,t.totalGood,t.totalPend,t.totalDef],backgroundColor:['#10b981','#3b82f6','#f59e0b','#ef4444'],borderColor:'#0b1018',borderWidth:2}]
+  },options:donutOpts()});
+
+  const onTrack=Math.max(0,tf-td-t.totalHA-t.totalWarn);
+  makeChart('fuChart',{type:'doughnut',data:{
+    labels:['Completed','On Track','Warning','High Alert'],
+    datasets:[{data:[td,onTrack,t.totalWarn,t.totalHA],backgroundColor:['#10b981','#3b82f6','#f59e0b','#ef4444'],borderColor:'#0b1018',borderWidth:2}]
+  },options:donutOpts()});
+
+  makeChart('qualityStackedChart',{type:'bar',data:{
+    labels:psa.map(p=>p.ps),
+    datasets:[
+      {label:'Excellent',data:psa.map(p=>p.excellent),    backgroundColor:'#059669',stack:'s'},
+      {label:'Good',     data:psa.map(p=>p.good),         backgroundColor:'#2563eb',stack:'s'},
+      {label:'Pending',  data:psa.map(p=>p.pending),      backgroundColor:'#d97706',stack:'s'},
+      {label:'Default',  data:psa.map(p=>p.defaultCase||0),backgroundColor:'#dc2626',stack:'s'},
+    ]
+  },options:{...barOpts(),scales:{x:{...darkAxis(),stacked:true,ticks:darkTicks(55)},y:{...darkAxis(),stacked:true,ticks:darkTicks()}}}});
+
+  const sdpos=aggregateBySDPO();
+  makeChart('subdivisionChart',{type:'bar',data:{
+    labels:sdpos.map(s=>s.sdpo),
+    datasets:[
+      {label:'Total FIR',data:sdpos.map(s=>s.firs),    backgroundColor:'#6366f1'},
+      {label:'Disposed', data:sdpos.map(s=>s.disposed),backgroundColor:'#ec4899'},
+      {label:'Pending',  data:sdpos.map(s=>s.pending), backgroundColor:'#f59e0b'},
+    ]
+  },options:barOpts()});
+}
+
+// ── SDPO TAB ───────────────────────────────────────────────────────────────
+function renderSDPO() {
+  buildSDRow('sdpoSubdivRow');
+  const sdpos=aggregateBySDPO(), psa=aggregateByPS();
+  const snames=[...new Set(psa.map(p=>p.sdpo))];
+  document.getElementById('sdpoSDFilterBtns').innerHTML=snames.map(s=>
+    `<button class="fbtn" data-filter-sdpo="${s}">${s}</button>`
+  ).join('');
+  renderSDPOPsTable('All');
+
+  makeChart('sdpoQualityChart',{type:'bar',data:{
+    labels:sdpos.map(s=>s.sdpo),
+    datasets:[
+      {label:'Excellent',data:sdpos.map(s=>s.excellent),backgroundColor:'#059669',stack:'s'},
+      {label:'Good',     data:sdpos.map(s=>s.good),     backgroundColor:'#2563eb',stack:'s'},
+      {label:'Pending',  data:sdpos.map(s=>s.pending),  backgroundColor:'#d97706',stack:'s'},
+    ]
+  },options:barOpts()});
+
+  const sc=sdpoColors();
+  makeChart('sdpoRadarChart',{type:'radar',data:{
+    labels:['Disposal%','Quality%','E-Saksha%','FSL%','No HA','Speed'],
+    datasets:sdpos.map((s,i)=>({
+      label:s.sdpo,
+      data:[s.disposalRate,s.qualityPct,s.eSakshaPct||0,s.fslPct||0,Math.max(0,100-s.highAlert*5),Math.max(0,100-s.avgDays)],
+      borderColor:sc[i%sc.length],backgroundColor:sc[i%sc.length]+'28',pointBackgroundColor:sc[i%sc.length],
+    }))
+  },options:{responsive:true,maintainAspectRatio:false,
+    scales:{r:{grid:{color:'rgba(255,255,255,0.15)'},angleLines:{color:'rgba(255,255,255,0.2)'},
+      ticks:{display:false,backdropColor:'transparent'},
+      pointLabels:{color:'#c8d8e8',font:{size:10}},min:0,max:100}},
+    plugins:{legend:{labels:{color:'#c8d8e8',boxWidth:10,font:{size:10}}}}}});
+}
+
+let _sdpoFilter='All';
+function filterSDPOTable(f,el){
+  _sdpoFilter=f;
+  document.querySelectorAll('#sdpo-filter-all,#sdpoSDFilterBtns .fbtn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active'); else document.getElementById('sdpo-filter-all')?.classList.add('active');
+  renderSDPOPsTable(f);
+}
+function renderSDPOPsTable(filter){
+  const psa=aggregateByPS();
+  const rows=filter==='All'?psa:psa.filter(p=>p.sdpo===filter);
+  document.getElementById('sdpoPsTable').innerHTML=rows.sort((a,b)=>b.disposalRate-a.disposalRate).map(p=>`
+    <tr data-drill-ps="${p.ps||''}">
+      <td style="color:var(--gold)">${p.ps} ▶</td>
+      <td><span class="pill ${sdpoPill(p.sdpo)}">${p.sdpo}</span></td>
+      <td>${p.firs}</td><td style="color:var(--green)">${p.disposed}</td>
+      <td style="color:${dispColor(p.disposalRate)};font-weight:700">${p.disposalRate.toFixed(1)}%</td>
+      <td>${p.good}</td><td>${p.qualityPct.toFixed(1)}%</td>
+      <td>${p.eSaksha}/${p.firs}</td>
+      <td>${p.fslCount>0?(p.fslCount/p.firs*100).toFixed(1)+'%':'—'}</td>
+      <td>—</td>
+      <td>${p.highAlert>0?'<span class="pill pha">🚨'+p.highAlert+'</span>':'—'}</td>
+      <td>${p.warning>0?'<span class="pill pwr">⚠'+p.warning+'</span>':'—'}</td>
+    </tr>`).join('');
+}
+
+// ── POLICE STATION TAB ─────────────────────────────────────────────────────
+let _psFilter='All';
+function renderPoliceSt(){
+  const t=getTotals(), psa=aggregateByPS();
+  const snames=[...new Set(psa.map(p=>p.sdpo))];
+  document.getElementById('psSubDivFilters').innerHTML=snames.map(s=>
+    `<button class="fbtn" data-filter-ps="${s}">${s}</button>`
+  ).join('');
+
+  document.getElementById('psKPIRow').innerHTML=[
+    {lbl:'TOTAL FIRS',   val:t.totalFirs,   sub:'All Police Stations',                                   c:'--gold'},
+    {lbl:'DISPOSED',     val:t.totalDisposed,sub:t.disposalRate.toFixed(1)+'% rate',                     c:'--green',  bar:t.disposalRate},
+    {lbl:'AVG INV DAYS', val:t.avgDays.toFixed(1)+'d',sub:'Division average',                           c:'--purple'},
+    {lbl:'EXCELLENT',    val:t.totalExc,    sub:(t.totalFirs>0?(t.totalExc/t.totalFirs*100).toFixed(1):0)+'% of FIRs',c:'--green'},
+    {lbl:'GOOD DISPOSAL',val:t.totalGood,   sub:(t.totalFirs>0?(t.totalGood/t.totalFirs*100).toFixed(1):0)+'% of FIRs',c:'--blue'},
+    {lbl:'HIGH ALERT',   val:t.totalHA,     sub:'Need urgent action',                                   c:'--red'},
+    {lbl:'WARNING',      val:t.totalWarn,   sub:'Near deadline',                                        c:'--orange'},
+    {lbl:'DET/PROP',     val:t.totalDetected+'/'+t.totalPropCases,sub:'Detected',                       c:'--cyan'},
+  ].map(k=>`<div class="kcard" style="--kc:var(${k.c})">
+    <div class="k-lbl">${k.lbl}</div><div class="k-val">${k.val}</div>
+    ${k.sub?`<div class="k-sub">${k.sub}</div>`:''}
+    ${k.bar?`<div class="k-bar"><div class="k-bar-f" style="width:${k.bar}%"></div></div>`:''}
+  </div>`).join('');
+
+  renderPsTable();
+
+  const ranked=[...psa].map(p=>{
+    const score=(p.disposalRate*0.35)+(p.qualityPct*0.20)+(p.eSakshaPct*0.10);
+    return {...p, score:+score.toFixed(1)};
+  }).sort((a,b)=>b.score-a.score);
+
+  document.getElementById('psRankTable').innerHTML=ranked.map((p,i)=>`
+    <tr data-drill-ps="${p.ps||''}">
+      <td><span class="rbadge ${i===0?'r1':i===1?'r2':i===2?'r3':'rn'}">${i+1}</span></td>
+      <td style="color:var(--gold)">${p.ps} ▶</td>
+      <td><span class="pill ${sdpoPill(p.sdpo)}">${p.sdpo}</span></td>
+      <td style="color:var(--gold);font-family:'Share Tech Mono',monospace">${p.score}</td>
+      <td><div class="sbar" style="width:100px"><div class="sbar-f" style="width:${p.score}%"></div></div></td>
+      <td>${p.firs}</td><td style="color:var(--green)">${p.disposed}</td>
+    </tr>`).join('');
+
+  const top10=ranked.slice(0,10);
+  makeChart('psScoreChart',{type:'bar',data:{
+    labels:top10.map(p=>p.ps),
+    datasets:[
+      {label:'Disposal(35)', data:top10.map(p=>+(p.disposalRate*0.35).toFixed(1)),backgroundColor:'#10b981',stack:'s'},
+      {label:'Quality(20)',  data:top10.map(p=>+(p.qualityPct*0.20).toFixed(1)),  backgroundColor:'#8b5cf6',stack:'s'},
+      {label:'E-Saksha(10)',data:top10.map(p=>+(p.eSakshaPct*0.10).toFixed(1)),  backgroundColor:'#3b82f6',stack:'s'},
+    ]
+  },options:{...barOpts(),indexAxis:'y'}});
+}
+function filterPS(f,el){
+  _psFilter=f;
+  document.querySelectorAll('#psFilterAll,#psSubDivFilters .fbtn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderPsTable();
+}
+function renderPsTable(){
+  const q=(document.getElementById('psSearchFilter')?.value||'').toLowerCase();
+  const psa=aggregateByPS()
+    .filter(p=>(_psFilter==='All'||p.sdpo===_psFilter)&&(p.ps||'').toLowerCase().includes(q))
+    .sort((a,b)=>b.disposalRate-a.disposalRate);
+  document.getElementById('psFullTable').innerHTML=psa.map(p=>`
+    <tr data-drill-ps="${p.ps||''}">
+      <td style="color:var(--gold)">${p.ps} ▶</td>
+      <td><span class="pill ${sdpoPill(p.sdpo)}">${p.sdpo}</span></td>
+      <td>${p.firs}</td><td style="color:var(--green)">${p.disposed}</td>
+      <td style="color:var(--orange)">${p.pending}</td>
+      <td style="color:${dispColor(p.disposalRate)};font-weight:700">${p.disposalRate.toFixed(1)}%</td>
+      <td style="color:var(--green)">${p.excellent}</td>
+      <td style="color:var(--blue)">${p.good}</td>
+      <td style="color:var(--red)">${p.defaultCase||0}</td>
+      <td>${p.qualityPct.toFixed(1)}%</td>
+      <td>${p.eSaksha}/${p.firs}</td>
+      <td>${p.fslCount>0?(p.fslCount/p.firs*100).toFixed(1)+'%':'—'}</td>
+      <td>${p.preventive||0}</td><td>—</td><td>—</td><td>${p.raids||0}</td>
+      <td>${p.highAlert>0?'<span class="pill pha">🚨'+p.highAlert+'</span>':'—'}</td>
+      <td>${p.warning>0?'<span class="pill pwr">⚠'+p.warning+'</span>':'—'}</td>
+    </tr>`).join('');
+}
+
+// ── IO LEVEL TAB ───────────────────────────────────────────────────────────
+function renderIO(){
+  const ios=aggregateByIO().sort((a,b)=>b.cases-a.cases);
+  const psList=[...new Set(ios.map(io=>io.ps))].sort();
+  const sdpoList=[...new Set(ios.map(io=>io.sdpo))].sort();
+  document.getElementById('ioFilterPS').innerHTML='<option value="">All PS</option>'+psList.map(p=>`<option>${p}</option>`).join('');
+  document.getElementById('ioFilterSDPO').innerHTML='<option value="">All SDPO</option>'+sdpoList.map(s=>`<option>${s}</option>`).join('');
+  renderIoTable();
+
+  const bottomPS=aggregateByPS().sort((a,b)=>a.disposalRate-b.disposalRate).slice(0,10);
+  document.getElementById('ioTopDisposalChart').innerHTML=bottomPS.map(p=>`
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+      <div style="width:90px;font-size:10px;color:var(--text2);text-align:right;flex-shrink:0">${(p.ps||'').substring(0,12)}</div>
+      <div style="flex:1;height:20px;background:rgba(255,255,255,.04);border-radius:3px;overflow:hidden">
+        <div style="height:100%;width:${p.disposalRate}%;background:linear-gradient(90deg,#d97706,#f59e0b);display:flex;align-items:center;justify-content:flex-end;padding-right:7px;font-size:10px;font-weight:700;color:#fff;min-width:28px">${p.disposalRate.toFixed(1)}%</div>
+      </div>
+    </div>`).join('');
+
+  const topIOs=ios.slice(0,10);
+  document.getElementById('ioQualityChart').innerHTML=topIOs.map(io=>{
+    const excW=io.cases>0?(io.excellent/io.cases*100):0;
+    const goodW=io.cases>0?((io.disposed-io.excellent)/io.cases*100):0;
+    const pendW=Math.max(0,100-excW-goodW);
+    return `<div style="display:flex;align-items:center;gap:7px;margin-bottom:6px">
+      <div style="width:90px;font-size:10px;color:var(--text2);text-align:right;flex-shrink:0">${(io.io||'').substring(0,12)}</div>
+      <div class="stk" style="flex:1">
+        <div class="stk-s" style="width:${excW}%;background:#059669"></div>
+        <div class="stk-s" style="width:${goodW}%;background:#2563eb"></div>
+        <div class="stk-s" style="width:${pendW}%;background:#d97706"></div>
+      </div>
+      <div style="font-size:10px;color:var(--text3);width:35px">${io.dispPct.toFixed(0)}%</div>
+    </div>`;
+  }).join('');
+}
+function renderIoTable(){
+  const q=(document.getElementById('ioSearchInput')?.value||'').toLowerCase();
+  const psF=(document.getElementById('ioFilterPS')?.value||'');
+  const sdF=(document.getElementById('ioFilterSDPO')?.value||'');
+  const sort=(document.getElementById('ioSortBy')?.value||'cases');
+  let ios=aggregateByIO();
+  if(psF) ios=ios.filter(io=>io.ps===psF);
+  if(sdF) ios=ios.filter(io=>io.sdpo===sdF);
+  if(q)   ios=ios.filter(io=>(io.io||'').toLowerCase().includes(q)||(io.ps||'').toLowerCase().includes(q));
+  ios.sort((a,b)=>sort==='disp'?b.dispPct-a.dispPct:sort==='ha'?b.highAlert-a.highAlert:b.cases-a.cases);
+  document.getElementById('ioTable').innerHTML=ios.map(io=>`
+    <tr data-drill-io="${io.io||''}" data-drill-ps="${io.ps||''}">
+      <td style="color:var(--gold)">${io.io||'—'} ▶</td>
+      <td>${io.ps||'—'}</td>
+      <td><span class="pill ${sdpoPill(io.sdpo)}">${io.sdpo||'—'}</span></td>
+      <td>${io.cases}</td><td style="color:var(--green)">${io.disposed}</td>
+      <td style="color:${dispColor(io.dispPct)};font-weight:700">${io.dispPct.toFixed(1)}%</td>
+      <td>${io.excellent}</td>
+      <td style="color:var(--green)">${io.excPct.toFixed(1)}%</td>
+      <td>${io.highAlert>0?'<span class="pill pha">🚨'+io.highAlert+'</span>':'—'}</td>
+      <td>${io.warning>0?'<span class="pill pwr">⚠'+io.warning+'</span>':'—'}</td>
+      <td>${io.cases}</td><td>${io.dispPct.toFixed(1)}%</td><td>—</td>
+    </tr>`).join('');
+}
+
+// ── ALERTS TAB ─────────────────────────────────────────────────────────────
+function renderAlerts(){
+  const psa=aggregateByPS();
+  const haPS=psa.filter(p=>p.highAlert>0).sort((a,b)=>b.highAlert-a.highAlert);
+  const wPS =psa.filter(p=>p.warning>0).sort((a,b)=>b.warning-a.warning);
+  const maxHA=Math.max(...haPS.map(p=>p.highAlert),1);
+  const maxW =Math.max(...wPS.map(p=>p.warning),1);
+
+  document.getElementById('highAlertByPS').innerHTML=haPS.map(p=>`
+    <tr data-drill-ps="${p.ps||''}">
+      <td style="color:var(--red)">${p.ps} 🔍</td>
+      <td><span class="pill ${sdpoPill(p.sdpo)}">${p.sdpo}</span></td>
+      <td><span class="pill pha">🚨${p.highAlert}</span></td>
+      <td><div class="mbar" style="width:100px"><div class="mbar-f" style="width:${p.highAlert/maxHA*100}%;background:var(--red)"></div></div></td>
+    </tr>`).join('');
+
+  document.getElementById('warningByPS').innerHTML=wPS.map(p=>`
+    <tr data-drill-ps="${p.ps||''}">
+      <td style="color:var(--orange)">${p.ps} 🔍</td>
+      <td><span class="pill ${sdpoPill(p.sdpo)}">${p.sdpo}</span></td>
+      <td><span class="pill pwr">⚠${p.warning}</span></td>
+      <td><div class="mbar" style="width:100px"><div class="mbar-f" style="width:${p.warning/maxW*100}%;background:var(--orange)"></div></div></td>
+    </tr>`).join('');
+
+  const allPS=[...new Set(psa.map(p=>p.ps))];
+  const allSD=[...new Set(psa.map(p=>p.sdpo))];
+  ['haPS','haSDPO','warnPS'].forEach(id=>{
+    const el=document.getElementById(id); if(!el) return;
+    const isPS=id.includes('PS');
+    el.innerHTML=`<option value="">All ${isPS?'PS':'SDPO'}</option>`+(isPS?allPS:allSD).map(v=>`<option>${v}</option>`).join('');
+  });
+
+  const alertPS=psa.filter(p=>p.highAlert+p.warning>0).sort((a,b)=>b.highAlert+b.warning-a.highAlert-a.warning);
+  makeChart('alertDistChart',{type:'bar',data:{
+    labels:alertPS.map(p=>p.ps),
+    datasets:[
+      {label:'High Alert',data:alertPS.map(p=>p.highAlert),backgroundColor:'#ef4444',stack:'s'},
+      {label:'Warning',   data:alertPS.map(p=>p.warning),  backgroundColor:'#f97316',stack:'s'},
+    ]
+  },options:{...barOpts(),scales:{x:{...darkAxis(),stacked:true,ticks:darkTicks(45)},y:{...darkAxis(),stacked:true,ticks:darkTicks()}}}});
+
+  const t=getTotals(), onTrack=Math.max(0,t.totalFirs-t.totalDisposed-t.totalHA-t.totalWarn);
+  makeChart('alertEscChart',{type:'doughnut',data:{
+    labels:['High Alert','Warning','On Track'],
+    datasets:[{data:[t.totalHA,t.totalWarn,onTrack],backgroundColor:['#ef4444','#f97316','#10b981'],borderColor:'#0b1018',borderWidth:2}]
+  },options:donutOpts()});
+
+  renderAlertTables();
+}
+function renderAlertTables(){
+  const hq=(document.getElementById('haSearch')?.value||'').toLowerCase();
+  const hps=(document.getElementById('haPS')?.value||'');
+  const hsd=(document.getElementById('haSDPO')?.value||'');
+  const wq=(document.getElementById('warnSearch')?.value||'').toLowerCase();
+  const wps=(document.getElementById('warnPS')?.value||'');
+
+  const haRows=getAlertRows('high').filter(r=>{
+    const ps=(r[C['PS NAME']]||'').toString().trim();
+    const sd=(r[C['SUB DIVISION']]||'').toString().trim();
+    const io=(r[C['IO NAME']]||'').toString().trim();
+    return(!hps||ps===hps)&&(!hsd||sd===hsd)&&(!hq||ps.toLowerCase().includes(hq)||io.toLowerCase().includes(hq));
+  });
+  const wRows=getAlertRows('warning').filter(r=>{
+    const ps=(r[C['PS NAME']]||'').toString().trim();
+    const io=(r[C['IO NAME']]||'').toString().trim();
+    return(!wps||ps===wps)&&(!wq||ps.toLowerCase().includes(wq)||io.toLowerCase().includes(wq));
+  });
+  const dRows=getAlertRows('default');
+
+  document.getElementById('highAlertTable').innerHTML=haRows.map(r=>alertRow(r,'ha')).join('');
+  document.getElementById('warningTable').innerHTML  =wRows.map(r=>alertRow(r,'warn')).join('');
+  document.getElementById('defaultTable').innerHTML  =dRows.map(r=>alertRow(r,'def')).join('');
+}
+function alertRow(r,type){
+  const fir  =r[C['FIR NO']]||'—';
+  const date =fmtDate(r[C['FIR DATE']]);
+  const ps   =(r[C['PS NAME']]||'—').toString().trim();
+  const sdpo =(r[C['SUB DIVISION']]||'—').toString().trim();
+  const io   =(r[C['IO NAME']]||'—').toString().trim();
+  const crime=(r[C['CRIME CATEGORY']]||'—').toString().trim();
+  const sec  =(r[C['BNS SEC']]||'—').toString().trim();
+  const inv  =(r[C['INVESTIGATION DAYS']]||'—');
+  const left =(r[C['INV DAYS LEFT']]||'—');
+  const fu   =(r[C['FOLLOW UP INDEX']]||'—').toString().trim();
+  const alv  =(r[C['ALERT LEVEL']]||fu).toString().trim();
+  const ph   =(r[C['PH NO. I/O']]||'—').toString().trim();
+  const rc   =type==='ha'?'ha-row':type==='warn'?'warn-row':'';
+  const ap   =type==='ha'?'<span class="pill pha">High Alert</span>':type==='warn'?'<span class="pill pwr">Warning</span>':'<span class="pill pf">Default</span>';
+  if(type==='def')
+    return `<tr class="${rc}" data-drill-ps="${ps}"><td style="color:var(--gold)">#${fir}</td><td>${date}</td><td style="color:var(--orange)">${ps}</td><td><span class="pill ${sdpoPill(sdpo)}">${sdpo}</span></td><td>${io}</td><td><span class="pill pp">${crime}</span></td><td style="font-size:9px">${sec}</td><td>${inv}d</td><td>${ap}</td><td style="color:var(--cyan)">📞${ph}</td></tr>`;
+  return `<tr class="${rc}" data-drill-ps="${ps}"><td style="color:var(--gold)">#${fir}</td><td>${date}</td><td style="color:var(--orange)">${ps}</td><td><span class="pill ${sdpoPill(sdpo)}">${sdpo}</span></td><td>${io}</td><td><span class="pill pp">${crime}</span></td><td style="font-size:9px">${sec}</td><td>${inv}d</td><td style="color:${type==='ha'?'var(--red)':'var(--orange)'};font-weight:700">${left}d</td><td><span class="pill pp">Pending</span></td><td>${ap}</td><td style="color:var(--cyan)">📞${ph}</td></tr>`;
+}
+
+// ── CRIME PATTERN TAB ──────────────────────────────────────────────────────
+// aggregateByCrime() returns: { crime, cases, disposed, excellent, highAlert, pending, dispPct, excPct }
+function renderCrimePattern(){
+  const crimes=aggregateByCrime().filter(c=>c.crime);
+  const top12=crimes.slice(0,12);
+  const cols=['#ef4444','#8b5cf6','#10b981','#3b82f6','#f59e0b','#06b6d4','#ec4899','#14b8a6','#f97316','#a78bfa','#34d399','#fb923c'];
+
+  makeChart('crimeDistChart',{type:'bar',data:{
+    labels:top12.map(c=>c.crime),
+    datasets:[{data:top12.map(c=>c.cases),backgroundColor:cols,borderRadius:3}]
+  },options:{...barOpts({plugins:{legend:{display:false}}}),indexAxis:'y'}});
+
+  makeChart('crimeDisposalChart',{type:'bar',data:{
+    labels:top12.map(c=>c.crime),
+    datasets:[{data:top12.map(c=>c.dispPct),backgroundColor:top12.map(c=>c.dispPct>=65?'#10b981':c.dispPct>=50?'#3b82f6':'#f59e0b'),borderRadius:3}]
+  },options:{...barOpts({plugins:{legend:{display:false}}}),indexAxis:'y',scales:{x:{...darkAxis(),max:100,ticks:darkTicks()},y:{...darkAxis(),ticks:darkTicks()}}}});
+
+  document.getElementById('crimeTable').innerHTML=crimes.map(c=>`
+    <tr data-drill-crime="${c.crime||''}">
+      <td style="color:var(--gold)">${c.crime} ▶</td>
+      <td>${c.cases}</td>
+      <td style="color:var(--green)">${c.disposed}</td>
+      <td style="color:var(--orange)">${c.cases-c.disposed}</td>
+      <td style="color:${dispColor(c.dispPct)};font-weight:700">${c.dispPct.toFixed(1)}%</td>
+      <td style="color:var(--green)">${c.excellent}</td>
+      <td>${c.excPct.toFixed(1)}%</td>
+      <td>${c.highAlert>0?'<span class="pill pha">🚨'+c.highAlert+'</span>':'—'}</td>
+    </tr>`).join('');
+}
+
+// ── BEHAVIOUR TAB ──────────────────────────────────────────────────────────
+function renderBehaviour(){
+  const psa=aggregateByPS();
+  const crimes=[...new Set(rawData.map(r=>(r[C['CRIME CATEGORY']]||'').trim()).filter(Boolean))].sort();
+  const el=document.getElementById('behaviourTable');
+  if(!el||!psa.length||!crimes.length){
+    if(el) el.innerHTML='<div style="color:var(--text3);padding:20px;font-size:11px">No behaviour data available.</div>';
+    return;
+  }
+  const head='<table class="tbl"><thead><tr><th>PS</th>'+crimes.map(c=>`<th style="font-size:7px">${c.substring(0,8)}</th>`).join('')+'</tr></thead><tbody>';
+  const body=psa.map(p=>{
+    const cells=crimes.map(cr=>{
+      const rows=rawData.filter(r=>(r[C['PS NAME']]||'').trim()===p.ps&&(r[C['CRIME CATEGORY']]||'').trim()===cr);
+      if(!rows.length) return '<td>—</td>';
+      let sc=0;
+      rows.forEach(r=>{
+        const pf=(r[C['PERFORMANCE INDEX']]||'').toUpperCase();
+        if(pf.includes('EXCELL')) sc+=5;
+        else if(pf.includes('GOOD')) sc+=4;
+        else if(pf.includes('PEND')) sc+=3;
+      });
+      const avg=(sc/rows.length).toFixed(1);
+      const col=avg>=4.5?'var(--green)':avg>=3.5?'var(--blue)':avg>=2.5?'var(--gold)':'var(--red)';
+      return `<td><span style="color:${col};font-weight:700">${avg}</span></td>`;
+    }).join('');
+    return `<tr><td style="color:var(--text2)">${p.ps}</td>${cells}</tr>`;
+  }).join('');
+  el.innerHTML=head+body+'</tbody></table>';
+}
+
+// ── RENDER ALL ─────────────────────────────────────────────────────────────
+function renderAll(){
+  renderOverview();
+  renderSDPO();
+  renderPoliceSt();
+  renderIO();
+  renderAlerts();
+  renderCrimePattern();
+  renderBehaviour();
+}
+
+// ── MODAL HELPERS ──────────────────────────────────────────────────────────
+function modalKpiHtml(items){
+  return items.map(k=>`<div class="modal-kpi"><div class="modal-kpi-val" style="color:${k.c}">${k.v}</div><div class="modal-kpi-label">${k.l}</div></div>`).join('');
+}
+function showModal(title,kpis,body){
+  document.getElementById('modalTitle').textContent=title;
+  document.getElementById('modalKpis').innerHTML=kpis;
+  document.getElementById('modalBody').innerHTML=body;
+  document.getElementById('mainModal').classList.add('show');
+}
+
+// ── DRILL DOWNS ────────────────────────────────────────────────────────────
+function openPSDrill(ps){
+  if(!ps||!rawData.length) return;
+  const psRows=rawData.filter(r=>(r[C['PS NAME']]||'').toString().trim()===ps);
+  if(!psRows.length) return;
+  let disp=0,exc=0,good=0,pend=0,ha=0,warn=0,lo=0,re=0,ds=0;
+  psRows.forEach(r=>{
+    const pf=(r[C['PERFORMANCE INDEX']]||'').toUpperCase();
+    if(pf.includes('EXCELL')){disp++;exc++;}
+    else if(pf.includes('GOOD')){disp++;good++;}
+    else pend++;
+    const al=(r[C['ALERT LEVEL']]||r[C['FOLLOW UP INDEX']]||'').toUpperCase();
+    if(al.includes('HIGH')) ha++; else if(al.includes('WARN')) warn++;
+    lo+=safeNum(r[C['LOST AMOUNT']]);
+    re+=safeNum(r[C['RECOVERED AMOUNT']]);
+    ds+=safeNum(r[C['INVESTIGATION DAYS']]);
+  });
+  const sdpo=(psRows[0]&&C['SUB DIVISION']!==undefined)?((psRows[0][C['SUB DIVISION']])||'?'):'?';
+  const rows=psRows.map((r,idx)=>{
+    const fir=r[C['FIR NO']]||idx+1;
+    const date=fmtDate(r[C['FIR DATE']]);
+    const io=(r[C['IO NAME']]||'—').toString();
+    const sec=(r[C['BNS SEC']]||'—').toString();
+    const crime=(r[C['CRIME CATEGORY']]||'—').toString();
+    const days=(r[C['INVESTIGATION DAYS']]||'—');
+    const left=(r[C['INV DAYS LEFT']]||'—');
+    const fu=(r[C['FOLLOW UP INDEX']]||'Pending').toString();
+    const perf=(r[C['PERFORMANCE INDEX']]||'—').toString();
+    const esk=(r[C['E-SAKSHA ID']]||'—').toString();
+    const alv=(r[C['ALERT LEVEL']]||'—').toString();
+    const ph=(r[C['PH NO. I/O']]||'—').toString();
+    const pp=perf.toUpperCase().includes('EXCELL')?'px':perf.toUpperCase().includes('GOOD')?'pg':'pp';
+    const ap=alv.toUpperCase().includes('HIGH')?'pha':alv.toUpperCase().includes('WARN')?'pwr':'';
+    return `<tr>
+      <td style="color:var(--gold)">#${fir}</td><td>${date}</td><td>${io}</td>
+      <td style="font-size:9px">${sec}</td><td><span class="pill pp">${crime}</span></td>
+      <td>${days}d</td><td style="color:${left!=='—'&&+left<=7?'var(--red)':left!=='—'&&+left<=14?'var(--orange)':'var(--text2)'}">${left}d</td><td style="font-size:10px">${fu}</td>
+      <td><span class="pill ${pp}">${perf}</span></td>
+      <td>${esk==='✓'||esk==='YES'||esk==='1'?'✅':'—'}</td>
+      <td>${ap?`<span class="pill ${ap}">${alv}</span>`:alv}</td>
+      <td style="color:var(--cyan)">📞${ph}</td>
+    </tr>`;
+  }).join('');
+  showModal('🚔 '+ps+' — ALL CASES',
+    modalKpiHtml([
+      {v:psRows.length,l:'Total FIRs',c:'var(--gold)'},
+      {v:disp+' ('+(disp/psRows.length*100).toFixed(1)+'%)',l:'Disposed',c:'var(--green)'},
+      {v:(ds/psRows.length).toFixed(1)+'d',l:'Avg Inv Days',c:'var(--purple)'},
+      {v:pend,l:'Pending',c:'var(--orange)'},{v:exc,l:'Excellent',c:'var(--green)'},
+      {v:good,l:'Good',c:'var(--blue)'},{v:ha,l:'High Alert',c:'var(--red)'},
+      {v:warn,l:'Warning',c:'var(--orange)'},{v:rupees(lo),l:'💸 Lost',c:'var(--red)'},
+      {v:rupees(re),l:'💰 Recovered',c:'var(--green)'},
+    ]),
+    `<div style="margin-bottom:8px;color:var(--text3);font-size:10px;font-family:'Share Tech Mono',monospace">${sdpo} SDPO | ${psRows.length} Total FIRs</div>
+    <div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>📋 FIR</th><th>📅 Date</th><th>👤 IO</th><th>⚖️ BNS</th><th>🔴 Crime</th><th>📆 Inv Days</th><th>⏳ Days Left</th><th>🔄 Follow-Up</th><th>🏆 Performance</th><th>🖥️ E-Saksha</th><th>🚨 Alert</th><th>📞 Phone</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>`
+  );
+}
+
+function openIODrill(io,ps){
+  if(!io||!rawData.length) return;
+  const rows=rawData.filter(r=>(r[C['IO NAME']]||'').toString().trim()===io&&(r[C['PS NAME']]||'').toString().trim()===ps);
+  if(!rows.length) return;
+  let disp=0,exc=0,pend=0,ha=0,ds=0;
+  rows.forEach(r=>{
+    const pf=(r[C['PERFORMANCE INDEX']]||'').toUpperCase();
+    if(pf.includes('EXCELL')){disp++;exc++;}else if(pf.includes('GOOD'))disp++;else pend++;
+    if((r[C['FOLLOW UP INDEX']]||'').toUpperCase().includes('HIGH')) ha++;
+    ds+=safeNum(r[C['INVESTIGATION DAYS']]);
+  });
+  const tableRows=rows.map((r,idx)=>{
+    const pp=(r[C['PERFORMANCE INDEX']]||'').toUpperCase().includes('EXCELL')?'px':(r[C['PERFORMANCE INDEX']]||'').toUpperCase().includes('GOOD')?'pg':'pp';
+    const alv=(r[C['ALERT LEVEL']]||'—').toString();
+    return `<tr>
+      <td style="color:var(--gold)">#${r[C['FIR NO']]||idx+1}</td>
+      <td>${fmtDate(r[C['FIR DATE']])}</td>
+      <td style="font-size:9px">${r[C['BNS SEC']]||'—'}</td>
+      <td><span class="pill pp">${r[C['CRIME CATEGORY']]||'—'}</span></td>
+      <td>${r[C['INVESTIGATION DAYS']]||'—'}d</td>
+      <td style="color:${(r[C['INV DAYS LEFT']]||'')!==''&&+r[C['INV DAYS LEFT']]<=7?'var(--red)':(r[C['INV DAYS LEFT']]||'')!==''&&+r[C['INV DAYS LEFT']]<=14?'var(--orange)':'var(--text2)'}">${r[C['INV DAYS LEFT']]||'—'}d</td>
+      <td style="font-size:10px">${r[C['FOLLOW UP INDEX']]||'—'}</td>
+      <td><span class="pill ${pp}">${r[C['PERFORMANCE INDEX']]||'—'}</span></td>
+      <td>${alv.toUpperCase().includes('HIGH')?'<span class="pill pha">High Alert</span>':alv.toUpperCase().includes('WARN')?'<span class="pill pwr">Warning</span>':alv}</td>
+    </tr>`;
+  }).join('');
+  showModal('👤 '+io+' — ALL CASES',
+    modalKpiHtml([
+      {v:rows.length,l:'Total Cases',c:'var(--gold)'},
+      {v:disp+' ('+(disp/rows.length*100).toFixed(1)+'%)',l:'Disposed',c:'var(--green)'},
+      {v:(ds/rows.length).toFixed(1)+'d',l:'Avg Days',c:'var(--purple)'},
+      {v:pend,l:'Pending',c:'var(--orange)'},{v:exc,l:'Excellent',c:'var(--green)'},{v:ha,l:'High Alert',c:'var(--red)'},
+    ]),
+    `<div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>FIR No.</th><th>Date</th><th>BNS</th><th>Crime</th><th>Inv Days</th><th>⏳ Days Left</th><th>Follow-Up</th><th>Performance</th><th>Alert</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table></div>`
+  );
+}
+
+function openCrimeDrill(crime){
+  if(!crime||!rawData.length) return;
+  const rows=rawData.filter(r=>(r[C['CRIME CATEGORY']]||'').toString().trim()===crime);
+  if(!rows.length) return;
+  let disp=0,exc=0,pend=0,ha=0;
+  rows.forEach(r=>{
+    const pf=(r[C['PERFORMANCE INDEX']]||'').toUpperCase();
+    if(pf.includes('EXCELL')){disp++;exc++;}else if(pf.includes('GOOD'))disp++;else pend++;
+    if((r[C['FOLLOW UP INDEX']]||'').toUpperCase().includes('HIGH')) ha++;
+  });
+  const tableRows=rows.map((r,idx)=>{
+    const pp=(r[C['PERFORMANCE INDEX']]||'').toUpperCase().includes('EXCELL')?'px':(r[C['PERFORMANCE INDEX']]||'').toUpperCase().includes('GOOD')?'pg':'pp';
+    const alv=(r[C['ALERT LEVEL']]||'—').toString();
+    return `<tr>
+      <td style="color:var(--gold)">#${r[C['FIR NO']]||idx+1}</td>
+      <td>${fmtDate(r[C['FIR DATE']])}</td>
+      <td style="color:var(--cyan)">${r[C['PS NAME']]||'—'}</td>
+      <td>${r[C['IO NAME']]||'—'}</td>
+      <td style="font-size:9px">${r[C['BNS SEC']]||'—'}</td>
+      <td>${r[C['INVESTIGATION DAYS']]||'—'}d</td>
+      <td style="color:${(r[C['INV DAYS LEFT']]||'')!==''&&+r[C['INV DAYS LEFT']]<=7?'var(--red)':(r[C['INV DAYS LEFT']]||'')!==''&&+r[C['INV DAYS LEFT']]<=14?'var(--orange)':'var(--text2)'}">${r[C['INV DAYS LEFT']]||'—'}d</td>
+      <td><span class="pill ${pp}">${r[C['PERFORMANCE INDEX']]||'—'}</span></td>
+      <td>${alv.toUpperCase().includes('HIGH')?'<span class="pill pha">High Alert</span>':alv.toUpperCase().includes('WARN')?'<span class="pill pwr">Warning</span>':'—'}</td>
+      <td style="color:var(--cyan)">📞${r[C['PH NO. I/O']]||'—'}</td>
+    </tr>`;
+  }).join('');
+  showModal('📊 '+crime+' — ALL CASES',
+    modalKpiHtml([
+      {v:rows.length,l:'Total Cases',c:'var(--gold)'},
+      {v:disp+' ('+(disp/rows.length*100).toFixed(1)+'%)',l:'Disposed',c:'var(--green)'},
+      {v:exc,l:'Excellent',c:'var(--green)'},{v:pend,l:'Pending',c:'var(--orange)'},{v:ha,l:'High Alert',c:'var(--red)'},
+    ]),
+    `<div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>📋 FIR</th><th>📅 Date</th><th>🚔 PS</th><th>👤 IO</th><th>⚖️ BNS</th><th>📆 Inv Days</th><th>⏳ Days Left</th><th>🏆 Performance</th><th>🚨 Alert</th><th>📞 Phone</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table></div>`
+  );
+}
+
+function openAlertModal(type){
+  if(!rawData.length) return;
+  const rows=getAlertRows(type);
+  const title=type==='high'?'🚨 HIGH ALERT CASES':type==='warning'?'⚠️ WARNING CASES':'❌ DEFAULT CASES';
+  const tableRows=rows.map((r,idx)=>{
+    const ap=type==='high'?'pha':type==='warning'?'pwr':'pf';
+    const sdpo=(r[C['SUB DIVISION']]||'—').toString().trim();
+    const _rps=(r[C['PS NAME']]||''). toString().trim();
+    return `<tr data-drill-ps="${_rps}">
+      <td style="color:var(--gold)">#${r[C['FIR NO']]||idx+1}</td>
+      <td>${fmtDate(r[C['FIR DATE']])}</td>
+      <td style="color:var(--orange)">${_rps||'—'}</td>
+      <td><span class="pill ${sdpoPill(sdpo)}">${sdpo}</span></td>
+      <td>${r[C['IO NAME']]||'—'}</td>
+      <td><span class="pill pp">${r[C['CRIME CATEGORY']]||'—'}</span></td>
+      <td>${r[C['INVESTIGATION DAYS']]||'—'}d</td>
+      <td style="color:var(--red)">${r[C['INV DAYS LEFT']]||'—'}d</td>
+      <td><span class="pill ${ap}">${type==='high'?'High Alert':type==='warning'?'Warning':'Default'}</span></td>
+      <td style="color:var(--cyan)">📞${r[C['PH NO. I/O']]||'—'}</td>
+    </tr>`;
+  }).join('');
+  showModal(title+' ('+rows.length+')', '',
+    `<div style="overflow-x:auto"><table class="tbl">
+      <thead><tr><th>FIR No.</th><th>Date</th><th>PS</th><th>SDPO</th><th>IO Name</th><th>Crime</th><th>Inv Days</th><th>Days Left</th><th>Alert</th><th>Phone</th></tr></thead>
+      <tbody>${tableRows}</tbody>
+    </table></div>`
+  );
+}
+
+// ── MODAL CLOSE ────────────────────────────────────────────────────────────
+function closeModal(){ document.getElementById('mainModal').classList.remove('show'); }
+document.getElementById('mainModal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+
+// ── EVENT DELEGATION for all drill-down clicks ─────────────────────────────
+// Uses data-* attributes instead of inline onclick — avoids ALL quote-escaping issues
+document.addEventListener('click', function(e){
+  // Filter buttons
+  const sdpoF = e.target.dataset.filterSdpo;
+  if (sdpoF !== undefined) { filterSDPOTable(sdpoF, e.target); return; }
+  const psF = e.target.dataset.filterPs;
+  if (psF !== undefined) { filterPS(psF, e.target); return; }
+  // Drill rows — check IO first (IO rows have both data-drill-io and data-drill-ps)
+  const tr = e.target.closest('tr');
+  if (!tr) return;
+  const io = tr.dataset.drillIo;
+  if (io) { openIODrill(io, tr.dataset.drillPs||''); return; }
+  const crime = tr.dataset.drillCrime;
+  if (crime) { openCrimeDrill(crime); return; }
+  const ps = tr.dataset.drillPs;
+  if (ps) { openPSDrill(ps); return; }
+});
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+window.onload = function(){ loadData(); setInterval(loadData, 5*60*1000); };
+
+</script>
+</body>
+</html>
