@@ -1,13 +1,14 @@
 <!--
   newsletter-embed.html — Sadrakshan.AI
-  Drop this entire file's contents into any page where you want the newsletter section.
-  The Mailchimp form action URL and honeypot field are already filled in correctly.
+  Drop this entire block into any page where you want the newsletter section.
+  Fields match your Mailchimp audience: Email (required) + Phone (required).
 -->
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
 
 <section class="sai-newsletter" id="newsletter">
   <div class="sai-nl-inner">
+
     <div class="sai-nl-copy">
       <div class="sai-nl-badge">Updates</div>
       <h2 class="sai-nl-title">Stay Informed</h2>
@@ -30,19 +31,19 @@
 
       <div class="sai-nl-fields">
         <input
-          type="text"
-          name="FNAME"
-          id="mc-fname"
-          placeholder="First Name"
-          autocomplete="given-name"
-          required
-        />
-        <input
           type="email"
           name="EMAIL"
           id="mc-email"
-          placeholder="Email Address"
+          placeholder="Email Address *"
           autocomplete="email"
+          required
+        />
+        <input
+          type="tel"
+          name="PHONE"
+          id="mc-phone"
+          placeholder="Mobile Number * (e.g. +91 9876543210)"
+          autocomplete="tel"
           required
         />
         <button type="submit" id="mc-submit">Subscribe</button>
@@ -159,18 +160,20 @@
 
 <script>
 (function() {
-  const form = document.getElementById('sai-mc-form');
-  const btn  = document.getElementById('mc-submit');
-  const resp = document.getElementById('mc-response');
+  var form = document.getElementById('sai-mc-form');
+  var btn  = document.getElementById('mc-submit');
+  var resp = document.getElementById('mc-response');
 
   if (!form) return;
 
   form.addEventListener('submit', function(e) {
-    const email = document.getElementById('mc-email').value.trim();
+    var email = document.getElementById('mc-email').value.trim();
+    var phone = document.getElementById('mc-phone').value.trim();
 
-    if (!email) {
+    // Validate both fields
+    if (!email || !phone) {
       e.preventDefault();
-      resp.textContent   = 'Please enter your email address.';
+      resp.textContent   = 'Please enter both your email address and mobile number.';
       resp.className     = 'sai-nl-response error';
       resp.style.display = 'block';
       return;
@@ -182,14 +185,14 @@
 
     // Show success after short delay
     setTimeout(function() {
-      btn.disabled    = false;
-      btn.textContent = 'Subscribe';
+      btn.disabled       = false;
+      btn.textContent    = 'Subscribe';
       resp.textContent   = "You're subscribed. Expect updates from Sadrakshan.AI in your inbox.";
       resp.className     = 'sai-nl-response success';
       resp.style.display = 'block';
       form.reset();
 
-      // Fire GA4 event if analytics is loaded
+      // Fire GA4 event
       if (typeof trackNewsletterSignup === 'function') {
         trackNewsletterSignup();
       }
