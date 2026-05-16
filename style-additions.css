@@ -1,0 +1,383 @@
+/**
+ * style-additions.css — Sadrakshan.AI
+ * New global styles to add on top of your existing CSS.
+ * Add this file to every page: <link rel="stylesheet" href="style-additions.css" />
+ *
+ * All rules are namespaced (prefix sai-) or scoped to specific selectors
+ * so they do not override your existing styles.
+ */
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+   ───────────────────────────────────────────────────────────────────────────── */
+:root {
+  /* Core palette */
+  --sai-navy:          #0A1628;
+  --sai-navy2:         #112240;
+  --sai-navy3:         #0D1E38;
+  --sai-saffron:       #FF6B2B;
+  --sai-saffron-light: #FF8C5A;
+  --sai-saffron-dim:   rgba(255, 107, 43, 0.15);
+  --sai-white:         #FFFFFF;
+  --sai-muted:         #8899AA;
+  --sai-border:        rgba(255, 255, 255, 0.08);
+
+  /* Category colours */
+  --sai-cat-good:    #F59E0B;
+  --sai-cat-case:    #3B82F6;
+  --sai-cat-public:  #10B981;
+
+  /* Status colours */
+  --sai-success:     #2ECC71;
+  --sai-error:       #E74C3C;
+  --sai-warning:     #F39C12;
+
+  /* Typography */
+  --sai-font-sans:   'Noto Sans', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --sai-font-serif:  'Noto Serif', Georgia, serif;
+
+  /* Spacing scale */
+  --sai-space-xs:  4px;
+  --sai-space-sm:  8px;
+  --sai-space-md:  16px;
+  --sai-space-lg:  24px;
+  --sai-space-xl:  40px;
+  --sai-space-2xl: 64px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   GLOBAL RESETS & BASE (only on new additions, not overriding existing)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/* Devanagari font for Hindi/Marathi text */
+[lang="hi"] body,
+[lang="mr"] body {
+  font-family: 'Noto Sans Devanagari', 'Noto Sans', sans-serif;
+}
+
+/* Smooth scrolling site-wide */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   HERO SECTION (for homepage)
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-hero {
+  background:
+    radial-gradient(ellipse at 70% 40%, rgba(255,107,43,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    var(--sai-navy);
+  padding: 96px 24px 80px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.sai-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.sai-hero-badge {
+  display: inline-block;
+  font-family: var(--sai-font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: var(--sai-saffron-dim);
+  color: var(--sai-saffron);
+  border: 1px solid rgba(255,107,43,0.25);
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.sai-hero h1 {
+  font-family: var(--sai-font-serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--sai-white);
+  max-width: 720px;
+  margin: 0 auto 20px;
+}
+
+.sai-hero p {
+  color: var(--sai-muted);
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.7;
+  max-width: 560px;
+  margin: 0 auto 36px;
+}
+
+.sai-hero-ctas {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   BUTTONS
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--sai-font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 13px 26px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+
+.sai-btn-primary {
+  background: var(--sai-saffron);
+  color: var(--sai-white);
+  box-shadow: 0 4px 16px rgba(255,107,43,0.3);
+}
+.sai-btn-primary:hover {
+  background: var(--sai-saffron-light);
+  box-shadow: 0 6px 20px rgba(255,107,43,0.4);
+  transform: translateY(-1px);
+}
+
+.sai-btn-outline {
+  background: transparent;
+  color: var(--sai-white);
+  border: 1px solid var(--sai-border);
+}
+.sai-btn-outline:hover {
+  border-color: var(--sai-saffron);
+  background: rgba(255,107,43,0.08);
+}
+
+.sai-btn:active { transform: scale(0.98); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   CATEGORIES SECTION (homepage)
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-categories {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--sai-space-2xl) var(--sai-space-lg);
+}
+
+.sai-section-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.sai-section-header h2 {
+  font-family: var(--sai-font-serif);
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.sai-section-header p {
+  color: var(--sai-muted);
+  font-size: 0.95rem;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.sai-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.sai-cat-card {
+  background: var(--sai-navy2);
+  border: 1px solid var(--sai-border);
+  border-radius: 12px;
+  padding: 28px;
+  transition: border-color 0.2s, transform 0.2s;
+  text-decoration: none;
+  color: var(--sai-white);
+  display: block;
+}
+.sai-cat-card:hover {
+  transform: translateY(-3px);
+}
+.sai-cat-card.good:hover   { border-color: rgba(245,158,11,0.4); }
+.sai-cat-card.case:hover   { border-color: rgba(59,130,246,0.4); }
+.sai-cat-card.public:hover { border-color: rgba(16,185,129,0.4); }
+
+.sai-cat-icon {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
+.sai-cat-card h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.sai-cat-card p {
+  color: var(--sai-muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.sai-cat-line {
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+.sai-cat-line.good   { background: var(--sai-cat-good); }
+.sai-cat-line.case   { background: var(--sai-cat-case); }
+.sai-cat-line.public { background: var(--sai-cat-public); }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION DIVIDER
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-divider {
+  height: 1px;
+  background: var(--sai-border);
+  margin: 0 auto;
+  max-width: 1100px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FOOTER
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-footer {
+  background: var(--sai-navy2);
+  border-top: 1px solid var(--sai-border);
+  padding: 48px 24px 32px;
+  font-family: var(--sai-font-sans);
+}
+.sai-footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 40px;
+}
+.sai-footer-brand .name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--sai-white);
+  margin-bottom: 10px;
+}
+.sai-footer-brand .name span { color: var(--sai-saffron); }
+.sai-footer-brand p {
+  color: var(--sai-muted);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  max-width: 280px;
+}
+.sai-footer-col h4 {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--sai-muted);
+  margin-bottom: 16px;
+}
+.sai-footer-col a {
+  display: block;
+  color: var(--sai-muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+}
+.sai-footer-col a:hover { color: var(--sai-white); }
+.sai-footer-bottom {
+  max-width: 1100px;
+  margin: 32px auto 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--sai-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: var(--sai-muted);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .sai-footer-inner { grid-template-columns: 1fr; gap: 28px; }
+  .sai-footer-brand p { max-width: 100%; }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   UTILITY CLASSES
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-text-saffron { color: var(--sai-saffron); }
+.sai-text-muted   { color: var(--sai-muted); }
+.sai-text-serif   { font-family: var(--sai-font-serif); }
+.sai-text-center  { text-align: center; }
+
+.sai-mt-sm  { margin-top: var(--sai-space-sm); }
+.sai-mt-md  { margin-top: var(--sai-space-md); }
+.sai-mt-lg  { margin-top: var(--sai-space-lg); }
+.sai-mt-xl  { margin-top: var(--sai-space-xl); }
+.sai-mt-2xl { margin-top: var(--sai-space-2xl); }
+
+.sai-sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   LOADING SPINNER
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--sai-border);
+  border-top-color: var(--sai-saffron);
+  border-radius: 50%;
+  animation: sai-spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes sai-spin { to { transform: rotate(360deg); } }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   TOAST NOTIFICATION
+   ───────────────────────────────────────────────────────────────────────────── */
+.sai-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--sai-navy2);
+  border: 1px solid var(--sai-border);
+  border-left: 3px solid var(--sai-saffron);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-family: var(--sai-font-sans);
+  font-size: 0.9rem;
+  color: var(--sai-white);
+  max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  z-index: 9999;
+  animation: sai-toast-in 0.3s ease;
+}
+.sai-toast.success { border-left-color: var(--sai-success); }
+.sai-toast.error   { border-left-color: var(--sai-error); }
+
+@keyframes sai-toast-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   FONT IMPORT (add to <head> of every page if not already there)
+   <link rel="preconnect" href="https://fonts.googleapis.com" />
+   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+   ───────────────────────────────────────────────────────────────────────────── */

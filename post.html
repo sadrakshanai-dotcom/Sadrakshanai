@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article — Sadrakshan.AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    rel="stylesheet" />
+
+  <!-- GA4 — replace G-XXXXXXXXXX -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YK79G2YYBN"></script>
+  <script src="analytics.js"></script>
+  <script src="i18n.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #0A1628;
+      --navy2: #112240;
+      --saffron: #FF6B2B;
+      --saffron-light: #FF8C5A;
+      --white: #FFFFFF;
+      --muted: #8899AA;
+      --border: rgba(255, 255, 255, 0.08);
+      --cat-good: #F59E0B;
+      --cat-case: #3B82F6;
+      --cat-public: #10B981;
+      --body-max: 720px;
+    }
+
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    /* ── BACK LINK ── */
+    .back-bar {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 24px 0;
+    }
+
+    .back-link {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover {
+      color: var(--saffron);
+    }
+
+    /* ── ARTICLE HEADER ── */
+    .article-header {
+      max-width: var(--body-max);
+      margin: 0 auto;
+      padding: 32px 24px 0;
+    }
+
+    .cat-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 18px;
+    }
+
+    .cat-good-work {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--cat-good);
+    }
+
+    .cat-case-study {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--cat-case);
+    }
+
+    .cat-public-article {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--cat-public);
+    }
+
+    .article-title {
+      font-family: 'Noto Serif', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.2rem);
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 20px;
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.88rem;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 36px;
+    }
+
+    .article-meta .by {
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    /* ── ARTICLE BODY ── */
+    .article-body {
+      max-width: var(--body-max);
+      margin: 0 auto;
+      padding: 0 24px;
+      line-height: 1.85;
+      font-size: 1.02rem;
+    }
+
+    /* Rich text styles */
+    .article-body p {
+      margin-bottom: 1.3em;
+    }
+
+    .article-body h2 {
+      font-family: 'Noto Serif', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin: 2.2em 0 0.8em;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .article-body h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin: 1.8em 0 0.6em;
+      color: var(--saffron-light);
+    }
+
+    .article-body ul,
+    .article-body ol {
+      padding-left: 1.5em;
+      margin-bottom: 1.3em;
+    }
+
+    .article-body li {
+      margin-bottom: 0.5em;
+    }
+
+    .article-body strong {
+      color: rgba(255, 255, 255, 0.95);
+      font-weight: 600;
+    }
+
+    .article-body em {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .article-body blockquote {
+      border-left: 3px solid var(--saffron);
+      padding: 12px 20px;
+      margin: 1.5em 0;
+      background: rgba(255, 107, 43, 0.06);
+      border-radius: 0 6px 6px 0;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* ── SHARE BAR ── */
+    .share-bar {
+      max-width: var(--body-max);
+      margin: 48px auto 0;
+      padding: 24px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .share-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-right: 4px;
+    }
+
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 9px 16px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .share-btn:hover {
+      border-color: var(--saffron);
+      background: rgba(255, 107, 43, 0.08);
+    }
+
+    .share-btn.copied {
+      border-color: #10B981;
+      color: #10B981;
+    }
+
+    /* Tags */
+    .tags-row {
+      max-width: var(--body-max);
+      margin: 24px auto 0;
+      padding: 0 24px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 10px;
+      color: var(--muted);
+    }
+
+    /* ── RELATED POSTS ── */
+    .related-section {
+      max-width: 980px;
+      margin: 64px auto 0;
+      padding: 0 24px 64px;
+    }
+
+    .related-section h3 {
+      font-family: 'Noto Serif', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .related-card {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-decoration: none;
+      color: var(--white);
+      transition: border-color 0.2s, transform 0.2s;
+      display: block;
+    }
+
+    .related-card:hover {
+      border-color: rgba(255, 107, 43, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .related-card .r-cat {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .related-card .r-title {
+      font-family: 'Noto Serif', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--white);
+    }
+
+    .related-card .r-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* Loading / error states */
+    .state-msg {
+      text-align: center;
+      padding: 80px 24px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 600px) {
+      .share-bar {
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── INCLUDE YOUR NAV HERE ── -->
+
+  <div id="article-container">
+    <div class="state-msg">Loading article...</div>
+  </div>
+
+  <script>
+    async function loadPost() {
+      const params = new URLSearchParams(window.location.search);
+      const postId = params.get('id');
+
+      if (!postId) {
+        showError('No article specified. <a href="blog.html">Browse all articles →</a>');
+        return;
+      }
+
+      try {
+        const res = await fetch('posts.json');
+        const posts = await res.json();
+        const post = posts.find(p => p.id === postId);
+
+        if (!post) {
+          showError('Article not found. It may have been removed or the link is incorrect. <a href="blog.html">Browse all articles →</a>');
+          return;
+        }
+
+        renderPost(post, posts);
+
+        // Update page title & meta
+        document.title = `${post.title} — Sadrakshan.AI`;
+
+        // Fire GA4 event
+        if (typeof trackBlogPostView === 'function') {
+          trackBlogPostView(post.title, post.category);
+        }
+
+      } catch (e) {
+        showError('Could not load the article. Please try refreshing the page.');
+      }
+    }
+
+    function renderPost(post, allPosts) {
+      const CAT_LABELS = {
+        'good-work': '🏅 Good Work',
+        'case-study': '📁 Case Study',
+        'public-article': '📰 Public Article'
+      };
+      const CAT_CLASS = {
+        'good-work': 'cat-good-work',
+        'case-study': 'cat-case-study',
+        'public-article': 'cat-public-article'
+      };
+
+      const dateStr = new Date(post.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+      const catLabel = CAT_LABELS[post.category] || post.category;
+      const catClass = CAT_CLASS[post.category] || '';
+
+      // Tags row
+      const tagsHtml = (post.tags || []).map(t => `<span class="tag">#${esc(t)}</span>`).join('');
+
+      // Related posts (same category, exclude current)
+      const related = allPosts.filter(p => p.category === post.category && p.id !== post.id).slice(0, 3);
+      const relatedHtml = related.length ? `
+        <div class="related-section">
+          <h3 data-i18n="post.related">Related Articles</h3>
+          <div class="related-grid">
+            ${related.map(r => {
+        const rd = new Date(r.date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        return `<a class="related-card" href="post.html?id=${encodeURIComponent(r.id)}">
+                <div class="r-cat">${CAT_LABELS[r.category] || r.category}</div>
+                <div class="r-title">${esc(r.title)}</div>
+                <div class="r-date">${rd}</div>
+              </a>`;
+      }).join('')}
+          </div>
+        </div>` : '';
+
+      document.getElementById('article-container').innerHTML = `
+        <div class="back-bar">
+          <a href="blog.html" class="back-link" data-i18n="post.back">← Back to Articles</a>
+        </div>
+
+        <div class="article-header">
+          <span class="cat-tag ${catClass}">${catLabel}</span>
+          <h1 class="article-title">${esc(post.title)}</h1>
+          <div class="article-meta">
+            <span><span data-i18n="post.by">By</span> <span class="by">${esc(post.author)}</span></span>
+            <span>${dateStr}</span>
+          </div>
+        </div>
+
+        <div class="article-body">${post.body}</div>
+
+        ${tagsHtml ? `<div class="tags-row">${tagsHtml}</div>` : ''}
+
+        <div class="share-bar">
+          <span class="share-label">Share</span>
+          <a class="share-btn" id="share-wa" href="#" onclick="shareWhatsApp(event)" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            <span data-i18n="post.share.whatsapp">Share on WhatsApp</span>
+          </a>
+          <a class="share-btn" id="share-tw" href="#" onclick="shareTwitter(event)" target="_blank">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.213 5.567zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            <span data-i18n="post.share.twitter">Share on X</span>
+          </a>
+          <button class="share-btn" id="copy-btn" onclick="copyLink()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            <span id="copy-label" data-i18n="post.share.copy">Copy Link</span>
+          </button>
+        </div>
+
+        ${relatedHtml}
+      `;
+
+      // Re-apply i18n on newly rendered content
+      if (typeof applyTranslations === 'function') {
+        applyTranslations(typeof getLang === 'function' ? getLang() : 'en');
+      }
+    }
+
+    // ── SHARE ACTIONS ──
+    window.currentPost = null;
+
+    function shareWhatsApp(e) {
+      e.preventDefault();
+      const text = encodeURIComponent(`${document.title}\n${window.location.href}`);
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+      if (typeof trackBlogPostView === 'function') { /* already tracked */ }
+    }
+
+    function shareTwitter(e) {
+      e.preventDefault();
+      const text = encodeURIComponent(document.title);
+      const url = encodeURIComponent(window.location.href);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+    }
+
+    function copyLink() {
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        const btn = document.getElementById('copy-btn');
+        const lbl = document.getElementById('copy-label');
+        btn.classList.add('copied');
+        lbl.textContent = (typeof t === 'function') ? t('post.share.copied') : 'Link copied!';
+        setTimeout(() => {
+          btn.classList.remove('copied');
+          lbl.textContent = (typeof t === 'function') ? t('post.share.copy') : 'Copy Link';
+        }, 2000);
+      });
+    }
+
+    function showError(msg) {
+      document.getElementById('article-container').innerHTML =
+        `<div class="state-msg">${msg}</div>`;
+    }
+
+    function esc(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    window.shareWhatsApp = shareWhatsApp;
+    window.shareTwitter = shareTwitter;
+    window.copyLink = copyLink;
+
+    document.addEventListener('DOMContentLoaded', loadPost);
+  </script>
+</body>
+
+</html>

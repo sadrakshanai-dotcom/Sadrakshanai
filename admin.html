@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel — Sadrakshan.AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YK79G2YYBN"></script>
+  <script src="analytics.js"></script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --navy: #0A1628;
+      --navy2: #112240;
+      --saffron: #FF6B2B;
+      --white: #FFFFFF;
+      --muted: #8899AA;
+      --border: rgba(255, 255, 255, 0.08);
+      --success: #2ECC71;
+    }
+
+    body {
+      font-family: 'Noto Sans', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    /* ── ACCESS GATE ── */
+    #gate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+      padding: 32px;
+    }
+
+    #gate h2 {
+      color: var(--saffron);
+    }
+
+    #gate p {
+      color: var(--muted);
+      max-width: 360px;
+      line-height: 1.6;
+    }
+
+    /* ── MAIN PANEL ── */
+    #main {
+      display: none;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar .brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .topbar .brand span {
+      color: var(--saffron);
+    }
+
+    .topbar .badge {
+      background: var(--saffron);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-left: 10px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-logout {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 7px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-logout:hover {
+      border-color: var(--saffron);
+      color: var(--white);
+    }
+
+    .content {
+      padding: 32px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .section-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .section-header small {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin-left: 12px;
+    }
+
+    /* ── STATS ROW ── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .stat-card .num {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--saffron);
+    }
+
+    .stat-card .lbl {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.88rem;
+      padding: 9px 14px;
+      outline: none;
+    }
+
+    .filter-bar input {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .filter-bar input:focus,
+    .filter-bar select:focus {
+      border-color: var(--saffron);
+    }
+
+    .filter-bar select option {
+      background: var(--navy2);
+    }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    th {
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:hover td {
+      background: rgba(255, 107, 43, 0.04);
+    }
+
+    .badge-desig {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .desig-Police.Officer {
+      background: rgba(46, 204, 113, 0.15);
+      color: #2ECC71;
+    }
+
+    .desig-Senior.Officer {
+      background: rgba(255, 107, 43, 0.15);
+      color: var(--saffron);
+    }
+
+    .desig-General.Public {
+      background: rgba(136, 153, 170, 0.15);
+      color: var(--muted);
+    }
+
+    .desig-Researcher {
+      background: rgba(52, 152, 219, 0.15);
+      color: #3498DB;
+    }
+
+    .desig-Journalist {
+      background: rgba(155, 89, 182, 0.15);
+      color: #9B59B6;
+    }
+
+    .desig-Other {
+      background: rgba(136, 153, 170, 0.15);
+      color: var(--muted);
+    }
+
+    .status-active {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--success);
+      letter-spacing: 0.05em;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--muted);
+      padding: 48px;
+    }
+
+    .no-data {
+      text-align: center;
+      color: var(--muted);
+      padding: 32px;
+      font-style: italic;
+    }
+
+    .error-msg {
+      color: #E74C3C;
+      text-align: center;
+      padding: 24px;
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 14px 16px;
+      }
+
+      .content {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ACCESS DENIED STATE -->
+  <div id="gate">
+    <h2>Checking access...</h2>
+    <p>This page is restricted to authorised administrators of Sadrakshan.AI.</p>
+  </div>
+
+  <!-- ADMIN PANEL (shown only after auth check passes) -->
+  <div id="main">
+    <div class="topbar">
+      <div>
+        <span class="brand">Sadrakshan<span>.AI</span></span>
+        <span class="badge">Admin</span>
+      </div>
+      <div class="topbar-right">
+        <span id="admin-name" style="color:var(--muted); font-size:0.88rem;"></span>
+        <button class="btn-logout" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="section-header">
+        <div>
+          <h1>Registered Users</h1>
+          <small id="user-count">Loading...</small>
+        </div>
+      </div>
+
+      <!-- STATS -->
+      <div class="stats" id="stats-row">
+        <div class="stat-card">
+          <div class="num" id="stat-total">—</div>
+          <div class="lbl">Total Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="stat-officers">—</div>
+          <div class="lbl">Police Officers</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="stat-senior">—</div>
+          <div class="lbl">Senior Officers</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="stat-public">—</div>
+          <div class="lbl">General Public</div>
+        </div>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <input type="text" id="search-input" placeholder="Search by name, email, or district..."
+          oninput="filterTable()" />
+        <select id="filter-desig" onchange="filterTable()">
+          <option value="">All Designations</option>
+          <option>Police Officer</option>
+          <option>Senior Officer</option>
+          <option>General Public</option>
+          <option>Researcher</option>
+          <option>Journalist</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Designation</th>
+              <th>District</th>
+              <th>State</th>
+              <th>Status</th>
+              <th>Registered On</th>
+            </tr>
+          </thead>
+          <tbody id="user-table-body">
+            <tr>
+              <td colspan="9" class="loading">Loading users from database...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { auth, db, ADMIN_UID } from "./firebase-config.js";
+    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    let allUsers = [];
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user || user.uid !== ADMIN_UID) {
+        document.getElementById('gate').innerHTML = `
+          <h2>Access Denied</h2>
+          <p>You do not have administrator access to this page.<br/>If you believe this is an error, contact the Sadrakshan.AI administrator.</p>
+          <a href="index.html" style="color:var(--saffron); margin-top:12px; text-decoration:none;">← Return to Homepage</a>`;
+        return;
+      }
+
+      // Show panel
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+      document.getElementById('admin-name').textContent = user.displayName || user.email;
+
+      // Fetch all users
+      try {
+        const q = query(collection(db, 'users'), orderBy('registeredAt', 'desc'));
+        const snap = await getDocs(q);
+        allUsers = snap.docs.map(d => d.data());
+        renderTable(allUsers);
+        renderStats(allUsers);
+        document.getElementById('user-count').textContent = `${allUsers.length} registered user${allUsers.length !== 1 ? 's' : ''}`;
+      } catch (e) {
+        document.getElementById('user-table-body').innerHTML =
+          `<tr><td colspan="9" class="error-msg">Failed to load users. Check Firestore permissions.<br/><small>${e.message}</small></td></tr>`;
+      }
+    });
+
+    function renderStats(users) {
+      document.getElementById('stat-total').textContent = users.length;
+      document.getElementById('stat-officers').textContent = users.filter(u => u.designation === 'Police Officer').length;
+      document.getElementById('stat-senior').textContent = users.filter(u => u.designation === 'Senior Officer').length;
+      document.getElementById('stat-public').textContent = users.filter(u => u.designation === 'General Public').length;
+    }
+
+    function renderTable(users) {
+      const tbody = document.getElementById('user-table-body');
+      if (!users.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="no-data">No users found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = users.map((u, i) => {
+        const date = u.registeredAt?.toDate
+          ? u.registeredAt.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+          : '—';
+        const desigClass = (u.designation || 'Other').replace(/\s+/g, '.');
+        return `<tr>
+          <td style="color:var(--muted)">${i + 1}</td>
+          <td><strong>${esc(u.fullName || '—')}</strong></td>
+          <td style="color:var(--muted)">${esc(u.email || '—')}</td>
+          <td>${esc(u.mobile || '—')}</td>
+          <td><span class="badge-desig desig-${desigClass}">${esc(u.designation || '—')}</span></td>
+          <td>${esc(u.district || '—')}</td>
+          <td>${esc(u.state || '—')}</td>
+          <td><span class="status-active">● ACTIVE</span></td>
+          <td style="color:var(--muted); font-size:0.82rem;">${date}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    function esc(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    window.filterTable = function () {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      const desig = document.getElementById('filter-desig').value;
+      const filtered = allUsers.filter(u => {
+        const matchQ = !q || [u.fullName, u.email, u.district].some(f => (f || '').toLowerCase().includes(q));
+        const matchD = !desig || u.designation === desig;
+        return matchQ && matchD;
+      });
+      renderTable(filtered);
+    };
+
+    window.doLogout = async function () {
+      await signOut(auth);
+      window.location.href = 'login.html';
+    };
+  </script>
+</body>
+
+</html>
