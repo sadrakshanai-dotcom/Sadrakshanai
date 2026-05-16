@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SadrakshanAI — Maharashtra Police Knowledge Platform</title>
+  <meta name="description" content="A knowledge platform by Maharashtra Police covering investigation practices, good policing initiatives, and public awareness." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script src="analytics.js"></script>
+  <script src="i18n.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #08131F;
+      --navy2:   #0F1E2E;
+      --navy3:   #0B1825;
+      --navy4:   #162536;
+      --orange:  #F47C2A;
+      --orange2: #FF9550;
+      --orange-glow: rgba(244,124,42,0.18);
+      --white:   #FFFFFF;
+      --offwhite:#E8EEF4;
+      --muted:   #7A90A7;
+      --muted2:  #B0C0D0;
+      --border:  rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.12);
+      --cat-good:   #F59E0B;
+      --cat-case:   #3B82F6;
+      --cat-public: #10B981;
+      --shadow-card: 0 4px 24px rgba(0,0,0,0.35);
+      --shadow-glow: 0 0 40px rgba(244,124,42,0.2);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ═══════════════════════════════════════
+       BRAND NAME HELPER
+    ═══════════════════════════════════════ */
+    .brand-name { color: var(--white); font-weight: 700; }
+    .brand-name .ai { color: var(--orange); }
+
+    /* ═══════════════════════════════════════
+       NAV
+    ═══════════════════════════════════════ */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(8,19,31,0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      height: 66px;
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      gap: 8px;
+    }
+
+    .nav-logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      flex-shrink: 0;
+      margin-right: 20px;
+    }
+    .nav-logo-area img {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+    }
+    .nav-logo-area .brand-text {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .nav-logo-area .brand-text .sadrakshan { color: var(--white); }
+    .nav-logo-area .brand-text .ai-tag { color: var(--orange); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+    }
+    .nav-link {
+      color: var(--muted);
+      font-size: 0.875rem;
+      font-weight: 500;
+      padding: 7px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      transition: color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+    .nav-link:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+    .nav-link.active { color: var(--white); }
+
+    .nav-dashboard {
+      background: rgba(244,124,42,0.1);
+      color: var(--orange);
+      border: 1px solid rgba(244,124,42,0.22);
+      border-radius: 6px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 7px 14px;
+      text-decoration: none;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .nav-dashboard:hover { background: rgba(244,124,42,0.18); }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .lang-switcher {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+      font-size: 0.78rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+    .lang-btn:hover, .lang-btn.active { color: var(--orange); font-weight: 700; }
+    .lang-sep { color: var(--border2); font-size: 0.8rem; }
+
+    .nav-login {
+      background: var(--orange);
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .nav-login:hover { background: var(--orange2); transform: translateY(-1px); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      margin-left: auto;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    /* ═══════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      padding: 100px 24px 80px;
+    }
+
+    /* Layered background — less solid, more atmospheric */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 15% 55%, rgba(244,124,42,0.09) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 50% at 85% 15%, rgba(59,130,246,0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 65% 85%, rgba(16,185,129,0.05) 0%, transparent 45%),
+        linear-gradient(160deg, #0D1F32 0%, #08131F 45%, #0B1522 100%);
+    }
+
+    /* Subtle noise texture overlay */
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      opacity: 0.018;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      pointer-events: none;
+    }
+
+    /* Thin diagonal lines — subtle texture */
+    .hero-lines {
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          -35deg,
+          transparent,
+          transparent 80px,
+          rgba(255,255,255,0.012) 80px,
+          rgba(255,255,255,0.012) 81px
+        );
+      pointer-events: none;
+    }
+
+    /* Dot grid */
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      pointer-events: none;
+      animation: orbFloat ease-in-out infinite;
+    }
+    .orb-1 { width: 400px; height: 400px; background: rgba(244,124,42,0.07); top: -10%; left: -8%; animation-duration: 18s; animation-delay: 0s; }
+    .orb-2 { width: 300px; height: 300px; background: rgba(59,130,246,0.05); top: 20%; right: -5%; animation-duration: 22s; animation-delay: 4s; }
+    .orb-3 { width: 250px; height: 250px; background: rgba(16,185,129,0.04); bottom: 5%; left: 30%; animation-duration: 16s; animation-delay: 8s; }
+
+    @keyframes orbFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50%       { transform: translateY(-30px) scale(1.05); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 880px;
+    }
+
+    /* Emblem block */
+    .hero-emblem {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 32px;
+      animation: fadeInDown 0.9s cubic-bezier(0.22,1,0.36,1) both;
+    }
+
+    .emblem-logo-wrap {
+      position: relative;
+    }
+    .emblem-logo-wrap img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 20px rgba(244,124,42,0.5)) drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    }
+    .emblem-logo-wrap::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(244,124,42,0.2);
+      animation: spin 20s linear infinite;
+      border-top-color: rgba(244,124,42,0.5);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .emblem-divider {
+      width: 1px;
+      height: 52px;
+      background: linear-gradient(to bottom, transparent, var(--border2), transparent);
+    }
+
+    .emblem-text { text-align: left; }
+    .emblem-text .line1 {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 4px;
+    }
+    .emblem-text .line2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: 0.01em;
+      margin-bottom: 2px;
+    }
+    .emblem-text .line3 {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* Platform tag */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(244,124,42,0.1);
+      border: 1px solid rgba(244,124,42,0.25);
+      color: var(--orange);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 6px 18px 6px 12px;
+      border-radius: 30px;
+      margin-bottom: 28px;
+      animation: fadeInDown 0.9s cubic-bezier(0.22,1,0.36,1) 0.1s both;
+    }
+    .hero-badge-dot {
+      width: 7px; height: 7px;
+      background: #2ECC71;
+      border-radius: 50%;
+      animation: pulse 2.5s infinite;
+      flex-shrink: 0;
+    }
+
+    .hero h1 {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.18;
+      letter-spacing: -0.01em;
+      margin-bottom: 22px;
+      animation: fadeInDown 0.9s cubic-bezier(0.22,1,0.36,1) 0.18s both;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--orange);
+    }
+
+    .hero-sub {
+      color: var(--muted2);
+      font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+      line-height: 1.78;
+      max-width: 580px;
+      margin: 0 auto 40px;
+      font-weight: 400;
+      animation: fadeInDown 0.9s cubic-bezier(0.22,1,0.36,1) 0.26s both;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInDown 0.9s cubic-bezier(0.22,1,0.36,1) 0.34s both;
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      padding: 13px 26px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(244,124,42,0.4);
+      letter-spacing: 0.01em;
+    }
+    .btn-primary:hover { background: var(--orange2); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(244,124,42,0.5); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--offwhite);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 13px 26px;
+      border-radius: 8px;
+      border: 1px solid var(--border2);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--orange); background: rgba(244,124,42,0.07); color: var(--white); }
+
+    /* Stats row */
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin-top: 64px;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.9s cubic-bezier(0.22,1,0.36,1) 0.5s both;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      backdrop-filter: blur(8px);
+    }
+    .stat-item {
+      text-align: center;
+      flex: 1;
+      padding: 22px 20px;
+      min-width: 120px;
+      position: relative;
+    }
+    .stat-item + .stat-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 20%; bottom: 20%;
+      width: 1px;
+      background: var(--border);
+    }
+    .stat-item .num {
+      font-family: 'Crimson Pro', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--orange);
+      display: block;
+      line-height: 1;
+    }
+    .stat-item .lbl {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-top: 5px;
+      display: block;
+    }
+
+    /* Scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      animation: scrollBounce 2.5s ease-in-out infinite;
+    }
+    .scroll-mouse {
+      width: 22px;
+      height: 34px;
+      border: 2px solid var(--border2);
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      padding-top: 5px;
+    }
+    .scroll-mouse-dot {
+      width: 3px;
+      height: 7px;
+      background: var(--orange);
+      border-radius: 2px;
+      animation: scrollDot 2s ease-in-out infinite;
+    }
+    @keyframes scrollDot {
+      0%, 100% { transform: translateY(0); opacity: 1; }
+      80% { transform: translateY(8px); opacity: 0; }
+    }
+    @keyframes scrollBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(46,204,113,0.4); }
+      50%       { opacity: 0.8; box-shadow: 0 0 0 4px rgba(46,204,113,0); }
+    }
+
+    /* ═══════════════════════════════════════
+       MARQUEE
+    ═══════════════════════════════════════ */
+    .marquee-section {
+      background: var(--navy2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 0;
+      overflow: hidden;
+    }
+    .marquee-track {
+      display: flex;
+      gap: 52px;
+      animation: marquee 32s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    .marquee-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.77rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+    .marquee-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--orange);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    @keyframes marquee {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ═══════════════════════════════════════
+       SECTION COMMON
+    ═══════════════════════════════════════ */
+    .section {
+      padding: 88px 24px;
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+    .section-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+    .section-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--orange);
+      margin-bottom: 14px;
+    }
+    .section-eyebrow::before, .section-eyebrow::after {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--orange);
+      opacity: 0.5;
+    }
+    .section-header h2 {
+      font-family: 'Crimson Pro', serif;
+      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+      font-weight: 700;
+      margin-bottom: 14px;
+      line-height: 1.2;
+    }
+    .section-header p {
+      color: var(--muted2);
+      font-size: 0.95rem;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* ═══════════════════════════════════════
+       CATEGORY CARDS
+    ═══════════════════════════════════════ */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .cat-card {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 36px 32px 30px;
+      text-decoration: none;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cat-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 0% 0%, rgba(255,255,255,0.03), transparent 60%);
+      pointer-events: none;
+    }
+    /* Top accent bar */
+    .cat-card-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: 16px 16px 0 0;
+    }
+    .cat-card.good .cat-card-bar  { background: linear-gradient(to right, #F59E0B, #FCD34D); }
+    .cat-card.case .cat-card-bar  { background: linear-gradient(to right, #3B82F6, #60A5FA); }
+    .cat-card.public .cat-card-bar { background: linear-gradient(to right, #10B981, #34D399); }
+
+    .cat-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-card); }
+    .cat-card.good:hover  { border-color: rgba(245,158,11,0.3); }
+    .cat-card.case:hover  { border-color: rgba(59,130,246,0.3); }
+    .cat-card.public:hover { border-color: rgba(16,185,129,0.3); }
+
+    .cat-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    .cat-card.good .cat-icon-wrap  { background: rgba(245,158,11,0.12); }
+    .cat-card.case .cat-icon-wrap  { background: rgba(59,130,246,0.12); }
+    .cat-card.public .cat-icon-wrap { background: rgba(16,185,129,0.12); }
+
+    .cat-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; line-height: 1.35; }
+    .cat-card p { color: var(--muted2); font-size: 0.875rem; line-height: 1.72; margin-bottom: 24px; flex: 1; }
+    .cat-link {
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+    .cat-card.good .cat-link  { color: var(--cat-good); }
+    .cat-card.case .cat-link  { color: var(--cat-case); }
+    .cat-card.public .cat-link { color: var(--cat-public); }
+
+    /* ═══════════════════════════════════════
+       FEATURE STRIP (between cats and dashboard)
+    ═══════════════════════════════════════ */
+    .feature-strip {
+      background: var(--navy4);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 44px 24px;
+    }
+    .feature-strip-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+    }
+    .feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+    .feature-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(244,124,42,0.1);
+      border: 1px solid rgba(244,124,42,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--orange);
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .feature-text h4 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .feature-text p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════════
+       DASHBOARD CTA BAND
+    ═══════════════════════════════════════ */
+    .dashboard-band {
+      background: linear-gradient(140deg, #0D1F35 0%, #122B46 50%, #0E2038 100%);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 64px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .dashboard-band::before {
+      content: '';
+      position: absolute;
+      top: -50%; right: -10%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(244,124,42,0.06), transparent 70%);
+      pointer-events: none;
+    }
+    .dashboard-band-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .db-text { flex: 1; min-width: 280px; }
+    .db-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(46,204,113,0.1);
+      border: 1px solid rgba(46,204,113,0.2);
+      color: #2ECC71;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 30px;
+      margin-bottom: 16px;
+    }
+    .db-live-dot {
+      width: 7px; height: 7px;
+      background: #2ECC71;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .db-text h2 {
+      font-family: 'Crimson Pro', serif;
+      font-size: clamp(1.4rem, 2.8vw, 2rem);
+      font-weight: 700;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+    .db-text p { color: var(--muted2); font-size: 0.9rem; line-height: 1.72; }
+    .db-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .db-stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 22px;
+      text-align: center;
+      backdrop-filter: blur(6px);
+    }
+    .db-stat .n { font-family: 'Crimson Pro', serif; font-size: 1.8rem; font-weight: 700; color: var(--orange); line-height: 1; }
+    .db-stat .l { font-size: 0.68rem; color: var(--muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.07em; }
+    .db-cta { margin-top: 28px; }
+
+    /* ═══════════════════════════════════════
+       BLOG SECTION
+    ═══════════════════════════════════════ */
+    .blog-section {
+      padding: 88px 24px;
+      background: var(--navy3);
+    }
+    .blog-inner { max-width: 1140px; margin: 0 auto; }
+
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 52px;
+    }
+
+    .blog-card {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s;
+    }
+    .blog-card:hover { transform: translateY(-5px); border-color: rgba(244,124,42,0.22); box-shadow: var(--shadow-card); }
+
+    .blog-card-top { padding: 24px 24px 0; }
+    .cat-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 5px;
+      margin-bottom: 14px;
+    }
+    .cat-good-work    { background: rgba(245,158,11,0.12); color: var(--cat-good); }
+    .cat-case-study   { background: rgba(59,130,246,0.12); color: var(--cat-case); }
+    .cat-public-article { background: rgba(16,185,129,0.12); color: var(--cat-public); }
+
+    .blog-card h3 {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.42;
+      margin-bottom: 8px;
+    }
+    .blog-card h3 a { color: var(--white); text-decoration: none; transition: color 0.2s; }
+    .blog-card h3 a:hover { color: var(--orange); }
+
+    .blog-excerpt {
+      color: var(--muted2);
+      font-size: 0.84rem;
+      line-height: 1.68;
+      padding: 0 24px;
+      margin-top: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .blog-footer {
+      margin-top: auto;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+    }
+    .blog-meta { font-size: 0.74rem; color: var(--muted); }
+    .blog-meta strong { color: rgba(255,255,255,0.6); }
+    .read-more {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--orange);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: gap 0.15s;
+    }
+    .read-more:hover { gap: 7px; }
+
+    .blog-cta { text-align: center; margin-top: 44px; }
+
+    /* ═══════════════════════════════════════
+       NEWSLETTER
+    ═══════════════════════════════════════ */
+    .newsletter-section {
+      padding: 80px 24px;
+      background: var(--navy2);
+      border-top: 1px solid var(--border);
+    }
+    .newsletter-inner {
+      max-width: 840px;
+      margin: 0 auto;
+      display: flex;
+      gap: 52px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .nl-copy { flex: 1; min-width: 240px; }
+    .nl-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      background: rgba(244,124,42,0.1);
+      color: var(--orange);
+      padding: 4px 12px;
+      border-radius: 5px;
+      margin-bottom: 16px;
+    }
+    .nl-copy h2 { font-family: 'Crimson Pro', serif; font-size: 1.7rem; font-weight: 700; margin-bottom: 12px; }
+    .nl-copy p { color: var(--muted2); font-size: 0.9rem; line-height: 1.75; max-width: 350px; }
+    .nl-form { flex: 1; min-width: 280px; }
+    .nl-fields { display: flex; flex-direction: column; gap: 12px; }
+    .nl-fields input {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 12px 16px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      width: 100%;
+    }
+    .nl-fields input:focus { border-color: var(--orange); background: rgba(244,124,42,0.05); }
+    .nl-fields input::placeholder { color: var(--muted); }
+    .nl-fields input[type="submit"] {
+      background: var(--orange);
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 13px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.01em;
+    }
+    .nl-fields input[type="submit"]:hover { background: var(--orange2); transform: translateY(-1px); }
+
+    /* ═══════════════════════════════════════
+       ABOUT
+    ═══════════════════════════════════════ */
+    .about-section {
+      border-top: 1px solid var(--border);
+      padding: 88px 24px;
+    }
+    .about-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .about-text p {
+      color: var(--muted2);
+      font-size: 0.95rem;
+      line-height: 1.85;
+      margin-bottom: 1.2em;
+    }
+    .about-text p:last-child { margin-bottom: 0; }
+    .about-pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .pillar {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 20px;
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.2s;
+    }
+    .pillar:hover { border-color: rgba(244,124,42,0.2); }
+    .pillar-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: rgba(244,124,42,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--orange);
+      font-size: 0.95rem;
+      flex-shrink: 0;
+    }
+    .pillar-text h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 3px; }
+    .pillar-text p { font-size: 0.8rem; color: var(--muted2); line-height: 1.5; }
+
+    /* ═══════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════ */
+    .footer {
+      background: var(--navy2);
+      border-top: 1px solid var(--border);
+      padding: 56px 24px 32px;
+    }
+    .footer-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2.2fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 36px;
+    }
+    .footer-brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .footer-brand-logo img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+      opacity: 0.85;
+    }
+    .footer-brand-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+    .footer-brand-name .sadrakshan { color: var(--white); }
+    .footer-brand-name .ai-tag { color: var(--orange); }
+    .footer-brand p { color: var(--muted); font-size: 0.84rem; line-height: 1.72; max-width: 290px; }
+    .footer-col h4 {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+    .footer-col a {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted2);
+      text-decoration: none;
+      font-size: 0.875rem;
+      margin-bottom: 12px;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.77rem;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-motto {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 0.82rem;
+    }
+
+    /* ═══════════════════════════════════════
+       MOBILE
+    ═══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      .about-inner { grid-template-columns: 1fr; gap: 40px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-right { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        position: fixed;
+        top: 66px; left: 0; right: 0;
+        background: var(--navy2);
+        border-bottom: 1px solid var(--border);
+        padding: 16px 24px 24px;
+        gap: 4px;
+      }
+      .nav-right.open { display: flex; flex-direction: column; align-items: flex-start; padding: 0 24px 16px; background: var(--navy2); }
+      .hamburger { display: flex; }
+      .hero-stats { gap: 0; }
+      .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+      .dashboard-band-inner { flex-direction: column; }
+      .db-stats { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .newsletter-inner { flex-direction: column; gap: 32px; }
+      .nl-copy p { max-width: 100%; }
+    }
+    @media (max-width: 540px) {
+      .db-stats { grid-template-columns: repeat(2, 1fr); }
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .hero-emblem { flex-direction: column; text-align: center; }
+      .emblem-divider { display: none; }
+      .emblem-text { text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAV ══ -->
+  <nav class="nav" id="main-nav">
+    <a href="welcome.html" class="nav-logo-area">
+      <!-- Maharashtra Police logo — same path as used in index.html -->
+      <img src="maha_police_logo.png" alt="Maharashtra Police" onerror="this.style.display='none'" />
+      <div class="brand-text">
+        <span class="sadrakshan">Sadrakshan</span><span class="ai-tag">AI</span>
+      </div>
+    </a>
+
+    <div class="nav-links" id="nav-links">
+      <a href="welcome.html" class="nav-link active">Home</a>
+      <a href="blog.html" class="nav-link">Articles</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="index.html" class="nav-dashboard" target="_blank">
+        <i class="fa-solid fa-chart-line" style="font-size:0.8rem"></i> Performance Dashboard
+      </a>
+    </div>
+
+    <div class="nav-right" id="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn" data-lang-btn="mr" onclick="setLang('mr')">मराठी</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn" data-lang-btn="hi" onclick="setLang('hi')">हिंदी</button>
+        <span class="lang-sep">|</span>
+        <button class="lang-btn active" data-lang-btn="en" onclick="setLang('en')">English</button>
+      </div>
+      <a href="login.html" class="nav-login" id="nav-login-btn">Login</a>
+    </div>
+
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Toggle navigation" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-noise"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="hero-content">
+
+      <!-- Emblem -->
+      <div class="hero-emblem">
+        <div class="emblem-logo-wrap">
+          <img src="maha_police_logo.png" alt="Maharashtra Police Emblem"
+               onerror="this.parentElement.innerHTML='<div style=\'width:72px;height:72px;background:rgba(244,124,42,0.08);border:1px solid rgba(244,124,42,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;\'>🛡️</div>'" />
+        </div>
+        <div class="emblem-divider"></div>
+        <div class="emblem-text">
+          <div class="line1">Maharashtra Police</div>
+          <div class="line2"><span style="color:var(--white)">Sadrakshan</span><span style="color:var(--orange)">AI</span></div>
+          <div class="line3">सदरक्षणाय खलनिग्रहणाय</div>
+        </div>
+      </div>
+
+      <!-- Badge -->
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        Knowledge Platform &nbsp;·&nbsp; Est. 2024
+      </div>
+
+      <!-- Headline -->
+      <h1>
+        Strengthening Investigation,<br/>
+        <em>Station by Station</em>
+      </h1>
+
+      <p class="hero-sub">
+        A platform built by Maharashtra Police officers to document what is working in the field —
+        investigation practices, good policing initiatives, and plain-language guides for the public we serve.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="blog.html" class="btn-primary">
+          Read Latest Articles
+          <i class="fa-solid fa-arrow-right"></i>
+        </a>
+        <a href="index.html" class="btn-outline" target="_blank">
+          <i class="fa-solid fa-chart-line"></i>
+          Performance Dashboard
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="num">36</span>
+          <span class="lbl">Districts</span>
+        </div>
+        <div class="stat-item">
+          <span class="num">11</span>
+          <span class="lbl">Commissionerates</span>
+        </div>
+        <div class="stat-item">
+          <span class="num">1100+</span>
+          <span class="lbl">Police Stations</span>
+        </div>
+        <div class="stat-item">
+          <span class="num" id="article-count">3</span>
+          <span class="lbl">Articles Published</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-mouse"><div class="scroll-mouse-dot"></div></div>
+      <span>Scroll</span>
+    </div>
+  </section>
+
+  <!-- ══ MARQUEE ══ -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <div class="marquee-item"><div class="marquee-dot"></div>Khamgaon Police Station</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Malkapur Police Station</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Buldhana District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Pune Commissionerate</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Nashik City Police</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Mumbai Police</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Nagpur Commissionerate</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Amravati Division</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Aurangabad Division</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Nanded Zone</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Kolhapur District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Solapur District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Akola District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Jalgaon District</div>
+      <!-- Duplicate for seamless loop -->
+      <div class="marquee-item"><div class="marquee-dot"></div>Khamgaon Police Station</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Malkapur Police Station</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Buldhana District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Pune Commissionerate</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Nashik City Police</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Mumbai Police</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Nagpur Commissionerate</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Amravati Division</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Aurangabad Division</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Nanded Zone</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Kolhapur District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Solapur District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Akola District</div>
+      <div class="marquee-item"><div class="marquee-dot"></div>Jalgaon District</div>
+    </div>
+  </div>
+
+  <!-- ══ CATEGORIES ══ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-eyebrow">What You'll Find Here</div>
+      <h2>Three Types of Content,<br/>One Platform</h2>
+      <p>Everything here is based on real cases, real initiatives, and real police work across Maharashtra.</p>
+    </div>
+    <div class="cat-grid">
+      <a href="blog.html?cat=good-work" class="cat-card good">
+        <div class="cat-card-bar"></div>
+        <div class="cat-icon-wrap">🏅</div>
+        <h3>Good Work by SP / Commissionerate</h3>
+        <p>Real initiatives that reduced crime, improved response times, or built public trust — documented so other districts can replicate them.</p>
+        <span class="cat-link">
+          Read articles
+          <i class="fa-solid fa-arrow-right" style="font-size:0.75rem"></i>
+        </span>
+      </a>
+      <a href="blog.html?cat=case-study" class="cat-card case">
+        <div class="cat-card-bar"></div>
+        <div class="cat-icon-wrap">📁</div>
+        <h3>Case Studies</h3>
+        <p>How investigations were conducted, what worked, what didn't, and what the court said — lessons from actual cases for Investigating Officers.</p>
+        <span class="cat-link">
+          Read articles
+          <i class="fa-solid fa-arrow-right" style="font-size:0.75rem"></i>
+        </span>
+      </a>
+      <a href="blog.html?cat=public-article" class="cat-card public">
+        <div class="cat-card-bar"></div>
+        <div class="cat-icon-wrap">📰</div>
+        <h3>For the Public</h3>
+        <p>Understand your rights, how an FIR works, what the police can and cannot do — written in plain language, not legal jargon.</p>
+        <span class="cat-link">
+          Read articles
+          <i class="fa-solid fa-arrow-right" style="font-size:0.75rem"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ══ FEATURE STRIP ══ -->
+  <div class="feature-strip">
+    <div class="feature-strip-inner">
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+        <div class="feature-text">
+          <h4>Based on Real Cases</h4>
+          <p>Every article draws from actual Maharashtra Police investigations and court outcomes.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="feature-text">
+          <h4>By Officers, For Officers</h4>
+          <p>Written and verified by experienced police officers, not outsiders.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-language"></i></div>
+        <div class="feature-text">
+          <h4>Marathi · Hindi · English</h4>
+          <p>Content available in all three languages for maximum reach across the state.</p>
+        </div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-lock"></i></div>
+        <div class="feature-text">
+          <h4>No Ads. No Paywall.</h4>
+          <p>A public service platform. No corporate backing, no advertising, no subscriptions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ DASHBOARD CTA BAND ══ -->
+  <div class="dashboard-band">
+    <div class="dashboard-band-inner">
+      <div class="db-text">
+        <div class="db-badge">
+          <div class="db-live-dot"></div>
+          Live Dashboard
+        </div>
+        <h2>Maharashtra Police<br/>Performance Dashboard</h2>
+        <p style="margin-bottom:0">Track FIR disposal rates, investigation status, E-Saksha compliance, and preventive actions across all 36 districts and 11 Commissionerates in real time.</p>
+        <div class="db-cta">
+          <a href="index.html" class="btn-primary" target="_blank">
+            Open Dashboard
+            <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.8rem"></i>
+          </a>
+        </div>
+      </div>
+      <div class="db-stats">
+        <div class="db-stat"><div class="n">36</div><div class="l">Districts</div></div>
+        <div class="db-stat"><div class="n">11</div><div class="l">Commr.</div></div>
+        <div class="db-stat"><div class="n">358</div><div class="l">Sub-Divs</div></div>
+        <div class="db-stat"><div class="n">1100+</div><div class="l">Stations</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BLOG SECTION ══ -->
+  <div class="blog-section">
+    <div class="blog-inner">
+      <div class="section-header">
+        <div class="section-eyebrow">Latest Articles</div>
+        <h2>Recent from <span style="color:var(--white)">Sadrakshan</span><span style="color:var(--orange)">AI</span></h2>
+        <p>Case studies, good policing initiatives, and public information — updated regularly.</p>
+      </div>
+      <div class="blog-grid" id="blog-grid">
+        <div style="text-align:center;color:var(--muted);padding:48px;grid-column:1/-1;font-size:0.9rem;">
+          <i class="fa-solid fa-spinner fa-spin" style="margin-right:8px;color:var(--orange)"></i>
+          Loading articles...
+        </div>
+      </div>
+      <div class="blog-cta">
+        <a href="blog.html" class="btn-outline">View All Articles <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ NEWSLETTER ══ -->
+  <div class="newsletter-section" id="newsletter">
+    <div class="newsletter-inner">
+      <div class="nl-copy">
+        <div class="nl-eyebrow"><i class="fa-regular fa-bell"></i> Updates</div>
+        <h2>Stay Informed</h2>
+        <p>Get important updates from <strong style="color:var(--white)">Sadrakshan<span style="color:var(--orange)">AI</span></strong> directly in your inbox. No spam. No marketing. Just relevant policing knowledge.</p>
+      </div>
+      <div class="nl-form">
+        <form id="mc-embedded-subscribe-form"
+              action="https://gmail.us15.list-manage.com/subscribe/post?u=ac6600b0bbc2c92513c685b35&amp;id=4163c4fd33&amp;f_id=00b9c2e1f0"
+              method="post"
+              name="mc-embedded-subscribe-form"
+              target="_self">
+          <div style="position:absolute;left:-5000px;" aria-hidden="true">
+            <input type="text" name="b_ac6600b0bbc2c92513c685b35_4163c4fd33" tabindex="-1" value="" />
+          </div>
+          <div class="nl-fields">
+            <input type="email" name="EMAIL" id="mce-EMAIL" placeholder="Email Address *" autocomplete="email" required />
+            <input type="text" name="PHONE" id="mce-PHONE" placeholder="Mobile Number * (e.g. +91 9876543210)" required />
+            <input type="submit" name="subscribe" value="Subscribe →" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ABOUT ══ -->
+  <div class="about-section" id="about">
+    <div class="about-inner">
+      <div>
+        <div class="section-header" style="text-align:left; margin-bottom:28px;">
+          <div class="section-eyebrow" style="justify-content:flex-start;">About This Platform</div>
+          <h2>Why <span style="color:var(--white)">Sadrakshan</span><span style="color:var(--orange)">AI</span> Exists</h2>
+        </div>
+        <div class="about-text">
+          <p>Maharashtra Police handles over a lakh FIRs every year across 1,100+ police stations. Most of what works — and what doesn't — stays within individual stations and never travels further.</p>
+          <p><strong style="color:var(--white)">SadrakshanAI</strong> was built to change that. It is a documentation platform where good policing practices, investigation lessons, and public awareness content are written down, published, and made available to every officer and citizen in the state.</p>
+          <p>No corporate backing. No advertising. Built by officers, for officers and the public.</p>
+        </div>
+      </div>
+      <div class="about-pillars">
+        <div class="pillar">
+          <div class="pillar-icon"><i class="fa-solid fa-book-open"></i></div>
+          <div class="pillar-text">
+            <h4>Knowledge Documentation</h4>
+            <p>Capturing investigation practices and learnings that would otherwise stay locked in individual stations.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon"><i class="fa-solid fa-people-group"></i></div>
+          <div class="pillar-text">
+            <h4>Public Accountability</h4>
+            <p>Transparent documentation of good work builds citizen trust in policing institutions.</p>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="pillar-icon"><i class="fa-solid fa-chart-bar"></i></div>
+          <div class="pillar-text">
+            <h4>Performance Visibility</h4>
+            <p>Real-time dashboards and data-driven reporting across all 36 districts of Maharashtra.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FOOTER ══ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="footer-brand-logo">
+          <img src="maha_police_logo.png" alt="Maharashtra Police" onerror="this.style.display='none'" />
+          <div class="footer-brand-name">
+            <span class="sadrakshan">Sadrakshan</span><span class="ai-tag">AI</span>
+          </div>
+        </div>
+        <p>A Maharashtra Police initiative for better policing and public trust. Built to document, share, and improve investigation practices across the state.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Quick Links</h4>
+        <a href="welcome.html"><i class="fa-solid fa-house" style="width:14px"></i> Home</a>
+        <a href="blog.html"><i class="fa-solid fa-newspaper" style="width:14px"></i> Articles</a>
+        <a href="login.html"><i class="fa-solid fa-right-to-bracket" style="width:14px"></i> Login / Register</a>
+        <a href="index.html" target="_blank"><i class="fa-solid fa-chart-line" style="width:14px"></i> Performance Dashboard</a>
+      </div>
+      <div class="footer-col">
+        <h4>Article Categories</h4>
+        <a href="blog.html?cat=good-work"><i class="fa-solid fa-medal" style="width:14px"></i> Good Work by SP</a>
+        <a href="blog.html?cat=case-study"><i class="fa-solid fa-folder-open" style="width:14px"></i> Case Studies</a>
+        <a href="blog.html?cat=public-article"><i class="fa-regular fa-newspaper" style="width:14px"></i> Public Articles</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2024–2026 Maharashtra Police. All rights reserved.</span>
+      <span class="footer-motto">SadrakshanAI — सदरक्षणाय खलनिग्रहणाय</span>
+    </div>
+  </footer>
+
+  <script>
+    // ── NAV TOGGLE ──
+    function toggleNav() {
+      const links = document.getElementById('nav-links');
+      const right = document.getElementById('nav-right');
+      const btn   = document.getElementById('hamburger');
+      const open  = links.classList.toggle('open');
+      right.classList.toggle('open', open);
+      btn.setAttribute('aria-expanded', open);
+    }
+
+    // ── NAV SCROLL EFFECT ──
+    window.addEventListener('scroll', function() {
+      const nav = document.getElementById('main-nav');
+      if (window.scrollY > 40) {
+        nav.style.background = 'rgba(8,19,31,0.97)';
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.1)';
+      } else {
+        nav.style.background = 'rgba(8,19,31,0.88)';
+        nav.style.borderBottomColor = 'rgba(255,255,255,0.07)';
+      }
+    });
+
+    // ── LOAD BLOG POSTS ──
+    async function loadBlogPosts() {
+      try {
+        const res   = await fetch('posts.json');
+        const posts = await res.json();
+        const grid  = document.getElementById('blog-grid');
+
+        document.getElementById('article-count').textContent = posts.length;
+
+        const CAT_LABELS = {
+          'good-work':      '🏅 Good Work',
+          'case-study':     '📁 Case Study',
+          'public-article': '📰 Public Article'
+        };
+        const CAT_CLASS = {
+          'good-work':      'cat-good-work',
+          'case-study':     'cat-case-study',
+          'public-article': 'cat-public-article'
+        };
+
+        const latest = posts.slice(0, 3);
+        grid.innerHTML = latest.map(post => {
+          const date = new Date(post.date).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+          return `<article class="blog-card">
+            <div class="blog-card-top">
+              <span class="cat-tag ${CAT_CLASS[post.category]||''}">${CAT_LABELS[post.category]||post.category}</span>
+              <h3><a href="post.html?id=${encodeURIComponent(post.id)}">${esc(post.title)}</a></h3>
+            </div>
+            <p class="blog-excerpt">${esc(post.excerpt)}</p>
+            <div class="blog-footer">
+              <div class="blog-meta"><strong>${esc(post.author)}</strong><br/>${date}</div>
+              <a href="post.html?id=${encodeURIComponent(post.id)}" class="read-more">Read More <i class="fa-solid fa-arrow-right" style="font-size:0.7rem"></i></a>
+            </div>
+          </article>`;
+        }).join('');
+      } catch(e) {
+        document.getElementById('blog-grid').innerHTML =
+          '<div style="color:var(--muted);text-align:center;padding:48px;grid-column:1/-1;">Could not load articles.</div>';
+      }
+    }
+
+    function esc(str) {
+      return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // ── NAV AUTH STATE ──
+    document.addEventListener('DOMContentLoaded', function() {
+      loadBlogPosts();
+      try {
+        import('./firebase-config.js').then(({ auth }) => {
+          import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js').then(({ onAuthStateChanged }) => {
+            onAuthStateChanged(auth, (user) => {
+              const btn = document.getElementById('nav-login-btn');
+              if (user) {
+                btn.textContent = user.displayName || user.email.split('@')[0];
+                btn.href = 'admin.html';
+              }
+            });
+          });
+        });
+      } catch(e) {}
+    });
+
+    window.toggleNav = toggleNav;
+  </script>
+
+</body>
+</html>
