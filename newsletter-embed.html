@@ -1,7 +1,7 @@
 <!--
   newsletter-embed.html — Sadrakshan.AI
-  Drop this entire block into any page where you want the newsletter section.
-  Fields match your Mailchimp audience: Email (required) + Phone (required).
+  Pure Mailchimp form — no JS interception.
+  Flow: Fill form → Submit → Mailchimp thank you page → Continue to website → sadrakshanai.com
 -->
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -18,11 +18,10 @@
       </p>
     </div>
 
-    <form class="sai-nl-form" id="sai-mc-form"
+    <form class="sai-nl-form"
           action="https://gmail.us15.list-manage.com/subscribe/post?u=ac6600b0bbc2c92513c685b35&amp;id=4163c4fd33&amp;f_id=00b9c2e1f0"
           method="post"
-          target="_self"
-          novalidate>
+          target="_self">
 
       <!-- Honeypot — do not remove (anti-spam) -->
       <div style="position:absolute;left:-5000px;" aria-hidden="true">
@@ -33,7 +32,6 @@
         <input
           type="email"
           name="EMAIL"
-          id="mc-email"
           placeholder="Email Address *"
           autocomplete="email"
           required
@@ -41,15 +39,12 @@
         <input
           type="tel"
           name="PHONE"
-          id="mc-phone"
           placeholder="Mobile Number * (e.g. +91 9876543210)"
           autocomplete="tel"
           required
         />
-        <button type="submit" id="mc-submit">Subscribe</button>
+        <button type="submit">Subscribe</button>
       </div>
-
-      <div class="sai-nl-response" id="mc-response" style="display:none;"></div>
 
     </form>
   </div>
@@ -130,73 +125,12 @@
   font-size: 0.95rem;
   font-weight: 700;
   padding: 13px;
-  transition: background 0.2s, transform 0.1s;
+  transition: background 0.2s;
+  width: 100%;
 }
-.sai-nl-fields button:hover  { background: #FF8C5A; }
-.sai-nl-fields button:active { transform: scale(0.98); }
-.sai-nl-fields button:disabled { opacity: 0.5; cursor: not-allowed; }
-.sai-nl-response {
-  margin-top: 14px;
-  font-size: 0.88rem;
-  padding: 10px 14px;
-  border-radius: 6px;
-  line-height: 1.5;
-}
-.sai-nl-response.success {
-  background: rgba(46,204,113,0.12);
-  border: 1px solid rgba(46,204,113,0.3);
-  color: #2ECC71;
-}
-.sai-nl-response.error {
-  background: rgba(231,76,60,0.12);
-  border: 1px solid rgba(231,76,60,0.3);
-  color: #E74C3C;
-}
+.sai-nl-fields button:hover { background: #FF8C5A; }
 @media (max-width: 600px) {
   .sai-nl-inner { flex-direction: column; gap: 28px; }
   .sai-nl-desc  { max-width: 100%; }
 }
 </style>
-
-<script>
-(function() {
-  var form = document.getElementById('sai-mc-form');
-  var btn  = document.getElementById('mc-submit');
-  var resp = document.getElementById('mc-response');
-
-  if (!form) return;
-
-  form.addEventListener('submit', function(e) {
-    var email = document.getElementById('mc-email').value.trim();
-    var phone = document.getElementById('mc-phone').value.trim();
-
-    // Validate both fields
-    if (!email || !phone) {
-      e.preventDefault();
-      resp.textContent   = 'Please enter both your email address and mobile number.';
-      resp.className     = 'sai-nl-response error';
-      resp.style.display = 'block';
-      return;
-    }
-
-    // Let form submit to Mailchimp in new tab
-    btn.disabled    = true;
-    btn.textContent = 'Subscribing...';
-
-    // Show success after short delay
-    setTimeout(function() {
-      btn.disabled       = false;
-      btn.textContent    = 'Subscribe';
-      resp.textContent   = "You're subscribed. Expect updates from Sadrakshan.AI in your inbox.";
-      resp.className     = 'sai-nl-response success';
-      resp.style.display = 'block';
-      form.reset();
-
-      // Fire GA4 event
-      if (typeof trackNewsletterSignup === 'function') {
-        trackNewsletterSignup();
-      }
-    }, 1200);
-  });
-})();
-</script>
