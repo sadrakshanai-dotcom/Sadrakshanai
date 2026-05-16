@@ -41,6 +41,6 @@ const googleProvider = new GoogleAuthProvider();
 // After registering your admin account, find the UID in Firebase Console →
 // Authentication → Users → copy the UID column value
 // ─────────────────────────────────────────────────────────────────────────────
-const ADMIN_UID = "PASTE_ADMIN_UID_HERE";
+const ADMIN_UID = "p2weWRxjKfgzfQl7ZqR9eE9u5vb2";
 
 export { app, auth, db, googleProvider, ADMIN_UID };
