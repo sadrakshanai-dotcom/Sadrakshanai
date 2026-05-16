@@ -1,40 +1,8 @@
 <!--
   newsletter-embed.html — Sadrakshan.AI
-  Mailchimp newsletter signup — drop this snippet into any page.
-
-  HOW TO GET YOUR MAILCHIMP FORM ACTION URL:
-  1. Log in to Mailchimp at https://mailchimp.com
-  2. Create an Audience (list) if you haven't already.
-  3. Go to: Audience → Signup forms → Embedded forms
-  4. Choose "Unstyled" form type (we use our own CSS)
-  5. Copy ONLY the action URL from the <form> tag. It looks like:
-     https://yourdomain.us21.list-manage.com/subscribe/post?u=XXXX&id=YYYY
-  6. Paste it below replacing PASTE_YOUR_MAILCHIMP_FORM_ACTION_URL_HERE
-  7. Drop the entire snippet into any page where you want the newsletter section.
-
-  WELCOME EMAIL SETUP (do this in Mailchimp — not in code):
-  ───────────────────────────────────────────────────────────
-  Go to: Audience → Signup forms → Form builder → Confirmation thank you page
-  Or set up a Welcome Email automation:
-  - Go to Automations → Create → Welcome new subscribers
-  - Subject: "Welcome to Sadrakshan.AI — here's what to expect"
-  - Opening line: "You've subscribed to Sadrakshan.AI, a platform run by Maharashtra Police
-    officers to share what is actually working in the field — and what is not."
-  - Body guidance:
-    • What the platform is: A knowledge platform covering investigation best practices,
-      good policing initiatives from across Maharashtra, and plain-language articles
-      that help the public understand how the police and the law actually work.
-    • What they will receive: Updates when new articles are published — not more than
-      a few emails a month. No promotional content. No third-party messages.
-    • What to do next: Visit sadrakshanai.com and read the latest articles.
-    • Sign-off: "With regards, Sadrakshan.AI Editorial Team | Maharashtra Police"
-  - Tone note: Write like a senior police officer who genuinely respects the reader's
-    time. Avoid startup language. No exclamation marks in the subject line.
+  Drop this entire file's contents into any page where you want the newsletter section.
+  The Mailchimp form action URL and honeypot field are already filled in correctly.
 -->
-
-<!-- ════════════════════════════════════════════════════════════════════════════
-     DROP THIS ENTIRE BLOCK WHEREVER YOU WANT THE NEWSLETTER SECTION
-     ════════════════════════════════════════════════════════════════════════════ -->
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
 
@@ -42,23 +10,22 @@
   <div class="sai-nl-inner">
     <div class="sai-nl-copy">
       <div class="sai-nl-badge">Updates</div>
-      <h2 class="sai-nl-title" data-i18n="home.newsletter.title">Stay Informed</h2>
-      <p class="sai-nl-desc" data-i18n="home.newsletter.desc">
+      <h2 class="sai-nl-title">Stay Informed</h2>
+      <p class="sai-nl-desc">
         Get important updates from Sadrakshan.AI directly in your inbox.
         No spam. No marketing. Just relevant policing knowledge.
       </p>
     </div>
 
     <form class="sai-nl-form" id="sai-mc-form"
-          action=""https://gmail.us15.list-manage.com/subscribe/post?u=ac6600b0bbc2c92513c685b35&id=4163c4fd33&f_id=00b9c2e1f0""
+          action="https://gmail.us15.list-manage.com/subscribe/post?u=ac6600b0bbc2c92513c685b35&amp;id=4163c4fd33&amp;f_id=00b9c2e1f0"
           method="post"
           target="_blank"
           novalidate>
 
       <!-- Honeypot — do not remove (anti-spam) -->
       <div style="position:absolute;left:-5000px;" aria-hidden="true">
-        <input type="text" name="name="b_ac6600b0bbc2c92513c685b35_4163c4fd33"" tabindex="-1" value="" />
-        <!-- Replace b_XXXXX_XXXXX with the actual honeypot field name from your Mailchimp form HTML -->
+        <input type="text" name="b_ac6600b0bbc2c92513c685b35_4163c4fd33" tabindex="-1" value="" />
       </div>
 
       <div class="sai-nl-fields">
@@ -67,7 +34,6 @@
           name="FNAME"
           id="mc-fname"
           placeholder="First Name"
-          data-i18n-placeholder="home.newsletter.fname"
           autocomplete="given-name"
           required
         />
@@ -76,11 +42,10 @@
           name="EMAIL"
           id="mc-email"
           placeholder="Email Address"
-          data-i18n-placeholder="home.newsletter.email"
           autocomplete="email"
           required
         />
-        <button type="submit" id="mc-submit" data-i18n="home.newsletter.btn">Subscribe</button>
+        <button type="submit" id="mc-submit">Subscribe</button>
       </div>
 
       <div class="sai-nl-response" id="mc-response" style="display:none;"></div>
@@ -194,52 +159,41 @@
 
 <script>
 (function() {
-  const form   = document.getElementById('sai-mc-form');
-  const btn    = document.getElementById('mc-submit');
-  const resp   = document.getElementById('mc-response');
+  const form = document.getElementById('sai-mc-form');
+  const btn  = document.getElementById('mc-submit');
+  const resp = document.getElementById('mc-response');
 
   if (!form) return;
 
   form.addEventListener('submit', function(e) {
     const email = document.getElementById('mc-email').value.trim();
-    const fname = document.getElementById('mc-fname').value.trim();
 
     if (!email) {
       e.preventDefault();
-      showResp('Please enter your email address.', 'error');
+      resp.textContent   = 'Please enter your email address.';
+      resp.className     = 'sai-nl-response error';
+      resp.style.display = 'block';
       return;
     }
 
-    // Disable button, let the form submit to Mailchimp in new tab
+    // Let form submit to Mailchimp in new tab
     btn.disabled    = true;
     btn.textContent = 'Subscribing...';
 
-    // Show success message immediately (Mailchimp opens confirmation in new tab)
-    setTimeout(() => {
+    // Show success after short delay
+    setTimeout(function() {
       btn.disabled    = false;
-      btn.textContent = btn.getAttribute('data-i18n') === 'home.newsletter.btn'
-        ? (typeof window.t === 'function' ? window.t('home.newsletter.btn') : 'Subscribe')
-        : 'Subscribe';
-      showResp(
-        typeof window.t === 'function'
-          ? window.t('home.newsletter.success')
-          : "You're subscribed! Expect updates from Sadrakshan.AI in your inbox.",
-        'success'
-      );
+      btn.textContent = 'Subscribe';
+      resp.textContent   = "You're subscribed. Expect updates from Sadrakshan.AI in your inbox.";
+      resp.className     = 'sai-nl-response success';
+      resp.style.display = 'block';
       form.reset();
 
-      // Fire GA4 event
+      // Fire GA4 event if analytics is loaded
       if (typeof trackNewsletterSignup === 'function') {
         trackNewsletterSignup();
       }
     }, 1200);
   });
-
-  function showResp(msg, type) {
-    resp.textContent  = msg;
-    resp.className    = 'sai-nl-response ' + type;
-    resp.style.display = 'block';
-  }
 })();
 </script>
-<!-- ════════════════════════════════════════════════════════════════════════════ -->
