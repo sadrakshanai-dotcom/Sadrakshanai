@@ -1,7 +1,10 @@
 <!--
   newsletter-embed.html — Sadrakshan.AI
-  Pure Mailchimp form — no JS interception.
-  Flow: Fill form → Submit → Mailchimp thank you page → Continue to website → sadrakshanai.com
+  Uses Mailchimp's exact field names and form structure.
+  Flow: Fill → Subscribe → Mailchimp thank you page → Continue to website
+  
+  IMPORTANT: Keep the Mailchimp redirect URL field EMPTY in Mailchimp Form Builder.
+  The "Continue to website" button will go back to your referring page automatically.
 -->
 
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -18,35 +21,42 @@
       </p>
     </div>
 
-    <form class="sai-nl-form"
-          action="https://gmail.us15.list-manage.com/subscribe/post?u=ac6600b0bbc2c92513c685b35&amp;id=4163c4fd33&amp;f_id=00b9c2e1f0"
-          method="post"
-          target="_self">
+    <!-- Mailchimp form — exact field names from your Mailchimp audience -->
+    <div class="sai-nl-form">
+      <form id="mc-embedded-subscribe-form"
+            action="https://gmail.us15.list-manage.com/subscribe/post?u=ac6600b0bbc2c92513c685b35&amp;id=4163c4fd33&amp;f_id=00b9c2e1f0"
+            method="post"
+            name="mc-embedded-subscribe-form"
+            target="_self">
 
-      <!-- Honeypot — do not remove (anti-spam) -->
-      <div style="position:absolute;left:-5000px;" aria-hidden="true">
-        <input type="text" name="b_ac6600b0bbc2c92513c685b35_4163c4fd33" tabindex="-1" value="" />
-      </div>
+        <!-- Honeypot — do not remove -->
+        <div style="position:absolute;left:-5000px;" aria-hidden="true">
+          <input type="text" name="b_ac6600b0bbc2c92513c685b35_4163c4fd33" tabindex="-1" value="" />
+        </div>
 
-      <div class="sai-nl-fields">
-        <input
-          type="email"
-          name="EMAIL"
-          placeholder="Email Address *"
-          autocomplete="email"
-          required
-        />
-        <input
-          type="tel"
-          name="PHONE"
-          placeholder="Mobile Number * (e.g. +91 9876543210)"
-          autocomplete="tel"
-          required
-        />
-        <button type="submit">Subscribe</button>
-      </div>
+        <div class="sai-nl-fields">
+          <input
+            type="email"
+            name="EMAIL"
+            id="mce-EMAIL"
+            placeholder="Email Address *"
+            autocomplete="email"
+            required
+          />
+          <input
+            type="text"
+            name="PHONE"
+            id="mce-PHONE"
+            placeholder="Mobile Number * (e.g. +91 9876543210)"
+            autocomplete="tel"
+            required
+          />
+          <input type="submit" name="subscribe" id="mc-embedded-subscribe" value="Subscribe" class="sai-nl-btn" />
+        </div>
 
-    </form>
+      </form>
+    </div>
+
   </div>
 </section>
 
@@ -98,7 +108,8 @@
   flex-direction: column;
   gap: 12px;
 }
-.sai-nl-fields input {
+.sai-nl-fields input[type="email"],
+.sai-nl-fields input[type="text"] {
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.08);
   border-radius: 7px;
@@ -109,13 +120,15 @@
   outline: none;
   transition: border-color 0.2s;
   width: 100%;
+  box-sizing: border-box;
 }
-.sai-nl-fields input:focus {
+.sai-nl-fields input[type="email"]:focus,
+.sai-nl-fields input[type="text"]:focus {
   border-color: #FF6B2B;
   background: rgba(255,107,43,0.06);
 }
 .sai-nl-fields input::placeholder { color: #8899AA; }
-.sai-nl-fields button {
+.sai-nl-btn {
   background: #FF6B2B;
   border: none;
   border-radius: 7px;
@@ -127,8 +140,9 @@
   padding: 13px;
   transition: background 0.2s;
   width: 100%;
+  box-sizing: border-box;
 }
-.sai-nl-fields button:hover { background: #FF8C5A; }
+.sai-nl-btn:hover { background: #FF8C5A; }
 @media (max-width: 600px) {
   .sai-nl-inner { flex-direction: column; gap: 28px; }
   .sai-nl-desc  { max-width: 100%; }
