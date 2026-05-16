@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Panel — Sadrakshan.AI</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YK79G2YYBN"></script>
-  <script src="analytics.js"></script>
   <style>
     *,
     *::before,
@@ -25,6 +23,7 @@
       --muted: #8899AA;
       --border: rgba(255, 255, 255, 0.08);
       --success: #2ECC71;
+      --error: #E74C3C;
     }
 
     body {
@@ -34,29 +33,128 @@
       min-height: 100vh;
     }
 
-    /* ── ACCESS GATE ── */
+    /* GATE */
     #gate {
       display: flex;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      flex-direction: column;
-      gap: 16px;
-      text-align: center;
-      padding: 32px;
+      padding: 24px;
     }
 
-    #gate h2 {
+    .gate-card {
+      background: var(--navy2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      padding: 36px;
+    }
+
+    .gate-card h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .gate-card h2 span {
       color: var(--saffron);
     }
 
-    #gate p {
+    .gate-card p {
       color: var(--muted);
-      max-width: 360px;
-      line-height: 1.6;
+      font-size: 0.88rem;
+      margin-bottom: 24px;
     }
 
-    /* ── MAIN PANEL ── */
+    .badge {
+      background: var(--saffron);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-left: 8px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 11px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--saffron);
+    }
+
+    input::placeholder {
+      color: var(--muted);
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--saffron);
+      color: var(--white);
+      border: none;
+      border-radius: 7px;
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 13px;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #FF8C5A;
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .err-msg {
+      background: rgba(231, 76, 60, 0.12);
+      border: 1px solid rgba(231, 76, 60, 0.3);
+      color: var(--error);
+      border-radius: 7px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .err-msg.show {
+      display: block;
+    }
+
+    /* MAIN */
     #main {
       display: none;
     }
@@ -78,24 +176,6 @@
       color: var(--saffron);
     }
 
-    .topbar .badge {
-      background: var(--saffron);
-      color: var(--white);
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 20px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-left: 10px;
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
     .btn-logout {
       background: transparent;
       border: 1px solid var(--border);
@@ -105,7 +185,6 @@
       padding: 7px 16px;
       border-radius: 6px;
       cursor: pointer;
-      transition: border-color 0.2s, color 0.2s;
     }
 
     .btn-logout:hover {
@@ -120,7 +199,6 @@
     .section-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       margin-bottom: 24px;
     }
 
@@ -135,7 +213,6 @@
       margin-left: 12px;
     }
 
-    /* ── STATS ROW ── */
     .stats {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -162,7 +239,6 @@
       margin-top: 4px;
     }
 
-    /* ── FILTER BAR ── */
     .filter-bar {
       display: flex;
       gap: 12px;
@@ -170,7 +246,7 @@
       flex-wrap: wrap;
     }
 
-    .filter-bar input,
+    .filter-bar input[type="text"],
     .filter-bar select {
       background: var(--navy2);
       border: 1px solid var(--border);
@@ -182,21 +258,15 @@
       outline: none;
     }
 
-    .filter-bar input {
+    .filter-bar input[type="text"] {
       flex: 1;
       min-width: 200px;
-    }
-
-    .filter-bar input:focus,
-    .filter-bar select:focus {
-      border-color: var(--saffron);
     }
 
     .filter-bar select option {
       background: var(--navy2);
     }
 
-    /* ── TABLE ── */
     .table-wrap {
       overflow-x: auto;
     }
@@ -229,113 +299,66 @@
       background: rgba(255, 107, 43, 0.04);
     }
 
-    .badge-desig {
-      font-size: 0.72rem;
-      font-weight: 600;
-      padding: 3px 9px;
-      border-radius: 20px;
-      white-space: nowrap;
-    }
-
-    .desig-Police.Officer {
-      background: rgba(46, 204, 113, 0.15);
-      color: #2ECC71;
-    }
-
-    .desig-Senior.Officer {
-      background: rgba(255, 107, 43, 0.15);
-      color: var(--saffron);
-    }
-
-    .desig-General.Public {
-      background: rgba(136, 153, 170, 0.15);
-      color: var(--muted);
-    }
-
-    .desig-Researcher {
-      background: rgba(52, 152, 219, 0.15);
-      color: #3498DB;
-    }
-
-    .desig-Journalist {
-      background: rgba(155, 89, 182, 0.15);
-      color: #9B59B6;
-    }
-
-    .desig-Other {
-      background: rgba(136, 153, 170, 0.15);
-      color: var(--muted);
-    }
-
     .status-active {
       font-size: 0.72rem;
       font-weight: 700;
       color: var(--success);
-      letter-spacing: 0.05em;
     }
 
-    .loading {
+    .loading,
+    .no-data {
       text-align: center;
       color: var(--muted);
       padding: 48px;
     }
 
-    .no-data {
-      text-align: center;
-      color: var(--muted);
-      padding: 32px;
-      font-style: italic;
-    }
-
     .error-msg {
-      color: #E74C3C;
+      color: var(--error);
       text-align: center;
       padding: 24px;
-    }
-
-    @media (max-width: 600px) {
-      .topbar {
-        padding: 14px 16px;
-      }
-
-      .content {
-        padding: 16px;
-      }
     }
   </style>
 </head>
 
 <body>
 
-  <!-- ACCESS DENIED STATE -->
   <div id="gate">
-    <h2>Checking access...</h2>
-    <p>This page is restricted to authorised administrators of Sadrakshan.AI.</p>
+    <div class="gate-card">
+      <h2>Sadrakshan<span>.AI</span><span class="badge">Admin</span></h2>
+      <p>Sign in with your administrator account to access the control panel.</p>
+      <div class="err-msg" id="err-msg"></div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="admin-email" placeholder="your@email.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-pass" placeholder="Your password"
+          onkeydown="if(event.key==='Enter') window.doAdminLogin()" />
+      </div>
+      <button class="btn-primary" id="login-btn" onclick="window.doAdminLogin()">
+        Login to Admin Panel
+      </button>
+    </div>
   </div>
 
-  <!-- ADMIN PANEL (shown only after auth check passes) -->
   <div id="main">
     <div class="topbar">
       <div>
         <span class="brand">Sadrakshan<span>.AI</span></span>
         <span class="badge">Admin</span>
       </div>
-      <div class="topbar-right">
-        <span id="admin-name" style="color:var(--muted); font-size:0.88rem;"></span>
-        <button class="btn-logout" onclick="doLogout()">Logout</button>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span id="admin-name" style="color:var(--muted);font-size:0.88rem;"></span>
+        <button class="btn-logout" onclick="window.doLogout()">Logout</button>
       </div>
     </div>
-
     <div class="content">
       <div class="section-header">
-        <div>
-          <h1>Registered Users</h1>
-          <small id="user-count">Loading...</small>
-        </div>
+        <h1>Registered Users</h1>
+        <small id="user-count"></small>
       </div>
-
-      <!-- STATS -->
-      <div class="stats" id="stats-row">
+      <div class="stats">
         <div class="stat-card">
           <div class="num" id="stat-total">—</div>
           <div class="lbl">Total Users</div>
@@ -353,12 +376,10 @@
           <div class="lbl">General Public</div>
         </div>
       </div>
-
-      <!-- FILTER BAR -->
       <div class="filter-bar">
         <input type="text" id="search-input" placeholder="Search by name, email, or district..."
-          oninput="filterTable()" />
-        <select id="filter-desig" onchange="filterTable()">
+          oninput="window.filterTable()" />
+        <select id="filter-desig" onchange="window.filterTable()">
           <option value="">All Designations</option>
           <option>Police Officer</option>
           <option>Senior Officer</option>
@@ -368,8 +389,6 @@
           <option>Other</option>
         </select>
       </div>
-
-      <!-- TABLE -->
       <div class="table-wrap">
         <table>
           <thead>
@@ -387,7 +406,7 @@
           </thead>
           <tbody id="user-table-body">
             <tr>
-              <td colspan="9" class="loading">Loading users from database...</td>
+              <td colspan="9" class="loading">Loading users...</td>
             </tr>
           </tbody>
         </table>
@@ -395,105 +414,152 @@
     </div>
   </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, getDocs, orderBy, query }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // ── PASTE YOUR FIREBASE CONFIG HERE (same values as firebase-config.js) ──
-  const firebaseConfig = {
-    apiKey:            "AIzaSyAQ9AS6RprieboUxiiepu-_ChZQMde4UBk",
-    authDomain:        "sadrakshanai.com",
-    projectId:         "sadrakshanai-df96a",
-    storageBucket:     "sadrakshanai-df96a.firebasestorage.app",
-    messagingSenderId: "191369840680",
-    appId:             "1:191369840680:web:4cd47cd03eb2a81c2e4d1d"
-  };
+    // ─────────────────────────────────────────────────────────────────
+    // PASTE YOUR FIREBASE CONFIG HERE
+    // (copy the values from firebase-config.js in your GitHub repo)
+    // ─────────────────────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQ9AS6RprieboUxiiepu-_ChZQMde4UBk",
+      authDomain: "sadrakshanai.com",
+      projectId: "sadrakshanai-df96a",
+      storageBucket: "sadrakshanai-df96a.firebasestorage.app",
+      messagingSenderId: "191369840680",
+      appId: "1:191369840680:web:4cd47cd03eb2a81c2e4d1d"
+    };
+    // ─────────────────────────────────────────────────────────────────
 
-  // ── YOUR ADMIN UID ──
-  const ADMIN_UID = "p2weWRxjKfgzfQl7ZqR9eE9u5vb2";
+    const ADMIN_UID = "p2weWRxjKfgzfQl7ZqR9eE9u5vb2";
 
-  const app  = initializeApp(firebaseConfig, "admin-app");
-  const auth = getAuth(app);
-  const db   = getFirestore(app);
+    const app = initializeApp(firebaseConfig, "admin-app");
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    let allUsers = [];
 
-  let allUsers = [];
+    // If already signed in as admin, skip gate
+    onAuthStateChanged(auth, user => {
+      if (user && user.uid === ADMIN_UID) showPanel(user);
+    });
 
-  onAuthStateChanged(auth, async (user) => {
-    if (!user || user.uid !== ADMIN_UID) {
-      document.getElementById('gate').innerHTML = `
-        <h2>Access Denied</h2>
-        <p>You do not have administrator access to this page.</p>
-        <a href="login.html" style="color:var(--saffron);margin-top:12px;text-decoration:none;">← Go to Login</a>`;
-      return;
+    window.doAdminLogin = async function () {
+      const email = document.getElementById('admin-email').value.trim();
+      const pass = document.getElementById('admin-pass').value;
+      const btn = document.getElementById('login-btn');
+      const err = document.getElementById('err-msg');
+      err.classList.remove('show');
+
+      if (!email || !pass) {
+        showErr('Please enter your email and password.');
+        return;
+      }
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      try {
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        if (cred.user.uid !== ADMIN_UID) {
+          await signOut(auth);
+          showErr('This account does not have administrator access.');
+          btn.disabled = false;
+          btn.textContent = 'Login to Admin Panel';
+          return;
+        }
+        showPanel(cred.user);
+      } catch (e) {
+        showErr('Incorrect email or password. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Login to Admin Panel';
+      }
+    };
+
+    async function showPanel(user) {
+      document.getElementById('gate').style.display = 'none';
+      document.getElementById('main').style.display = 'block';
+      document.getElementById('admin-name').textContent = user.displayName || user.email;
+      try {
+        const snap = await getDocs(query(collection(db, 'users'), orderBy('registeredAt', 'desc')));
+        allUsers = snap.docs.map(d => d.data());
+        renderStats(allUsers);
+        renderTable(allUsers);
+        document.getElementById('user-count').textContent =
+          `${allUsers.length} registered user${allUsers.length !== 1 ? 's' : ''}`;
+      } catch (e) {
+        document.getElementById('user-table-body').innerHTML =
+          `<tr><td colspan="9" class="error-msg">
+          Failed to load users.<br/><small>${e.message}</small><br/>
+          <small>Check Firestore rules — admin UID must be allowed to read all users.</small>
+        </td></tr>`;
+      }
     }
 
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('main').style.display  = 'block';
-    document.getElementById('admin-name').textContent = user.displayName || user.email;
-
-    try {
-      const q    = query(collection(db, 'users'), orderBy('registeredAt', 'desc'));
-      const snap = await getDocs(q);
-      allUsers   = snap.docs.map(d => d.data());
-      renderTable(allUsers);
-      renderStats(allUsers);
-      document.getElementById('user-count').textContent = `${allUsers.length} registered user${allUsers.length !== 1 ? 's' : ''}`;
-    } catch(e) {
-      document.getElementById('user-table-body').innerHTML =
-        `<tr><td colspan="9" class="error-msg">Failed to load users.<br/><small>${e.message}</small></td></tr>`;
+    function renderStats(u) {
+      document.getElementById('stat-total').textContent = u.length;
+      document.getElementById('stat-officers').textContent = u.filter(x => x.designation === 'Police Officer').length;
+      document.getElementById('stat-senior').textContent = u.filter(x => x.designation === 'Senior Officer').length;
+      document.getElementById('stat-public').textContent = u.filter(x => x.designation === 'General Public').length;
     }
-  });
 
-  function renderStats(users) {
-    document.getElementById('stat-total').textContent    = users.length;
-    document.getElementById('stat-officers').textContent = users.filter(u=>u.designation==='Police Officer').length;
-    document.getElementById('stat-senior').textContent   = users.filter(u=>u.designation==='Senior Officer').length;
-    document.getElementById('stat-public').textContent   = users.filter(u=>u.designation==='General Public').length;
-  }
-
-  function renderTable(users) {
-    const tbody = document.getElementById('user-table-body');
-    if (!users.length) {
-      tbody.innerHTML = '<tr><td colspan="9" class="no-data">No users found.</td></tr>';
-      return;
-    }
-    tbody.innerHTML = users.map((u, i) => {
-      const date = u.registeredAt?.toDate
-        ? u.registeredAt.toDate().toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})
-        : '—';
-      const desigClass = (u.designation||'Other').replace(/\s+/g,'.');
-      return `<tr>
-        <td style="color:var(--muted)">${i+1}</td>
-        <td><strong>${esc(u.fullName||'—')}</strong></td>
-        <td style="color:var(--muted)">${esc(u.email||'—')}</td>
-        <td>${esc(u.mobile||'—')}</td>
-        <td><span class="badge-desig desig-${desigClass}">${esc(u.designation||'—')}</span></td>
-        <td>${esc(u.district||'—')}</td>
-        <td>${esc(u.state||'—')}</td>
+    function renderTable(users) {
+      const tbody = document.getElementById('user-table-body');
+      if (!users.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="no-data">No users found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = users.map((u, i) => {
+        const date = u.registeredAt?.toDate
+          ? u.registeredAt.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+          : '—';
+        return `<tr>
+        <td style="color:var(--muted)">${i + 1}</td>
+        <td><strong>${esc(u.fullName || '—')}</strong></td>
+        <td style="color:var(--muted)">${esc(u.email || '—')}</td>
+        <td>${esc(u.mobile || '—')}</td>
+        <td>${esc(u.designation || '—')}</td>
+        <td>${esc(u.district || '—')}</td>
+        <td>${esc(u.state || '—')}</td>
         <td><span class="status-active">● ACTIVE</span></td>
         <td style="color:var(--muted);font-size:0.82rem;">${date}</td>
       </tr>`;
-    }).join('');
-  }
+      }).join('');
+    }
 
-  function esc(str) {
-    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
+    window.filterTable = function () {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      const desig = document.getElementById('filter-desig').value;
+      renderTable(allUsers.filter(u => {
+        const mQ = !q || [u.fullName, u.email, u.district].some(f => (f || '').toLowerCase().includes(q));
+        const mD = !desig || u.designation === desig;
+        return mQ && mD;
+      }));
+    };
 
-  window.filterTable = function() {
-    const q     = document.getElementById('search-input').value.toLowerCase();
-    const desig = document.getElementById('filter-desig').value;
-    const filtered = allUsers.filter(u => {
-      const matchQ = !q || [u.fullName,u.email,u.district].some(f=>(f||'').toLowerCase().includes(q));
-      const matchD = !desig || u.designation === desig;
-      return matchQ && matchD;
-    });
-    renderTable(filtered);
-  };
+    window.doLogout = async function () {
+      await signOut(auth);
+      document.getElementById('main').style.display = 'none';
+      document.getElementById('gate').style.display = 'flex';
+      document.getElementById('admin-email').value = '';
+      document.getElementById('admin-pass').value = '';
+      document.getElementById('login-btn').textContent = 'Login to Admin Panel';
+      document.getElementById('login-btn').disabled = false;
+    };
 
-  window.doLogout = async function() {
-    await signOut(auth);
-    window.location.href = 'login.html';
-  };
-</script>
+    function showErr(msg) {
+      const e = document.getElementById('err-msg');
+      e.textContent = msg;
+      e.classList.add('show');
+    }
+
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+  </script>
+</body>
+
+</html>
