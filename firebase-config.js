@@ -18,7 +18,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyAQ9AS6RprieboUxiiepu-_ChZQMde4UBk",
-  authDomain: "sadrakshanai-df96a.firebaseapp.com",          // e.g. sadrakshanai.firebaseapp.com
+  authDomain: "sadrakshanai.com",          // e.g. sadrakshanai.firebaseapp.com
   projectId: "sadrakshanai-df96a",           // e.g. sadrakshanai
   storageBucket: "sadrakshanai-df96a.firebasestorage.app",       // e.g. sadrakshanai.appspot.com
   messagingSenderId: "191369840680",  // numeric ID
