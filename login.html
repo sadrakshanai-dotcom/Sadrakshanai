@@ -489,7 +489,7 @@
       try {
         await window._signIn(window._firebaseAuth, email, pass);
         trackLoginSuccess('email');
-        window.location.href = 'index.html';
+        window.location.href = 'admin.html';
       } catch (e) {
         let msg = 'Login failed. Please check your credentials.';
         if (e.code === 'auth/user-not-found') msg = 'No account found with this email. Please register first.';
@@ -539,7 +539,7 @@
 
         trackSignupComplete(designation);
         showMsg('signup-msg', '✓ You are now registered with Sadrakshan.AI. Welcome aboard.', 'success');
-        setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+        setTimeout(() => { window.location.href = 'admin.html'; }, 2000);
       } catch (e) {
         let msg = 'Registration failed. Please try again.';
         if (e.code === 'auth/email-already-in-use') msg = 'This email is already registered. Please log in.';
@@ -570,7 +570,7 @@
         }, { merge: true });  // merge:true won't overwrite existing data on repeat logins
 
         trackLoginSuccess('google');
-        window.location.href = 'index.html';
+        window.location.href = 'admin.html';
       } catch (e) {
         alert('Google sign-in failed. Please try again or use email login.');
       }
