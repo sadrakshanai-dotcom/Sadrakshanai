@@ -395,93 +395,105 @@
     </div>
   </div>
 
-  <script type="module">
-    import { auth, db, ADMIN_UID } from "./firebase-config.js";
-    import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    let allUsers = [];
+  // ── PASTE YOUR FIREBASE CONFIG HERE (same values as firebase-config.js) ──
+  const firebaseConfig = {
+    apiKey:            "AIzaSyAQ9AS6RprieboUxiiepu-_ChZQMde4UBk",
+    authDomain:        "sadrakshanai-df96a.firebaseapp.com",
+    projectId:         "sadrakshanai-df96a",
+    storageBucket:     "sadrakshanai-df96a.firebasestorage.app",
+    messagingSenderId: "191369840680",
+    appId:             "1:191369840680:web:4cd47cd03eb2a81c2e4d1d"
+  };
 
-    onAuthStateChanged(auth, async (user) => {
-      if (!user || user.uid !== ADMIN_UID) {
-        document.getElementById('gate').innerHTML = `
-          <h2>Access Denied</h2>
-          <p>You do not have administrator access to this page.<br/>If you believe this is an error, contact the Sadrakshan.AI administrator.</p>
-          <a href="index.html" style="color:var(--saffron); margin-top:12px; text-decoration:none;">← Return to Homepage</a>`;
-        return;
-      }
+  // ── YOUR ADMIN UID ──
+  const ADMIN_UID = "p2weWRxjKfgzfQl7ZqR9eE9u5vb2";
 
-      // Show panel
-      document.getElementById('gate').style.display = 'none';
-      document.getElementById('main').style.display = 'block';
-      document.getElementById('admin-name').textContent = user.displayName || user.email;
+  const app  = initializeApp(firebaseConfig, "admin-app");
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
 
-      // Fetch all users
-      try {
-        const q = query(collection(db, 'users'), orderBy('registeredAt', 'desc'));
-        const snap = await getDocs(q);
-        allUsers = snap.docs.map(d => d.data());
-        renderTable(allUsers);
-        renderStats(allUsers);
-        document.getElementById('user-count').textContent = `${allUsers.length} registered user${allUsers.length !== 1 ? 's' : ''}`;
-      } catch (e) {
-        document.getElementById('user-table-body').innerHTML =
-          `<tr><td colspan="9" class="error-msg">Failed to load users. Check Firestore permissions.<br/><small>${e.message}</small></td></tr>`;
-      }
+  let allUsers = [];
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user || user.uid !== ADMIN_UID) {
+      document.getElementById('gate').innerHTML = `
+        <h2>Access Denied</h2>
+        <p>You do not have administrator access to this page.</p>
+        <a href="login.html" style="color:var(--saffron);margin-top:12px;text-decoration:none;">← Go to Login</a>`;
+      return;
+    }
+
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('main').style.display  = 'block';
+    document.getElementById('admin-name').textContent = user.displayName || user.email;
+
+    try {
+      const q    = query(collection(db, 'users'), orderBy('registeredAt', 'desc'));
+      const snap = await getDocs(q);
+      allUsers   = snap.docs.map(d => d.data());
+      renderTable(allUsers);
+      renderStats(allUsers);
+      document.getElementById('user-count').textContent = `${allUsers.length} registered user${allUsers.length !== 1 ? 's' : ''}`;
+    } catch(e) {
+      document.getElementById('user-table-body').innerHTML =
+        `<tr><td colspan="9" class="error-msg">Failed to load users.<br/><small>${e.message}</small></td></tr>`;
+    }
+  });
+
+  function renderStats(users) {
+    document.getElementById('stat-total').textContent    = users.length;
+    document.getElementById('stat-officers').textContent = users.filter(u=>u.designation==='Police Officer').length;
+    document.getElementById('stat-senior').textContent   = users.filter(u=>u.designation==='Senior Officer').length;
+    document.getElementById('stat-public').textContent   = users.filter(u=>u.designation==='General Public').length;
+  }
+
+  function renderTable(users) {
+    const tbody = document.getElementById('user-table-body');
+    if (!users.length) {
+      tbody.innerHTML = '<tr><td colspan="9" class="no-data">No users found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map((u, i) => {
+      const date = u.registeredAt?.toDate
+        ? u.registeredAt.toDate().toLocaleDateString('en-IN', {day:'2-digit',month:'short',year:'numeric'})
+        : '—';
+      const desigClass = (u.designation||'Other').replace(/\s+/g,'.');
+      return `<tr>
+        <td style="color:var(--muted)">${i+1}</td>
+        <td><strong>${esc(u.fullName||'—')}</strong></td>
+        <td style="color:var(--muted)">${esc(u.email||'—')}</td>
+        <td>${esc(u.mobile||'—')}</td>
+        <td><span class="badge-desig desig-${desigClass}">${esc(u.designation||'—')}</span></td>
+        <td>${esc(u.district||'—')}</td>
+        <td>${esc(u.state||'—')}</td>
+        <td><span class="status-active">● ACTIVE</span></td>
+        <td style="color:var(--muted);font-size:0.82rem;">${date}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function esc(str) {
+    return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  window.filterTable = function() {
+    const q     = document.getElementById('search-input').value.toLowerCase();
+    const desig = document.getElementById('filter-desig').value;
+    const filtered = allUsers.filter(u => {
+      const matchQ = !q || [u.fullName,u.email,u.district].some(f=>(f||'').toLowerCase().includes(q));
+      const matchD = !desig || u.designation === desig;
+      return matchQ && matchD;
     });
+    renderTable(filtered);
+  };
 
-    function renderStats(users) {
-      document.getElementById('stat-total').textContent = users.length;
-      document.getElementById('stat-officers').textContent = users.filter(u => u.designation === 'Police Officer').length;
-      document.getElementById('stat-senior').textContent = users.filter(u => u.designation === 'Senior Officer').length;
-      document.getElementById('stat-public').textContent = users.filter(u => u.designation === 'General Public').length;
-    }
-
-    function renderTable(users) {
-      const tbody = document.getElementById('user-table-body');
-      if (!users.length) {
-        tbody.innerHTML = '<tr><td colspan="9" class="no-data">No users found.</td></tr>';
-        return;
-      }
-      tbody.innerHTML = users.map((u, i) => {
-        const date = u.registeredAt?.toDate
-          ? u.registeredAt.toDate().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
-          : '—';
-        const desigClass = (u.designation || 'Other').replace(/\s+/g, '.');
-        return `<tr>
-          <td style="color:var(--muted)">${i + 1}</td>
-          <td><strong>${esc(u.fullName || '—')}</strong></td>
-          <td style="color:var(--muted)">${esc(u.email || '—')}</td>
-          <td>${esc(u.mobile || '—')}</td>
-          <td><span class="badge-desig desig-${desigClass}">${esc(u.designation || '—')}</span></td>
-          <td>${esc(u.district || '—')}</td>
-          <td>${esc(u.state || '—')}</td>
-          <td><span class="status-active">● ACTIVE</span></td>
-          <td style="color:var(--muted); font-size:0.82rem;">${date}</td>
-        </tr>`;
-      }).join('');
-    }
-
-    function esc(str) {
-      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    }
-
-    window.filterTable = function () {
-      const q = document.getElementById('search-input').value.toLowerCase();
-      const desig = document.getElementById('filter-desig').value;
-      const filtered = allUsers.filter(u => {
-        const matchQ = !q || [u.fullName, u.email, u.district].some(f => (f || '').toLowerCase().includes(q));
-        const matchD = !desig || u.designation === desig;
-        return matchQ && matchD;
-      });
-      renderTable(filtered);
-    };
-
-    window.doLogout = async function () {
-      await signOut(auth);
-      window.location.href = 'login.html';
-    };
-  </script>
-</body>
-
-</html>
+  window.doLogout = async function() {
+    await signOut(auth);
+    window.location.href = 'login.html';
+  };
+</script>
